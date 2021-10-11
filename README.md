@@ -20,9 +20,17 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 - [Open Street Map](https://www.openstreetmap.org/#map=7/39.602/-7.839)
 
 
+### Personal Links:
+- [Trello Board](https://trello.com/b/YhTDQTY6/simple-additions)
+- [LinkedIn](https://www.linkedin.com/in/saman-griffiths/)
+- [Company Website]()
+- [Portfolio]()
+
+
 ### Future Additions:
 
 - [ ] Dark Mode
+- [ ] Email Verification
 - [ ] Animal Listings From Shelters
 - [ ] User Profiles
 - [ ] Route Mapping
