@@ -1,4 +1,4 @@
-<img align="center" src="../Simple-Additions/README%20img/simple_additions_logo.png" alt="Simple Additions Logo" height="10vh" width="15vw">
+<img align="center" src="../Simple-Additions/README_img/simple_additions_logo.png" alt="Simple Additions Logo" height="10vh" width="15vw">
 <h1 align='center'>Simple Additions</h1>
 
 ### Founded By: Sam'an Griffiths
