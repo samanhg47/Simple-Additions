@@ -1,4 +1,4 @@
-<img align="center" src="../Simple-Additions/README_img/simple_additions_logo.png" alt="Simple Additions Logo" height="10vh" width="15vw">
+<div style="display: flex; justify-content: center;"><img align="center" src="../Simple-Additions/README_img/simple_additions_logo.png" alt="Simple Additions Logo" height="100vh" width="100vw"></div>
 <h1 align='center'>Simple Additions</h1>
 
 ### Founded By: Sam'an Griffiths
@@ -8,7 +8,8 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 
 
 #### Tech Stack
-
+<div style="display: inline-box;"><img align="center" src="../Simple-Additions/README_img/flask-1.png" alt="Simple Additions Logo" height="100vh" width="150vw"><img align="center" src="../Simple-Additions/README_img/images.png" alt="Simple Additions Logo" height="100vh" width="150vw"><img align="center" src="../Simple-Additions/README_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="100vh" width="150vw">
+</div>
 
 #### A Huge Thank You To all Of Our Sources!
 - [Kaggle Shelter Database](https://www.kaggle.com/aaronschlegel/petfinder-animal-shelters-database/version/4)
