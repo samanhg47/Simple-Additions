@@ -1,4 +1,4 @@
-<div><img style='align-self: center; justify-self: center;' src="./README_img/simple_additions_logo.png" alt="Simple Additions Logo" height="200vh" width="200vw"></div>
+<div align="center"><img src="./README_img/simple_additions_logo.png" alt="Simple Additions Logo" height="200vh" width="200vw"></div>
 <h1 align='center'>Simple Additions</h1>
 
 ### Founded By: Sam'an Griffiths
@@ -8,7 +8,7 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 
 
 #### Tech Stack
-<div style="display: inline-box;"><img src="./README_img/flask-1.png" alt="Simple Additions Logo" height="100vh" width="150vw"><img src="./README_img/images.png" alt="Simple Additions Logo" height="100vh" width="150vw"><img src="./README_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="100vh" width="150vw">
+<div align="center"><img src="./README_img/flask-1.png" alt="Simple Additions Logo" height="175vh" width="325vw"><img src="./README_img/images.png" alt="Simple Additions Logo" height="175vh" width="325vw"><img src="./README_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="175vh" width="325vw">
 </div>
 
 #### A Huge Thank You To all Of Our Sources!
