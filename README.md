@@ -8,7 +8,10 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 
 
 ### Tech Stack
-<div align="center"><img src="./README_img/flask-1.png" alt="Simple Additions Logo" height="175vh" width="325vw"><img src="./README_img/images.png" alt="Simple Additions Logo" height="175vh" width="325vw"><img src="./README_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="175vh" width="325vw">
+<div align="center">
+<img src="./README_img/psql.jpeg" alt="Simple Additions Logo" height="175vh" width="325vw">
+<img src="./README_img/flask-1.png" alt="Simple Additions Logo" height="175vh" width="325vw">
+<img src="./README_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="175vh" width="325vw">
 </div>
 
 ### A Huge Thank You To all Of Our Sources!
