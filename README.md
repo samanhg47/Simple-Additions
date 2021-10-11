@@ -16,8 +16,11 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 
 Future Additions:
 
-[] Dark Mode
-[] Animal Listings From Shelters
-[] User Profiles
-[] Route Mapping
+-[ ] Dark Mode
+
+-[ ] Animal Listings From Shelters
+
+-[ ] User Profiles
+
+-[ ] Route Mapping
 
