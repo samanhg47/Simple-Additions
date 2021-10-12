@@ -21,6 +21,8 @@ class User(db.Model):
         "Post", cascade='all, delete', backref=db.backref('user', lazy=True))
     comments = db.relationship(
         "Comment", cascade='all, delete', backref=db.backref('user', lazy=True))
+    images = db.relationship(
+        "Image", cascade='all, delete', backref=db.backref('user', lazy=True))
 
 # Declarative Method(s)
     def __init__(self, user_name, password_digest):
