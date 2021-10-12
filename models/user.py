@@ -9,8 +9,8 @@ class User(db.Model):
 
 # Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_name = db.Column(db.String(255), nullable=False, unique=True)
-    password_digest = db.Column(db.String(255), nullable=False)
+    user_name = db.Column(db.String(50), nullable=False, unique=True)
+    password_digest = db.Column(db.String(100), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(
@@ -31,7 +31,6 @@ class User(db.Model):
         return {
             "id": str(self.id),
             "user_name": self.user_name,
-            "password_digest": self.password_digest,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
         }
