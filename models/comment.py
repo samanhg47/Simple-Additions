@@ -7,6 +7,7 @@ import uuid
 class Comment(db.Model):
     __tablename__ = 'comment'
 
+# Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     body = db.Column(db.String(100), nullable=False)
     created_at = db.Column(
@@ -18,6 +19,7 @@ class Comment(db.Model):
     post_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'post.id', ondelete='cascade'), nullable=False)
 
+# Declarative Method(s)
     def __init__(self, body, user_id, post_id):
         self.body = body
         self.user_id = user_id
@@ -34,6 +36,7 @@ class Comment(db.Model):
         db.session.commit()
         return self
 
+# Class Method(s)
     @classmethod
     def find_all(cls):
         return Comment.query.all()
