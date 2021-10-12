@@ -27,8 +27,8 @@ class Comment(db.Model):
 
     def json(self):
         return {
-            'id': str(self.id), "body": self.body, 'created_at': str(self.created_at),
-            'updated_at': str(self.updated_at), 'user_id': str(self.user_id), 'post_id': str(self.post_id)
+            'id': str(self.id), "body": self.body, 'user_id': str(self.user_id), 'post_id': str(self.post_id), 'created_at': str(self.created_at),
+            'updated_at': str(self.updated_at)
         }
 
     def create(self):

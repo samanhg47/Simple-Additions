@@ -46,5 +46,5 @@ class User(db.Model):
         return User.query.all()
 
     @classmethod
-    def find_by_id(cls, id):
+    def by_id(cls, id):
         return User.query.filter_by(id=id).first()
