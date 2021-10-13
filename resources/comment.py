@@ -101,6 +101,7 @@ class UserComments(Resource):
         token = strip_token(request)
         if read_token(token)['data']:
             if id_check(request, User, user_id) or admin_check(request):
+                user_id = UUID(user_id)
                 comments = Comment.by_user(user_id)
                 return [comment.json() for comment in comments]
             else:
