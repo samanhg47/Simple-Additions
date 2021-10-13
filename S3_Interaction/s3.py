@@ -1,11 +1,11 @@
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 import os
 import logging
 import boto3
 from botocore.exceptions import ClientError
 
 
-load_dotenv(find_dotenv())
+load_dotenv()
 
 S3_BUCKET = os.getenv("S3_BUCKET")
 S3_USER_KEY = os.getenv("S3_USER_ID")
