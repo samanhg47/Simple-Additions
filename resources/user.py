@@ -46,7 +46,7 @@ class UsersDetail(Resource):
             db.session.commit()
             return {'msg': 'User Deletion Successful', 'user': copy}
         else:
-            return read_token(token)
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
 
 class AllUsers(Resource):
