@@ -1,4 +1,3 @@
-from flask import Flask
 from resources import shelter, image, post, user, auth, comment
 from models.shelter import Shelter
 from models.comment import Comment
@@ -9,6 +8,7 @@ from models.user import User
 from models.post import Post
 from flask_cors import CORS
 from models.db import db
+from flask import Flask
 
 
 app = Flask(__name__)
