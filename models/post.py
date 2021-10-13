@@ -59,6 +59,10 @@ class Post(db.Model):
         return post
 
     @classmethod
-    def by_shelter_id(cls, shelter_id):
+    def by_shelter(cls, shelter_id):
         posts = Post.query.filter_by(shelter_id=shelter_id).all()
+        return posts
+
+    def by_user(cls, user_id):
+        posts = Post.query.filter_by(user_id=user_id).all()
         return posts
