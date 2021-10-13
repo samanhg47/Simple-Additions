@@ -54,6 +54,7 @@ class Shelter(db.Model):
             'phone_number': self.phone_number,
             "latitude": self.latitude,
             "longitude": self.longitude,
+            "password_digest": self.password_digest,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
         }
@@ -65,10 +66,6 @@ class Shelter(db.Model):
 
 # Class Method(s)
     @classmethod
-    def find_all(cls):
-        return Shelter.query.all()
-
-    @classmethod
     def by_id(cls, id):
         return Shelter.query.filter_by(id=id).first()
 
@@ -79,15 +76,16 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
-        lat_r = proximity/68.93
-        lon_r = proximity/54.58
-        max_lat = coordinates["latitude"] + lat_r
-        min_lat = coordinates["latitude"] - lat_r
-        max_lon = coordinates["longitude"] + lon_r
-        min_lon = coordinates["longitude"] - lon_r
-        for index, shelter in enumerate(all_shelters):
-            lat = shelter["latitude"]
-            lon = shelter["longitude"]
-            if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
-                all_shelters.pop(index)
+        if proximity:
+            lat_r = proximity/68.93
+            lon_r = proximity/54.58
+            max_lat = coordinates["latitude"] + lat_r
+            min_lat = coordinates["latitude"] - lat_r
+            max_lon = coordinates["longitude"] + lon_r
+            min_lon = coordinates["longitude"] - lon_r
+            for index, shelter in enumerate(all_shelters):
+                lat = shelter["latitude"]
+                lon = shelter["longitude"]
+                if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
+                    all_shelters.pop(index)
         return all_shelters
