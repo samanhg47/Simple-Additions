@@ -1,18 +1,27 @@
-from middleware import read_token, strip_token
+from flask import request, abort, jsonify, send_from_directory
+from middleware import read_token, strip_token, admin_check
 from flask_restful import Resource
+from dotenv import load_dotenv
 from datetime import datetime
 from models.post import Post
-from flask import request
 from models.db import db
 from uuid import UUID
+import os
+
+load_dotenv()
+
+UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 
 class AllPosts(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token)['data']:
-            posts = Post.find_all()
-            return [post.json() for post in posts]
+            if admin_check(request):
+                posts = Post.find_all()
+                return [post.json() for post in posts]
+            else:
+                return "Unauthorized", 403
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 

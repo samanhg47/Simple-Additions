@@ -43,3 +43,11 @@ def admin_check(request):
         return bool
     except:
         return None
+
+
+def id_check(request):
+    try:
+        id = request.headers['User_Id']
+        return id
+    except:
+        return None
