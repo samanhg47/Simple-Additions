@@ -79,3 +79,13 @@ class PostComments(Resource):
             return [comment.json() for comment in comments]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
+
+
+class UserComments(Resource):
+    def get(self, user_id):
+        token = strip_token(request)
+        if read_token(token)['data']:
+            comments = Comment.by_user(user_id)
+            return [comment.json() for comment in comments]
+        else:
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
