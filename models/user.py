@@ -58,5 +58,4 @@ class User(db.Model):
 
     @classmethod
     def by_id(cls, id):
-        id = UUID(id)
         return User.query.filter_by(id=id).first()
