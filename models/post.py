@@ -3,6 +3,8 @@ from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
+from models.image import Image
+
 
 class Post(db.Model):
     __tablename__ = 'post'
@@ -26,7 +28,10 @@ class Post(db.Model):
 # Relationship(s)
     images = db.relationship(
         'Image', cascade='all, delete', passive_deletes=True,
-        backref=db.backref('post', lazy=True),)
+        backref=db.backref('post', lazy=True))
+    comments = db.relationship(
+        'Image', cascade='all, delete', passive_deletes=True,
+        backref=db.backref('post', lazy=True))
 
 # Declarative Method(s)
     def __init__(self, body, title, review, user_id, img_file_name, shelter_id):
@@ -38,9 +43,22 @@ class Post(db.Model):
         self.shelter_id = shelter_id
 
     def json(self):
-        return {'id': str(self.id), 'title': self.title, 'body': self.body,
-                'review': self.review, 'user_id': str(self.user_id), "shelter_id": str(self.shelter_id),
-                'created_at': str(self.created_at), 'updated_at': str(self.updated_at)}
+        images = Image.query.filter_by(post_id=self.id).all()
+        post_images = [image.json() for image in images]
+        comments = Image.query.filter_by(post_id=self.id).all()
+        post_comments = [comment.json() for comment in comments]
+        return {
+            'id': str(self.id),
+            'title': self.title,
+            'body': self.body,
+            'review': self.review,
+            'user_id': str(self.user_id),
+            "shelter_id": str(self.shelter_id),
+            'created_at': str(self.created_at),
+            'updated_at': str(self.updated_at),
+            "image(s)": post_images,
+            "comment(s)": post_comments
+        }
 
     def create(self):
         db.session.add(self)
