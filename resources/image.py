@@ -75,7 +75,7 @@ class PostImages(Resource):
     def get(self, post_id):
         token = strip_token(request)
         if read_token(token)['data']:
-            images = Image.by_post_id(post_id)
+            images = Image.by_post(post_id)
             return [image.json() for image in images]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
