@@ -26,6 +26,7 @@ class Images(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token):
+            id = UUID(id)
             image = Image.by_id(id)
             return image.json().pop("password_digest")
         else:
@@ -34,9 +35,10 @@ class Images(Resource):
     def patch(self, id):
         token = strip_token(request)
         if read_token(token):
-            data = request.get_json()
-            image = Image.by_id(id)
             if id_check(request, Image, id) or admin_check(request):
+                id = UUID(id)
+                data = request.get_json()
+                image = Image.by_id(id)
                 for key in data.keys():
                     setattr(image, key, data[key])
                 db.session.commit()
@@ -49,10 +51,11 @@ class Images(Resource):
     def delete(self, id):
         token = strip_token(request)
         if read_token(token):
-            image = Image.by_id(id)
-            if not image:
-                return {'msg': 'image Not Found'}
             if id_check(request, Image, id) or admin_check(request):
+                id = UUID(id)
+                image = Image.by_id(id)
+                if not image:
+                    return {'msg': 'image Not Found'}
                 copy = {}
                 for key in image.json().keys():
                     copy[key] = image.json()[key]
@@ -66,11 +69,12 @@ class Images(Resource):
             return "Unauthorized", 403
 
 
-class PostImages(Resource):
-    def get(self, post_id):
-        token = strip_token(request)
-        if read_token(token):
-            images = Image.by_post(post_id)
-            return [image.json() for image in images]
-        else:
-            return "Unauthorized", 403
+# class PostImages(Resource):
+#     def get(self, post_id):
+#         token = strip_token(request)
+#         if read_token(token):
+#             post_id = UUID(post_id)
+#             images = Image.by_post(post_id)
+#             return [image.json() for image in images]
+#         else:
+#             return "Unauthorized", 403
