@@ -7,7 +7,7 @@ from models.db import db
 from uuid import UUID
 
 
-class ShelterById(Resource):
+class Shelters(Resource):
     def get(self, id):
         data = request.get_json()
         token = strip_token(data)
