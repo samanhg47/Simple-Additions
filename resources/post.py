@@ -63,10 +63,10 @@ class Posts(Resource):
 
 
 class UserPosts(Resource):
-    def get(self, user_name):
+    def get(self, user_id):
         token = strip_token(request)
         if read_token(token)['data']:
-            posts = Post.find_by_user_name(user_name)
-            return posts
+            posts = Post.by_user_id(user_id)
+            return [post.json() for post in posts]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
