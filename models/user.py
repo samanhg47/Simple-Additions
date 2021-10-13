@@ -1,10 +1,9 @@
 from sqlalchemy.dialects.postgresql import UUID
+from models.comment import Comment
 from datetime import datetime
+from models.post import Post
 from models.db import db
 import uuid
-
-from resources.comment import Comments
-from resources.post import Posts
 
 
 class User(db.Model):
@@ -33,9 +32,9 @@ class User(db.Model):
         self.password_digest = password_digest
 
     def json(self):
-        comments = Comments.query.filter_by(user_id=self.id).all()
+        comments = Comment.query.filter_by(user_id=self.id).all()
         user_comments = [comment.json() for comment in comments]
-        posts = Posts.query.filter_by(user_id=self.id).all()
+        posts = Post.query.filter_by(user_id=self.id).all()
         user_posts = [post.json() for post in posts]
         return {
             "id": str(self.id),
