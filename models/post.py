@@ -12,6 +12,7 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(500), nullable=False)
     review = db.Column(db.Integer, nullable=False)
+    img_file_name = db.Column(db.string(100), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
     created_at = db.Column(
@@ -26,11 +27,12 @@ class Post(db.Model):
         backref=db.backref('post', lazy=True),)
 
 # Declarative Method(s)
-    def __init__(self, body, title, review, user_id):
+    def __init__(self, body, title, review, user_id, img_file_name):
         self.body = body
         self.title = title
         self.review = review
         self.user_id = user_id
+        self.img_file_name = img_file_name
 
     def json(self):
         return {'id': str(self.id), 'title': self.title, 'body': self.body, 'review': self.review, 'user_id': str(self.user_id),
