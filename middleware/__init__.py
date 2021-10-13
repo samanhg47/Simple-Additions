@@ -1,5 +1,6 @@
-from uuid import UUID
 from dotenv import load_dotenv
+from models.user import User
+from uuid import UUID
 import bcrypt
 import jwt
 import os
@@ -49,10 +50,13 @@ def admin_check(request):
 def id_check(request, model, model_id):
     try:
         id = request.headers['User_Id']
-        subject = model.by_id(model_id)
-        if UUID(subject.json()['user_id']) == id:
+        if model == User and UUID(model_id) == id:
             return True
         else:
-            return False
+            subject = model.by_id(model_id)
+            if UUID(subject.json()['user_id']) == id:
+                return True
+            else:
+                return False
     except:
         return None
