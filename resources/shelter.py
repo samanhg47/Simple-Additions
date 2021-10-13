@@ -44,7 +44,7 @@ class Shelters(Resource):
                 copy
             db.session.delete(shelter)
             db.session.commit()
-            return {'msg': 'shelter Deletion Successful', 'shelter': copy}
+            return {'Deletion Successful', copy}
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
