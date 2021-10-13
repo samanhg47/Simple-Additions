@@ -8,26 +8,17 @@ from models.db import db
 from uuid import UUID
 import os
 
+from models.user import User
+
 load_dotenv()
 
 UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 
 class AllPosts(Resource):
-    def get(self):
-        token = strip_token(request)
-        if read_token(token)['data']:
-            if admin_check(request):
-                posts = Post.find_all()
-                return [post.json() for post in posts]
-            else:
-                return "Unauthorized", 403
-        else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
-
     def post(self):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             data = request.get_json()
             params = {}
             for key in data.keys():
@@ -36,56 +27,67 @@ class AllPosts(Resource):
             post.create()
             return post.json(), 201
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
 
 class Posts(Resource):
     def patch(self, id):
         token = strip_token(request)
-        if read_token(token)['data']:
-            data = request.get_json()
-            id = UUID(id)
-            post = Post.by_id(id)
-            for key in data.keys():
-                setattr(post, key, data[key])
-            db.session.commit()
-            return post.json()
+        if read_token(token):
+            if id_check(request, Post, id) or admin_check(request):
+                data = request.get_json()
+                id = UUID(id)
+                post = Post.by_id(id)
+                for key in data.keys():
+                    setattr(post, key, data[key])
+                db.session.commit()
+                return post.json()
+            else:
+                return "Unauthorized", 403
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
     def delete(self, id):
         token = strip_token(request)
-        if read_token(token)['data']:
-            id = UUID(id)
-            post = Post.by_id(id)
-            if not post:
-                return {'msg': 'Post Not Found'}
-            copy = {}
-            for key in post.json().keys():
-                copy[key] = post.json()[key]
-                copy['updated_at'] = str(datetime.utcnow())
-            db.session.delete(post)
-            db.session.commit()
-            return {'Deletion Successful': copy}
+        if read_token(token):
+            if id_check(request, Post, id) or admin_check(request):
+                id = UUID(id)
+                post = Post.by_id(id)
+                if not post:
+                    return {'msg': 'Post Not Found'}, 404
+                copy = {}
+                for key in post.json().keys():
+                    copy[key] = post.json()[key]
+                    copy['updated_at'] = str(datetime.utcnow())
+                db.session.delete(post)
+                db.session.commit()
+                return 'Deletion Successful', copy
+            else:
+                return "Unauthorized", 403
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
 
 class ShelterPosts(Resource):
     def get(self, shelter_id):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
+            shelter_id = UUID(shelter_id)
             posts = Post.by_shelter(shelter_id)
             return [post.json() for post in posts]
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
 
 class UserPosts(Resource):
     def get(self, user_id):
         token = strip_token(request)
-        if read_token(token)['data']:
-            posts = Post.by_user(user_id)
-            return [post.json() for post in posts]
+        if read_token(token):
+            if id_check(request, User, user_id) or admin_check(request):
+                user_id = UUID(user_id)
+                posts = Post.by_user(user_id)
+                return [post.json() for post in posts]
+            else:
+                return "Unauthorized", 403
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
