@@ -31,12 +31,12 @@ class AllPosts(Resource):
 
 
 class Posts(Resource):
-    def patch(self, post_id):
+    def patch(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
             data = request.get_json()
-            post_id = UUID(post_id)
-            post = Post.find_by_id(post_id)
+            id = UUID(id)
+            post = Post.by_id(id)
             for key in data.keys():
                 setattr(post, key, data[key])
             db.session.commit()
@@ -44,11 +44,11 @@ class Posts(Resource):
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
-    def delete(self, post_id):
+    def delete(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
-            post_id = UUID(post_id)
-            post = Post.find_by_id(post_id)
+            id = UUID(id)
+            post = Post.by_id(id)
             if not post:
                 return {'msg': 'Post Not Found'}
             copy = {}
