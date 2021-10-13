@@ -33,6 +33,7 @@ class User(db.Model):
         return {
             "id": str(self.id),
             "user_name": self.user_name,
+            "password_digest": self.password_digest,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
         }
