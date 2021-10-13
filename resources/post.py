@@ -66,7 +66,17 @@ class ShelterPosts(Resource):
     def get(self, shelter_id):
         token = strip_token(request)
         if read_token(token)['data']:
-            posts = Post.by_shelter_id(shelter_id)
+            posts = Post.by_shelter(shelter_id)
+            return [post.json() for post in posts]
+        else:
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+
+
+class UserPosts(Resource):
+    def get(self, user_id):
+        token = strip_token(request)
+        if read_token(token)['data']:
+            posts = Post.by_user(user_id)
             return [post.json() for post in posts]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
