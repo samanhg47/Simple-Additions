@@ -71,14 +71,3 @@ class Images(Resource):
                 return "Unauthorized", 403
         else:
             return "Unauthorized", 403
-
-
-# class PostImages(Resource):
-#     def get(self, post_id):
-#         token = strip_token(request)
-#         if read_token(token):
-#             post_id = UUID(post_id)
-#             images = Image.by_post(post_id)
-#             return [image.json() for image in images]
-#         else:
-#             return "Unauthorized", 403
