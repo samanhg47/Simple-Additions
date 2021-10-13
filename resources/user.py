@@ -9,11 +9,11 @@ from uuid import UUID
 
 class Users(Resource):
     def get(self, id):
-        token = strip_token(data)
+        token = strip_token(request)
         if read_token(token)['data']:
             id = UUID(id)
             user = User.by_id(id)
-            return user.json()
+            return user.json().pop("password_digest")
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
@@ -26,7 +26,7 @@ class Users(Resource):
             for key in data.keys():
                 setattr(user, key, data[key])
             db.session.commit()
-            return user.json()
+            return user.json().pop("password_digest")
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
@@ -38,7 +38,7 @@ class Users(Resource):
             if not user:
                 return {'msg': 'User Not found'}, 404
             copy = {}
-            for key in user.json().keys():
+            for key in user.json().pop("password_digest").keys():
                 copy[key] = user.json()[key]
                 copy['updated_at'] = str(datetime.utcnow())
             db.session.delete(user)
@@ -53,6 +53,6 @@ class AllUsers(Resource):
         token = strip_token(request)
         if read_token(token)['data']:
             users = User.find_all()
-            return users
+            return [user.json().pop("password_digest") for user in users]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
