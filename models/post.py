@@ -53,3 +53,8 @@ class Post(db.Model):
     def by_id(cls, post_id):
         post = Post.query.filter_by(id=post_id).first()
         return post
+
+    @classmethod
+    def by_user_id(cls, user_id):
+        posts = Post.query.filter_by(user_id=user_id).all()
+        return posts
