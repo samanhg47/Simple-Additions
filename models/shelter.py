@@ -3,6 +3,8 @@ from datetime import datetime
 from models.db import db
 import uuid
 
+from models.post import Post
+
 
 class Shelter(db.Model):
     __tablename__ = 'shelter'
@@ -46,6 +48,8 @@ class Shelter(db.Model):
             address = "{}, {}, {}".format(self.address, self.city, self.state)
         else:
             address = "{}, {}".format(self.city, self.state)
+        posts = Post.query.filter_by(shelter_id=self.id).all()
+        shelter_posts = [post.json() for post in posts]
         return {
             "id": str(self.id),
             "shelter_name": self.shelter_name,
@@ -56,7 +60,8 @@ class Shelter(db.Model):
             "longitude": self.longitude,
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at)
+            "updated_at": str(self.updated_at),
+            "posts": shelter_posts
         }
 
     def create(self):
