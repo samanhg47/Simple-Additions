@@ -68,15 +68,15 @@ class Posts(Resource):
             return "Unauthorized", 403
 
 
-class ShelterPosts(Resource):
-    def get(self, shelter_id):
-        token = strip_token(request)
-        if read_token(token):
-            shelter_id = UUID(shelter_id)
-            posts = Post.by_shelter(shelter_id)
-            return [post.json() for post in posts]
-        else:
-            return "Unauthorized", 403
+# class ShelterPosts(Resource):
+#     def get(self, shelter_id):
+#         token = strip_token(request)
+#         if read_token(token):
+#             shelter_id = UUID(shelter_id)
+#             posts = Post.by_shelter(shelter_id)
+#             return [post.json() for post in posts]
+#         else:
+#             return "Unauthorized", 403
 
 
 class UserPosts(Resource):
