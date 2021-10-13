@@ -3,19 +3,27 @@ from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
 from models.image import Image
+from dotenv import load_dotenv
 from flask_restful import Api
 from models.user import User
 from models.post import Post
 from flask_cors import CORS
 from models.db import db
 from flask import Flask
+import os
 
+load_dotenv()
+
+UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
+
+if not os.path.exists(UPLOAD_DIRECTORY):
+    os.makedirs(UPLOAD_DIRECTORY)
 
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost:5432/flask_assocs"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost:5432/simple_additions_db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
