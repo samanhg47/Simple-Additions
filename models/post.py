@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 
 from models.image import Image
+from models.user import User
 
 
 class Post(db.Model):
@@ -47,12 +48,14 @@ class Post(db.Model):
         post_images = [image.json() for image in images]
         comments = Image.query.filter_by(post_id=self.id).all()
         post_comments = [comment.json() for comment in comments]
+        user_name = User.by_id(self.user_id).json()["user_name"]
         return {
             'id': str(self.id),
             'title': self.title,
             'body': self.body,
             'review': self.review,
             'user_id': str(self.user_id),
+            'user_name': user_name,
             "shelter_id": str(self.shelter_id),
             'created_at': str(self.created_at),
             'updated_at': str(self.updated_at),
