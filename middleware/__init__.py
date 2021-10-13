@@ -1,5 +1,5 @@
-from dotenv import load_dotenv
 from models.shelter import Shelter
+from dotenv import load_dotenv
 from models.user import User
 from uuid import UUID
 import bcrypt
