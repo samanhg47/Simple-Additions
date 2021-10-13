@@ -38,6 +38,8 @@ class Posts(Resource):
                 data["body"] = censor_language(data)
                 id = UUID(id)
                 post = Post.by_id(id)
+                if not post:
+                    return 'Post Not Found', 404
                 for key in data.keys():
                     setattr(post, key, data[key])
                 db.session.commit()
@@ -54,7 +56,7 @@ class Posts(Resource):
                 id = UUID(id)
                 post = Post.by_id(id)
                 if not post:
-                    return {'msg': 'Post Not Found'}, 404
+                    return 'Post Not Found', 404
                 copy = {}
                 for key in post.json().keys():
                     copy[key] = post.json()[key]
@@ -66,17 +68,6 @@ class Posts(Resource):
                 return "Unauthorized", 403
         else:
             return "Unauthorized", 403
-
-
-# class ShelterPosts(Resource):
-#     def get(self, shelter_id):
-#         token = strip_token(request)
-#         if read_token(token):
-#             shelter_id = UUID(shelter_id)
-#             posts = Post.by_shelter(shelter_id)
-#             return [post.json() for post in posts]
-#         else:
-#             return "Unauthorized", 403
 
 
 class UserPosts(Resource):
