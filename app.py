@@ -1,4 +1,4 @@
-from resources import shelter, image, post, user, auth, comment
+from resources import shelter, image, post, user, auth, comment, admin
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
@@ -30,26 +30,43 @@ app.config['SQLALCHEMY_ECHO'] = True
 db.init_app(app)
 migrate = Migrate(app, db)
 
-
-api.add_resource(auth.UserLogin, 'login/users')
+# Auth Resource(s)
+api.add_resource(auth.ShelterRegister, 'register/shelters')
 api.add_resource(auth.ShelterLogin, 'login/shelters')
 api.add_resource(auth.UserRegister, 'register/users')
-api.add_resource(auth.ShelterRegister, 'register/shelters')
-api.add_resource(user.AllUsers, '/users')
+api.add_resource(auth.UserLogin, 'login/users')
+
+# Admin Resource(s)
+api.add_resource(admin.AllShelters, "admin/shelters")
+api.add_resource(admin.AllComments, "admin/comments")
+api.add_resource(admin.AllImages, "admin/images")
+api.add_resource(admin.AllUsers, "admin/users")
+api.add_resource(admin.AllPosts, "admin/posts")
+
+# User Resource(s)
 api.add_resource(user.Users, '/user/<string:id>')
-api.add_resource(comment.AllComments, '/comments')
-api.add_resource(comment.Comments, '/comment/<string:id>')
-api.add_resource(comment.PostComments, '/comments/<string:id>')
+# api.add_resource(user.AllUsers, '/users')
+
+# Comment Resource(s)
 api.add_resource(comment.UserComments, 'user/comments/<string:id>')
-api.add_resource(post.AllPosts, '/posts')
-api.add_resource(post.Posts, '/post/<string:id>')
-api.add_resource(post.ShelterPosts, '/posts/<string:id>')
+# api.add_resource(comment.PostComments, '/comments/<string:id>')
+api.add_resource(comment.Comments, '/comment/<string:id>')
+api.add_resource(comment.AllComments, '/comments')
+
+# Post Resource(s)
 api.add_resource(post.UserPosts, 'user/posts/<string:id>')
-api.add_resource(image.AllImages, '/images')
+# api.add_resource(post.ShelterPosts, '/posts/<string:id>')
+api.add_resource(post.Posts, '/post/<string:id>')
+api.add_resource(post.AllPosts, '/posts')
+
+# Image Resource(s)
+# api.add_resource(image.PostImages, '/images/<string:id>')
 api.add_resource(image.Images, '/image/<string:id>')
-api.add_resource(image.PostImages, '/images/<string:id>')
-api.add_resource(shelter.Allshelters, '/shelters')
+api.add_resource(image.AllImages, '/images')
+
+# Shelter Resource(s)
 api.add_resource(shelter.Allshelters, '/shelter/<string:id>')
+api.add_resource(shelter.Allshelters, '/shelters')
 
 if __name__ == '__main__':
     app.run(debug=True)
