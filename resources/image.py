@@ -19,7 +19,7 @@ class AllImages(Resource):
             image.create()
             return image.json(), 201
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
 
 class Images(Resource):
@@ -30,7 +30,7 @@ class Images(Resource):
             image = Image.by_id(id)
             return image.json().pop("password_digest")
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
     def patch(self, id):
         token = strip_token(request)
@@ -46,7 +46,7 @@ class Images(Resource):
             else:
                 return "Unauthorized", 403
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
     def delete(self, id):
         token = strip_token(request)
@@ -66,7 +66,7 @@ class Images(Resource):
             else:
                 return "Unauthorized", 403
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
 
 
 class PostImages(Resource):
@@ -76,4 +76,4 @@ class PostImages(Resource):
             images = Image.by_post(post_id)
             return [image.json() for image in images]
         else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
+            return "Unauthorized", 403
