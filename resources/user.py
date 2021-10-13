@@ -1,3 +1,4 @@
+from uuid import UUID
 from middleware import id_check, read_token, strip_token
 from flask_restful import Resource
 from datetime import datetime
@@ -10,6 +11,7 @@ class Users(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token):
+            id = UUID(id)
             user = User.by_id(id)
             if not user:
                 return 'User Not found', 404
@@ -21,6 +23,7 @@ class Users(Resource):
         token = strip_token(request)
         if read_token(token):
             if id_check(request, User, id):
+                id = UUID(id)
                 data = request.get_json()
                 user = User.by_id(id)
                 if not user:
@@ -38,6 +41,7 @@ class Users(Resource):
         token = strip_token(request)
         if read_token(token):
             if id_check(request, User, id):
+                id = UUID(id)
                 user = User.by_id(id)
                 if not user:
                     return 'User Not found', 404
