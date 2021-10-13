@@ -72,7 +72,6 @@ class Shelter(db.Model):
 # Class Method(s)
     @classmethod
     def by_id(cls, id):
-        id = UUID(id)
         return Shelter.query.filter_by(id=id).first()
 
     @classmethod
