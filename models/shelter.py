@@ -67,12 +67,14 @@ class Shelter(db.Model):
 # Class Method(s)
     @classmethod
     def by_id(cls, id):
+
         return Shelter.query.filter_by(id=id).first()
 
     @classmethod
     def by_proximity(cls, proximity, coordinates):
         shelters = Shelter.find_all()
-        all_shelters = [shelter.json() for shelter in shelters]
+        all_shelters = [shelter.json().pop("password_digest")
+                        for shelter in shelters]
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
