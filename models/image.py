@@ -42,11 +42,13 @@ class Image(db.Model):
         return images
 
     @classmethod
-    def by_id(cls, image_id):
-        image = Image.query.filter_by(id=image_id).first()
+    def by_id(cls, id):
+        id = UUID(id)
+        image = Image.query.filter_by(id=id).first()
         return image
 
     @classmethod
     def by_post(cls, post_id):
+        post_id = UUID(post_id)
         posts = Image.query.filter_by(post_id=post_id).all()
         return posts
