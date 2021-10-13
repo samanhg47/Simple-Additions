@@ -23,8 +23,8 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
-api.add_resource(auth.Users, 'login/users')
-api.add_resource(auth.Shelters, 'login/shelters')
+api.add_resource(auth.UserLogin, 'login/users')
+api.add_resource(auth.ShelterLogin, 'login/shelters')
 api.add_resource(auth.UserRegister, 'register/users')
 api.add_resource(auth.ShelterRegister, 'register/shelters')
 api.add_resource(user.AllUsers, '/users')
