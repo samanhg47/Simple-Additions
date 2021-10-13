@@ -1,10 +1,10 @@
-from uuid import UUID
 from middleware import admin_check, id_check, read_token, strip_token
 from flask_restful import Resource
 from datetime import datetime
 from models.user import User
 from flask import request
 from models.db import db
+from uuid import UUID
 
 
 class Users(Resource):
