@@ -21,6 +21,7 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 - [Google Sheets API](https://developers.google.com/sheets/api/quickstart/python)
 - [Mapbox API](https://docs.mapbox.com/)
 - [Open Street Map](https://www.openstreetmap.org/#map=7/39.602/-7.839)
+- [Faculty.ai](https://docs.faculty.ai/user-guide/apis/flask_apis/flask_file_upload_download.html)
 
 
 ### Personal Links:
