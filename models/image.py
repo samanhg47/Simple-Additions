@@ -47,6 +47,6 @@ class Image(db.Model):
         return image
 
     @classmethod
-    def by_post_id(cls, post_id):
+    def by_post(cls, post_id):
         posts = Image.query.filter_by(post_id=post_id).all()
         return posts
