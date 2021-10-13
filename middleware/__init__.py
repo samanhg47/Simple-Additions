@@ -1,3 +1,4 @@
+from uuid import UUID
 from dotenv import load_dotenv
 import bcrypt
 import jwt
@@ -13,12 +14,12 @@ def create_token(payload):
 
 def read_token(token):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        return {'data': True, "payload": payload}
+        jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        return True
     except jwt.InvalidSignatureError:
-        return {'data': False, "payload": ["Unauthorized", 404]}
+        return False
     except jwt.InvalidTokenError:
-        return {'data': False, "payload": ["Unauthorized", 404]}
+        return False
 
 
 def gen_password(password):
@@ -45,9 +46,13 @@ def admin_check(request):
         return None
 
 
-def id_check(request):
+def id_check(request, model, model_id):
     try:
         id = request.headers['User_Id']
-        return id
+        subject = model.by_id(model_id)
+        if UUID(subject.json()['user_id']) == id:
+            return True
+        else:
+            return False
     except:
         return None
