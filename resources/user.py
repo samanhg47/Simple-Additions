@@ -43,7 +43,7 @@ class Users(Resource):
                 copy['updated_at'] = str(datetime.utcnow())
             db.session.delete(user)
             db.session.commit()
-            return {'msg': 'User Deletion Successful', 'user': copy}
+            return {'Deletion Successful', copy}
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
