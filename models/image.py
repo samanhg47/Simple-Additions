@@ -45,3 +45,8 @@ class Image(db.Model):
     def by_id(cls, image_id):
         image = Image.query.filter_by(id=image_id).first()
         return image
+
+    @classmethod
+    def by_post_id(cls, post_id):
+        posts = Image.query.filter_by(post_id=post_id).all()
+        return posts
