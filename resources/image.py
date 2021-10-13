@@ -1,7 +1,6 @@
 from middleware import read_token, strip_token
 from flask_restful import Resource
 from datetime import datetime
-from models import image
 from models.image import Image
 from flask import request
 from models.db import db
