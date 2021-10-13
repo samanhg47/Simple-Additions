@@ -7,7 +7,7 @@ from models.db import db
 from uuid import UUID
 
 
-class UsersDetail(Resource):
+class Users(Resource):
     def get(self, id):
         data = request.get_json()
         token = strip_token(data)
