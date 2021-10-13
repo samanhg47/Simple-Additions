@@ -3,6 +3,7 @@ from flask_restful import Resource
 from models.comment import Comment
 from models.image import Image
 from models.post import Post
+from models.shelter import Shelter
 from models.user import User
 from flask import request
 from models.db import db
@@ -27,7 +28,7 @@ class AllPosts(Resource):
                 posts = Post.find_all()
                 for post in posts:
                     db.session.delete(post)
-                return "All posts successfully deleted"
+                return "All Posts Successfully Deleted"
             else:
                 return "Unauthorized", 403
         else:
@@ -46,6 +47,19 @@ class AllImages(Resource):
         else:
             return "Unauthorized", 403
 
+    def delete(self):
+        token = strip_token(request)
+        if read_token(token):
+            if admin_check(request):
+                images = Image.find_all()
+                for image in images:
+                    db.session.delete(image)
+                return "All Images Successfully Deleted"
+            else:
+                return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
 
 class AllUsers(Resource):
     def get(self):
@@ -59,6 +73,19 @@ class AllUsers(Resource):
         else:
             return "Unauthorized", 403
 
+    def delete(self):
+        token = strip_token(request)
+        if read_token(token):
+            if admin_check(request):
+                users = User.find_all()
+                for user in users:
+                    db.session.delete(user)
+                return "All Users Successfully Deleted"
+            else:
+                return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
 
 class AllComments(Resource):
     def get(self):
@@ -67,6 +94,45 @@ class AllComments(Resource):
             if admin_check(request):
                 comments = Comment.find_all()
                 return [comment.json() for comment in comments]
+            else:
+                return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
+    def delete(self):
+        token = strip_token(request)
+        if read_token(token):
+            if admin_check(request):
+                comments = Comment.find_all()
+                for comment in comments:
+                    db.session.delete(comment)
+                return "All Comments Successfully Deleted"
+            else:
+                return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
+
+class AllShelters(Resource):
+    def get(self):
+        token = strip_token(request)
+        if read_token(token):
+            if admin_check(request):
+                shelters = Shelter.find_all()
+                return [shelter.json() for shelter in shelters]
+            else:
+                return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
+    def delete(self):
+        token = strip_token(request)
+        if read_token(token):
+            if admin_check(request):
+                shelters = Shelter.find_all()
+                for shelter in shelters:
+                    db.session.delete(shelter)
+                return "All Shelters Successfully Deleted"
             else:
                 return "Unauthorized", 403
         else:
