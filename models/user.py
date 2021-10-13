@@ -41,7 +41,7 @@ class User(db.Model):
     def create(self):
         db.session.add(self)
         db.session.commit()
-        return self
+        return sel
 
 # Class Method(s)
     @classmethod
