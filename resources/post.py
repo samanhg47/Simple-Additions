@@ -9,6 +9,7 @@ from uuid import UUID
 import os
 
 from models.user import User
+from resources.admin import censor_language
 
 load_dotenv()
 
@@ -20,10 +21,8 @@ class AllPosts(Resource):
         token = strip_token(request)
         if read_token(token):
             data = request.get_json()
-            params = {}
-            for key in data.keys():
-                params[key] = data[key]
-            post = Post(**params)
+            data["body"] = censor_language(data)
+            post = Post(**data)
             post.create()
             return post.json(), 201
         else:
@@ -36,6 +35,7 @@ class Posts(Resource):
         if read_token(token):
             if id_check(request, Post, id) or admin_check(request):
                 data = request.get_json()
+                data["body"] = censor_language(data)
                 id = UUID(id)
                 post = Post.by_id(id)
                 for key in data.keys():
