@@ -26,7 +26,6 @@ class Images(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token):
-            id = UUID(id)
             image = Image.by_id(id)
             return image.json().pop("password_digest")
         else:
@@ -36,7 +35,6 @@ class Images(Resource):
         token = strip_token(request)
         if read_token(token):
             data = request.get_json()
-            id = UUID(id)
             image = Image.by_id(id)
             if id_check(request, Image, id) or admin_check(request):
                 for key in data.keys():
@@ -51,7 +49,6 @@ class Images(Resource):
     def delete(self, id):
         token = strip_token(request)
         if read_token(token):
-            id = UUID(id)
             image = Image.by_id(id)
             if not image:
                 return {'msg': 'image Not Found'}
