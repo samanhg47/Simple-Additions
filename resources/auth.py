@@ -17,7 +17,7 @@ class Login(Resource):
             return 'Unauthorized', 404
 
 
-class Register(Resource):
+class UserRegister(Resource):
     def post(self):
         data = request.get_json()
         data.update({"password_digest": gen_password(data["password"])})
