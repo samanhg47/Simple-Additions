@@ -51,12 +51,12 @@ def censor_language(data):
             censored_word = ""
             for letter in word:
                 censored_word += "*"
-            data["body"] = data['body'].replace(word, censored_word, count)
-            data['body'] = data['body'].replace(
+            data["body"] = data["body"].replace(word, censored_word, count)
+            data["body"] = data["body"].replace(
                 word.capitalize(), censored_word, count)
-            data['body'] = data['body'].replace(
+            data["body"] = data["body"].replace(
                 word.upper(), censored_word, count)
-    return text
+    return data["body"]
 
 
 class AllImages(Resource):
