@@ -42,13 +42,16 @@ class Comment(db.Model):
         return Comment.query.all()
 
     @classmethod
-    def by_id(cls, comment_id):
-        return Comment.query.filter_by(id=comment_id).first()
+    def by_id(cls, id):
+        id = UUID(id)
+        return Comment.query.filter_by(id=id).first()
 
     @classmethod
     def by_user(cls, user_id):
+        user_id = UUID(user_id)
         return Comment.query.filter_by(user_id=user_id).all()
 
     @classmethod
     def by_post(cls, post_id):
+        post_id = UUID(post_id)
         return Comment.query.filter_by(post_id=post_id).all()
