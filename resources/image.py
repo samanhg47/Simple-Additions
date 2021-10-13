@@ -1,7 +1,7 @@
 from middleware import read_token, strip_token
 from flask_restful import Resource
-from datetime import datetime
 from models.image import Image
+from datetime import datetime
 from flask import request
 from models.db import db
 from uuid import UUID
