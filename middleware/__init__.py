@@ -29,9 +29,17 @@ def compare_password(password, hash_password):
     return bcrypt.checkpw(password.encode(), hash_password.encode())
 
 
-def strip_token(req):
+def strip_token(request):
     try:
-        token = req.headers['Authorization'].split(' ')[1]
+        token = request.headers['Authorization'].split(' ')[1]
         return token
+    except:
+        return None
+
+
+def admin_check(request):
+    try:
+        bool = request.headers['Admin']
+        return bool
     except:
         return None
