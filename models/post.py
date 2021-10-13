@@ -16,7 +16,6 @@ class Post(db.Model):
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(500), nullable=False)
     review = db.Column(db.Integer, nullable=False)
-    img_file_name = db.Column(db.string(100), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
     shelter_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
