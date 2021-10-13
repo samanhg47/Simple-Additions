@@ -16,7 +16,7 @@ class UsersDetail(Resource):
             user = User.by_id(id)
             return user.json()
         else:
-            return read_token(token)['payload']
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
     def patch(self, id):
         token = strip_token(request)
@@ -29,7 +29,7 @@ class UsersDetail(Resource):
             db.session.commit()
             return user.json()
         else:
-            return read_token(token)['payload']
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
     def delete(self, id):
         token = strip_token(request)
@@ -56,4 +56,4 @@ class AllUsers(Resource):
             users = User.find_all()
             return users
         else:
-            return read_token(token)['payload']
+            return read_token(token)['payload'][0], read_token(token)['payload'][1]
