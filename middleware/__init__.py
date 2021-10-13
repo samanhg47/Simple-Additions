@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from models.shelter import Shelter
 from models.user import User
 from uuid import UUID
 import bcrypt
@@ -50,7 +51,7 @@ def admin_check(request):
 def id_check(request, model, model_id):
     try:
         id = request.headers['User_Id']
-        if model == User and UUID(model_id) == id:
+        if model == User and UUID(model_id) == id or model == Shelter and UUID(model_id) == id:
             return True
         else:
             subject = model.by_id(model_id)
