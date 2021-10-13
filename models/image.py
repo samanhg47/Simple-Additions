@@ -27,8 +27,14 @@ class Image(db.Model):
         self.user_id = user_id
 
     def json(self):
-        return {'id': str(self.id), 'img_url': self.img_url, 'user_id': str(self.user_id), 'post_id': str(self.post_id),
-                'created_at': str(self.created_at), 'updated_at': str(self.updated_at)}
+        return {
+            'id': str(self.id),
+            'img_url': self.img_url,
+            'user_id': str(self.user_id),
+            'post_id': str(self.post_id),
+            'created_at': str(self.created_at),
+            'updated_at': str(self.updated_at)
+        }
 
     def create(self):
         db.session.add(self)
