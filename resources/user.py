@@ -51,7 +51,7 @@ class Users(Resource):
                     copy['updated_at'] = str(datetime.utcnow())
                 db.session.delete(user)
                 db.session.commit()
-                return {'Deletion Successful', copy}
+                return 'Deletion Successful', copy
             else:
                 return "Unauthorized", 403
         else:
