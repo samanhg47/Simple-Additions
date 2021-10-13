@@ -1,4 +1,4 @@
-from middleware import read_token, strip_token
+from middleware import admin_check, id_check, read_token, strip_token
 from flask_restful import Resource
 from models.image import Image
 from datetime import datetime
@@ -8,14 +8,6 @@ from uuid import UUID
 
 
 class AllImages(Resource):
-    def get(self):
-        token = strip_token(request)
-        if read_token(token)['data']:
-            images = Image.find_all()
-            return [image.json() for image in images]
-        else:
-            return read_token(token)['payload'][0], read_token(token)['payload'][1]
-
     def post(self):
         token = strip_token(request)
         if read_token(token)['data']:
@@ -46,10 +38,13 @@ class Images(Resource):
             data = request.get_json()
             id = UUID(id)
             image = Image.by_id(id)
-            for key in data.keys():
-                setattr(image, key, data[key])
-            db.session.commit()
-            return image.json()
+            if id_check(request, Image, id) or admin_check(request):
+                for key in data.keys():
+                    setattr(image, key, data[key])
+                db.session.commit()
+                return image.json()
+            else:
+                return "Unauthorized", 403
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
@@ -60,13 +55,16 @@ class Images(Resource):
             image = Image.by_id(id)
             if not image:
                 return {'msg': 'image Not Found'}
-            copy = {}
-            for key in image.json().keys():
-                copy[key] = image.json()[key]
-                copy['updated_at'] = str(datetime.utcnow())
-            db.session.delete(image)
-            db.session.commit()
-            return {'Deletion Successful': copy}
+            if id_check(request, Image, id) or admin_check(request):
+                copy = {}
+                for key in image.json().keys():
+                    copy[key] = image.json()[key]
+                    copy['updated_at'] = str(datetime.utcnow())
+                db.session.delete(image)
+                db.session.commit()
+                return {'Deletion Successful': copy}
+            else:
+                return "Unauthorized", 403
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
