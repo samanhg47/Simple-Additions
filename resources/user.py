@@ -11,11 +11,14 @@ class Users(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token):
-            id = UUID(id)
-            user = User.by_id(id)
-            if not user:
-                return 'User Not found', 404
-            return user.json().pop("password_digest")
+            if id_check(request, User, id) or admin_check(request):
+                id = UUID(id)
+                user = User.by_id(id)
+                if not user:
+                    return 'User Not found', 404
+                return user.json()
+            else:
+                return "Unauthorized", 403
         else:
             return "Unauthorized", 403
 
