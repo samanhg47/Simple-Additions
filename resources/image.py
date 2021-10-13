@@ -10,7 +10,7 @@ from uuid import UUID
 class AllImages(Resource):
     def post(self):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             data = request.get_json()
             params = {}
             for key in data.keys():
@@ -25,7 +25,7 @@ class AllImages(Resource):
 class Images(Resource):
     def get(self, id):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             id = UUID(id)
             image = Image.by_id(id)
             return image.json().pop("password_digest")
@@ -34,7 +34,7 @@ class Images(Resource):
 
     def patch(self, id):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             data = request.get_json()
             id = UUID(id)
             image = Image.by_id(id)
@@ -50,7 +50,7 @@ class Images(Resource):
 
     def delete(self, id):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             id = UUID(id)
             image = Image.by_id(id)
             if not image:
@@ -72,7 +72,7 @@ class Images(Resource):
 class PostImages(Resource):
     def get(self, post_id):
         token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(token):
             images = Image.by_post(post_id)
             return [image.json() for image in images]
         else:
