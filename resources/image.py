@@ -28,6 +28,8 @@ class Images(Resource):
         if read_token(token):
             id = UUID(id)
             image = Image.by_id(id)
+            if not image:
+                return 'Image Not Found', 404
             return image.json().pop("password_digest")
         else:
             return "Unauthorized", 403
@@ -39,6 +41,8 @@ class Images(Resource):
                 id = UUID(id)
                 data = request.get_json()
                 image = Image.by_id(id)
+                if not image:
+                    return 'Image Not Found', 404
                 for key in data.keys():
                     setattr(image, key, data[key])
                 db.session.commit()
@@ -55,14 +59,14 @@ class Images(Resource):
                 id = UUID(id)
                 image = Image.by_id(id)
                 if not image:
-                    return {'msg': 'image Not Found'}
+                    return 'Image Not Found', 404
                 copy = {}
                 for key in image.json().keys():
                     copy[key] = image.json()[key]
                     copy['updated_at'] = str(datetime.utcnow())
                 db.session.delete(image)
                 db.session.commit()
-                return {'Deletion Successful': copy}
+                return 'Deletion Successful', copy
             else:
                 return "Unauthorized", 403
         else:
