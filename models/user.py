@@ -3,6 +3,9 @@ from datetime import datetime
 from models.db import db
 import uuid
 
+from resources.comment import Comments
+from resources.post import Posts
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -31,11 +34,22 @@ class User(db.Model):
 
     def json(self):
         return {
+            "user_name": self.user_name,
+        }
+
+    def json_admin(self):
+        comments = Comments.query.filter_by(user_id=self.id).all()
+        user_comments = [comment.json() for comment in comments]
+        posts = Posts.query.filter_by(user_id=self.id).all()
+        user_posts = [post.json() for post in posts]
+        return {
             "id": str(self.id),
             "user_name": self.user_name,
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at)
+            "updated_at": str(self.updated_at),
+            "comments": user_comments,
+            "posts": user_posts
         }
 
     def create(self):
