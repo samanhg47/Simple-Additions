@@ -35,6 +35,26 @@ class AllPosts(Resource):
             return "Unauthorized", 403
 
 
+def CensorLanguage(data):
+    censored_words = [
+        "bitch", "fuck", "shit",
+        "cunt", "ass", "fag",
+        "tranny", "hoe", "whore",
+        "tits", "titt" "dick",
+        "retard", "pussy", "dumb",
+        "idiot", "stupid", "kill",
+        "stab", "shoot"]
+    text = data["body"].lower()
+    for word in censored_words:
+        if text.count(word) > 0:
+            count = text.count(word)
+            censored_word = ""
+            for letter in word:
+                censored_word += "*"
+            text = text.replace(word, censored_word, count)
+    return text
+
+
 class AllImages(Resource):
     def get(self):
         token = strip_token(request)
