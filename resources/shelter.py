@@ -38,10 +38,10 @@ class Shelters(Resource):
             if not shelter:
                 return {'msg': 'shelter Not found'}, 404
             copy = {}
-            for key in shelter.json().keys():
+            for key in shelter.json().pop("password_digest").keys():
                 copy[key] = shelter.json()[key]
                 copy['updated_at'] = str(datetime.utcnow())
-                copy.pop("password_digest")
+                copy
             db.session.delete(shelter)
             db.session.commit()
             return {'msg': 'shelter Deletion Successful', 'shelter': copy}
