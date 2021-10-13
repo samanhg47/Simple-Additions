@@ -1,32 +1,21 @@
 from middleware import admin_check, id_check, read_token, strip_token
+from resources.admin import censor_language
 from flask_restful import Resource
 from models.comment import Comment
 from datetime import datetime
+from models.user import User
 from flask import request
 from models.db import db
 from uuid import UUID
 
-from models.user import User
-from resources.post import Posts
-
 
 class AllComments(Resource):
-    # def get(self):
-    #     token = strip_token(request)
-    #     if read_token(token)['data']:
-    #         comments = Comment.find_all()
-    #         return [comment.json() for comment in comments]
-    #     else:
-    #         return "Unauthorized", 403
-
     def post(self):
         token = strip_token(request)
         if read_token(token)['data']:
             data = request.get_json()
-            params = {}
-            for key in data.keys():
-                params[key] = data[key]
-            comment = Comment(**params)
+            data["body"] = censor_language(data)
+            comment = Comment(**data)
             comment.create()
             return comment.json(), 201
         else:
@@ -34,17 +23,6 @@ class AllComments(Resource):
 
 
 class Comments(Resource):
-    #     def get(self, id):
-    #         token = strip_token(request)
-    #         if read_token(token)['data']:
-    #             id = UUID(id)
-    #             comment = Comment.by_id(id)
-    #             if not comment:
-    #                 return 'Comment Not Found', 404
-    #             return comment.json().pop("password_digest")
-    #         else:
-    #             return "Unauthorized", 403
-
     def patch(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
@@ -54,8 +32,7 @@ class Comments(Resource):
                 comment = Comment.by_id(id)
                 if not comment:
                     return 'Comment Not Found', 404
-                if not comment:
-                    return 'Comment Not Found', 404
+                data["body"] = censor_language(data)
                 for key in data.keys():
                     setattr(comment, key, data[key])
                 db.session.commit()
@@ -84,16 +61,6 @@ class Comments(Resource):
                 return "Unauthorized", 403
         else:
             return "Unauthorized", 403
-
-
-# class PostComments(Resource):
-#     def get(self, post_id):
-#         token = strip_token(request)
-#         if read_token(token)['data']:
-#             comments = Comment.by_post(post_id)
-#             return [comment.json() for comment in comments]
-#         else:
-#             return "Unauthorized", 403
 
 
 class UserComments(Resource):
