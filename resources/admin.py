@@ -35,7 +35,7 @@ class AllPosts(Resource):
             return "Unauthorized", 403
 
 
-def CensorLanguage(data):
+def censor_language(data):
     censored_words = [
         "bitch", "fuck", "shit",
         "cunt", "ass", "fag",
