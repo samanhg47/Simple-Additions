@@ -41,12 +41,12 @@ class Images(Resource):
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
-    def patch(self, image_id):
+    def patch(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
             data = request.get_json()
-            image_id = UUID(image_id)
-            image = Image.find_by_id(image_id)
+            id = UUID(id)
+            image = Image.by_id(id)
             for key in data.keys():
                 setattr(image, key, data[key])
             db.session.commit()
@@ -54,11 +54,11 @@ class Images(Resource):
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
-    def delete(self, image_id):
+    def delete(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
-            image_id = UUID(image_id)
-            image = Image.find_by_id(image_id)
+            id = UUID(id)
+            image = Image.by_id(id)
             if not image:
                 return {'msg': 'image Not Found'}
             copy = {}
