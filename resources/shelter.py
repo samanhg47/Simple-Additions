@@ -9,11 +9,11 @@ from uuid import UUID
 
 class Shelters(Resource):
     def get(self, id):
-        token = strip_token(data)
+        token = strip_token(request)
         if read_token(token)['data']:
             id = UUID(id)
             shelter = Shelter.by_id(id)
-            return shelter.json()
+            return shelter.json().pop("password_digest")
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
@@ -26,7 +26,7 @@ class Shelters(Resource):
             for key in data.keys():
                 setattr(shelter, key, data[key])
             db.session.commit()
-            return shelter.json()
+            return shelter.json().pop("password_digest")
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
@@ -41,6 +41,7 @@ class Shelters(Resource):
             for key in shelter.json().keys():
                 copy[key] = shelter.json()[key]
                 copy['updated_at'] = str(datetime.utcnow())
+                copy.pop("password_digest")
             db.session.delete(shelter)
             db.session.commit()
             return {'msg': 'shelter Deletion Successful', 'shelter': copy}
@@ -52,7 +53,7 @@ class Allshelters(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token)['data']:
-            data = request.get_json
+            data = request.get_json()
             shelters = Shelter.by_proximity(
                 data["proximity"], data["coordinates"])
             return shelters
