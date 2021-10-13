@@ -4,14 +4,12 @@ from datetime import datetime
 from models.user import User
 from flask import request
 from models.db import db
-from uuid import UUID
 
 
 class Users(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
-            id = UUID(id)
             user = User.by_id(id)
             return user.json().pop("password_digest")
         else:
@@ -21,7 +19,6 @@ class Users(Resource):
         token = strip_token(request)
         if read_token(token)['data']:
             data = request.get_json()
-            id = UUID(id)
             user = User.by_id(id)
             for key in data.keys():
                 setattr(user, key, data[key])
@@ -33,7 +30,6 @@ class Users(Resource):
     def delete(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
-            id = UUID(id)
             user = User.by_id(id)
             if not user:
                 return {'msg': 'User Not found'}, 404
