@@ -33,11 +33,6 @@ class User(db.Model):
         self.password_digest = password_digest
 
     def json(self):
-        return {
-            "user_name": self.user_name,
-        }
-
-    def json_admin(self):
         comments = Comments.query.filter_by(user_id=self.id).all()
         user_comments = [comment.json() for comment in comments]
         posts = Posts.query.filter_by(user_id=self.id).all()
