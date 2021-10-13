@@ -7,7 +7,7 @@ from models.db import db
 from uuid import UUID
 
 
-class Allcomments(Resource):
+class AllComments(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token)['data']:
@@ -30,7 +30,7 @@ class Allcomments(Resource):
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
 
-class comments(Resource):
+class Comments(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token)['data']:
@@ -71,11 +71,11 @@ class comments(Resource):
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
 
-class Postcomments(Resource):
+class PostComments(Resource):
     def get(self, post_id):
         token = strip_token(request)
         if read_token(token)['data']:
-            comments = Comment.by_post_id(post_id)
+            comments = Comment.by_post(post_id)
             return [comment.json() for comment in comments]
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
