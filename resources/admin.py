@@ -51,7 +51,11 @@ def censor_language(data):
             censored_word = ""
             for letter in word:
                 censored_word += "*"
-            text = text.replace(word, censored_word, count)
+            data["body"] = data['body'].replace(word, censored_word, count)
+            data['body'] = data['body'].replace(
+                word.capitalize(), censored_word, count)
+            data['body'] = data['body'].replace(
+                word.upper(), censored_word, count)
     return text
 
 
