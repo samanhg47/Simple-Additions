@@ -1,3 +1,4 @@
+from models.comment import Comment
 from models.db import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
@@ -44,9 +45,9 @@ class Post(db.Model):
         self.shelter_id = shelter_id
 
     def json(self):
-        images = Image.query.filter_by(post_id=self.id).all()
+        images = Image.by_post(self.id)
         post_images = [image.json() for image in images]
-        comments = Image.query.filter_by(post_id=self.id).all()
+        comments = Comment.by_post(self.id)
         post_comments = [comment.json() for comment in comments]
         user_name = User.by_id(self.user_id).json()["user_name"]
         return {
@@ -79,10 +80,10 @@ class Post(db.Model):
         post = Post.query.filter_by(id=id).first()
         return post
 
-    # @classmethod
-    # def by_shelter(cls, shelter_id):
-    #     posts = Post.query.filter_by(shelter_id=shelter_id).all()
-    #     return posts
+    @classmethod
+    def by_shelter(cls, shelter_id):
+        posts = Post.query.filter_by(shelter_id=shelter_id).all()
+        return posts
 
     def by_user(cls, user_id):
         posts = Post.query.filter_by(user_id=user_id).all()
