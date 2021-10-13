@@ -1,4 +1,3 @@
-import json
 from middleware import read_token, strip_token
 from flask_restful import Resource
 from datetime import datetime
@@ -58,7 +57,7 @@ class Posts(Resource):
                 copy['updated_at'] = str(datetime.utcnow())
             db.session.delete(post)
             db.session.commit()
-            return {'msg': 'Post Deletion Successful', 'payload': copy}
+            return {'Deletion Successful': copy}
         else:
             return read_token(token)['payload'][0], read_token(token)['payload'][1]
 
