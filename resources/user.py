@@ -9,7 +9,6 @@ from uuid import UUID
 
 class Users(Resource):
     def get(self, id):
-        data = request.get_json()
         token = strip_token(data)
         if read_token(token)['data']:
             id = UUID(id)
