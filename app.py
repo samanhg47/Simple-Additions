@@ -1,4 +1,4 @@
-from resources import shelter, image, post, user, auth, comment, admin
+from resources import file_port, shelter, image, post, user, auth, comment, admin
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
@@ -68,7 +68,8 @@ api.add_resource(image.Images, '/image/<string:id>')
 api.add_resource(image.AllImages, '/images')
 
 # File Resource(s)
-api.add_resource()
+api.add_resource(file_port.Uploads, "/upload")
+api.add_resource(file_port.Uploads, "/download/<string:name>")
 
 # Shelter Resource(s)
 api.add_resource(shelter.Allshelters, '/shelter/<string:id>')
