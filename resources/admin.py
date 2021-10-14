@@ -1,12 +1,19 @@
 from middleware import read_token, strip_token, admin_check
+from dotenv.main import load_dotenv
+from flask import request, jsonify
+from models.shelter import Shelter
 from flask_restful import Resource
 from models.comment import Comment
 from models.image import Image
 from models.post import Post
-from models.shelter import Shelter
 from models.user import User
-from flask import request
 from models.db import db
+import os
+
+load_dotenv()
+
+UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
 class AllPosts(Resource):
@@ -159,5 +166,19 @@ class AllShelters(Resource):
                 return "All Shelters Successfully Deleted"
             else:
                 return "Unauthorized", 403
+        else:
+            return "Unauthorized", 403
+
+
+class AllUploads(Resource):
+    def list_files():
+        token = strip_token(request)
+        if read_token(token):
+            files = []
+            for filename in os.listdir(UPLOAD_DIRECTORY):
+                path = os.path.join(UPLOAD_DIRECTORY, filename)
+                if os.path.isfile(path):
+                    files.append(filename)
+            return jsonify(files)
         else:
             return "Unauthorized", 403
