@@ -16,8 +16,6 @@ load_dotenv()
 
 UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
-if not os.path.exists(UPLOAD_DIRECTORY):
-    os.makedirs(UPLOAD_DIRECTORY)
 
 app = Flask(__name__)
 CORS(app)
