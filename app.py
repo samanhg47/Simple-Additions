@@ -25,10 +25,13 @@ api = Api(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost:5432/simple_additions_db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
+app.config['UPLOAD_DIRECTORY'] = UPLOAD_DIRECTORY
 app.config['SQLALCHEMY_ECHO'] = True
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
 
 # Auth Resource(s)
 api.add_resource(auth.ShelterRegister, 'register/shelters')
@@ -63,6 +66,9 @@ api.add_resource(post.AllPosts, '/posts')
 # api.add_resource(image.PostImages, '/images/<string:id>')
 api.add_resource(image.Images, '/image/<string:id>')
 api.add_resource(image.AllImages, '/images')
+
+# File Resource(s)
+api.add_resource()
 
 # Shelter Resource(s)
 api.add_resource(shelter.Allshelters, '/shelter/<string:id>')
