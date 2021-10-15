@@ -110,6 +110,7 @@ class AdminAllUsers(Resource):
                 users = User.find_all()
                 for user in users:
                     db.session.delete(user)
+                db.session.commit()
                 return "All Users Successfully Deleted"
             else:
                 return "Unauthorized", 403

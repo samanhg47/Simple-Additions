@@ -1,6 +1,6 @@
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
-from pyasn1.type.univ import Null
+
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SERVICE_ACCOUNT_FILE = '.keys.json'
@@ -8,7 +8,6 @@ SERVICE_ACCOUNT_FILE = '.keys.json'
 creds = None
 creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-
 
 # The ID and range of a sample spreadsheet.
 SPREADSHEET_ID = '1EEiJVJ_wc1WWy4D0bRMQ8xgewsYukOcfp24tKOnFDBk'
@@ -50,11 +49,22 @@ def nested_list_to_json(nested_list):
                             data[3:6] + "-" + data[6:]
                     shelt.update({titles[i]: data})
             shelt.update({"password": "1234"})
-            print(shelt)
-            print()
             shelter_list.append(shelt)
     return shelter_list
 
 
-nested_list_to_json(values)
+all_shelters = nested_list_to_json(values)
 # print(nested_list_to_json(values))
+
+# seed = insert(Shelter).values(nested_list_to_json(values))
+# seed = seed.on_conflict_do_update(
+#     index_elements=[Shelter.shelter_name], set_=dict(
+#         phone_number=seed.excluded.phone_number)
+# ).returning(Shelter)
+# orm_stmt = (select(Shelter).from_statement(
+#     seed).execution_options(populate_existing=True))
+
+# for user in db.session.execute(
+#     orm_stmt,
+# ).scalars():
+#     print("inserted or updated: %s" % user)
