@@ -50,12 +50,12 @@ def admin_check(request):
 
 def id_check(request, model, model_id):
     try:
-        id = request.headers['User_Id']
-        if model == User and UUID(model_id) == id or model == Shelter and UUID(model_id) == id:
+        id = request.headers['Id']
+        if model == User and UUID(model_id) == UUID(id) or model == Shelter and UUID(model_id) == UUID(id):
             return True
         else:
             subject = model.by_id(model_id)
-            if UUID(subject.json()['user_id']) == id:
+            if UUID(subject.json()['user_id']) == UUID(id):
                 return True
             else:
                 return False

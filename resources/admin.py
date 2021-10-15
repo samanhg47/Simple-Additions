@@ -13,7 +13,30 @@ import os
 load_dotenv()
 
 UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+
+def censor_language(data):
+    censored_words = [
+        "bitch", "fuck", "shit",
+        "cunt", "ass", "fag",
+        "tranny", "hoe", "whore",
+        "tits", "titt" "dick",
+        "retard", "pussy", "dumb",
+        "idiot", "stupid", "kill",
+        "stab", "shoot"]
+    text = data["body"].lower()
+    for word in censored_words:
+        if text.count(word) > 0:
+            count = text.count(word)
+            censored_word = ""
+            for letter in word:
+                censored_word += "*"
+            data["body"] = data["body"].replace(word, censored_word, count)
+            data["body"] = data["body"].replace(
+                word.capitalize(), censored_word, count)
+            data["body"] = data["body"].replace(
+                word.upper(), censored_word, count)
+    return data["body"]
 
 
 class AdminAllPosts(Resource):
@@ -40,30 +63,6 @@ class AdminAllPosts(Resource):
                 return "Unauthorized", 403
         else:
             return "Unauthorized", 403
-
-
-def censor_language(data):
-    censored_words = [
-        "bitch", "fuck", "shit",
-        "cunt", "ass", "fag",
-        "tranny", "hoe", "whore",
-        "tits", "titt" "dick",
-        "retard", "pussy", "dumb",
-        "idiot", "stupid", "kill",
-        "stab", "shoot"]
-    text = data["body"].lower()
-    for word in censored_words:
-        if text.count(word) > 0:
-            count = text.count(word)
-            censored_word = ""
-            for letter in word:
-                censored_word += "*"
-            data["body"] = data["body"].replace(word, censored_word, count)
-            data["body"] = data["body"].replace(
-                word.capitalize(), censored_word, count)
-            data["body"] = data["body"].replace(
-                word.upper(), censored_word, count)
-    return data["body"]
 
 
 class AdminAllImages(Resource):

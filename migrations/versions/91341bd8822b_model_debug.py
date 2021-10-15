@@ -1,8 +1,8 @@
-"""first db migration
+"""model debug
 
-Revision ID: 2f7ceaa40480
+Revision ID: 91341bd8822b
 Revises: 
-Create Date: 2021-10-14 11:04:22.565893
+Create Date: 2021-10-14 22:25:13.750879
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '2f7ceaa40480'
+revision = '91341bd8822b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,8 +26,8 @@ def upgrade():
     sa.Column('state', sa.String(length=25), nullable=False),
     sa.Column('email', sa.String(length=100), nullable=False),
     sa.Column('phone_number', sa.String(length=14), nullable=False),
-    sa.Column('latitude', sa.Integer(), nullable=False),
-    sa.Column('longitude', sa.Integer(), nullable=False),
+    sa.Column('latitude', sa.String(length=10), nullable=False),
+    sa.Column('longitude', sa.String(length=10), nullable=False),
     sa.Column('password_digest', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
@@ -46,7 +46,7 @@ def upgrade():
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('title', sa.String(length=100), nullable=False),
     sa.Column('body', sa.String(length=500), nullable=False),
-    sa.Column('review', sa.Integer(), nullable=False),
+    sa.Column('review', sa.String(length=10), nullable=False),
     sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('shelter_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),

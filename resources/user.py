@@ -11,14 +11,18 @@ class Users(Resource):
     def get(self, id):
         token = strip_token(request)
         if read_token(token):
-            if id_check(request, User, id) or admin_check(request):
-                id = UUID(id)
-                user = User.by_id(id)
-                if not user:
-                    return 'User Not found', 404
-                return user.json()
-            else:
-                return "Unauthorized", 403
+            id = UUID(id)
+            user = User.by_id(id)
+            if not user:
+                return 'User Not found', 404
+            user = user.json()
+            if admin_check(request):
+                return user
+            del user["password_digest"]
+            if id_check(request):
+                return user
+            del user["email"]
+            return
         else:
             return "Unauthorized", 403
 
@@ -34,7 +38,11 @@ class Users(Resource):
                 for key in data.keys():
                     setattr(user, key, data[key])
                 db.session.commit()
-                return user.json().pop("password_digest")
+                user = user.json()
+                if admin_check(request):
+                    return user
+                del user["password_digest"]
+                return user
             else:
                 return "Unauthorized", 403
         else:
@@ -49,11 +57,14 @@ class Users(Resource):
                 if not user:
                     return 'User Not found', 404
                 copy = {}
-                for key in user.json().pop("password_digest").keys():
+                for key in user.json().keys():
                     copy[key] = user.json()[key]
                     copy['updated_at'] = str(datetime.utcnow())
                 db.session.delete(user)
                 db.session.commit()
+                if admin_check(request):
+                    return 'Deletion Successful', copy
+                del copy["password_digest"]
                 return 'Deletion Successful', copy
             else:
                 return "Unauthorized", 403

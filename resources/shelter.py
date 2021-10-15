@@ -1,3 +1,4 @@
+import re
 from middleware import admin_check, id_check, read_token, strip_token
 from flask_restful import Resource
 from models.shelter import Shelter
@@ -15,7 +16,11 @@ class Shelters(Resource):
             shelter = Shelter.by_id(id)
             if not shelter:
                 return 'Shelter Not found', 404
-            return shelter.json().pop("password_digest")
+            shelter = shelter.json()
+            if admin_check(request):
+                return shelter
+            del shelter["password_digest"]
+            return shelter
         else:
             return "Unauthorized", 403
 
@@ -31,7 +36,11 @@ class Shelters(Resource):
                 for key in data.keys():
                     setattr(shelter, key, data[key])
                 db.session.commit()
-                return shelter.json().pop("password_digest")
+                shelter = shelter.json()
+                if admin_check(request):
+                    return shelter
+                del shelter["password_digest"]
+                return shelter
             else:
                 return "Unauthorized", 403
         else:
@@ -46,13 +55,15 @@ class Shelters(Resource):
                 if not shelter:
                     return 'Shelter Not found', 404
                 copy = {}
-                for key in shelter.json().pop("password_digest").keys():
+                for key in shelter.json().keys():
                     copy[key] = shelter.json()[key]
                     copy['updated_at'] = str(datetime.utcnow())
-                    copy
                 db.session.delete(shelter)
                 db.session.commit()
-                return 'Deletion Successful', copy
+                if admin_check(request):
+                    return {'Deletion Successful': copy}
+                del copy["password_digest"]
+                return {'Deletion Successful': copy}
             else:
                 return "Unauthorized", 403
         else:
@@ -63,11 +74,28 @@ class Allshelters(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
+
             data = request.get_json()
+            if "proximity" not in data.keys():
+                shelters = Shelter.find_all()
+                shelter_list = [shelter.json() for shelter in shelters]
+                if admin_check(request):
+                    return shelter_list
+                for shelter in shelter_list:
+                    del shelter["password_digest"]
+                    del shelter["id"]
+                return shelter_list
+            if "coordinates" not in data.keys():
+                return "Coordinates Not Provided", 400
             shelters = Shelter.by_proximity(
-                data["proximity"], data["coordinates"])
-            if shelters.length == 0:
+                data["coordinates"], data["proximity"])
+            if len(shelters) == 0:
                 return "No Shelters Within Proximity Limit"
+            if admin_check(request):
+                return shelters
+            for shelter in shelters:
+                del shelter["password_digest"]
+                del shelter["id"]
             return shelters
         else:
             return "Unauthorized", 403

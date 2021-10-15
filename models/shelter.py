@@ -1,3 +1,4 @@
+import sqlalchemy
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from models.db import db
@@ -15,8 +16,10 @@ class Shelter(db.Model):
     state = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(14), nullable=False)
-    latitude = db.Column(db.Integer, nullable=False)
-    longitude = db.Column(db.Integer, nullable=False)
+    latitude = db.Column(
+        db.String(10), nullable=False)
+    longitude = db.Column(
+        db.String(10), nullable=False)
     password_digest = db.Column(db.String(255), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
@@ -53,11 +56,12 @@ class Shelter(db.Model):
             "address": address,
             "email": self.email,
             'phone_number': self.phone_number,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
+            "latitude": float(self.latitude),
+            "longitude": float(self.longitude),
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at)
+            "updated_at": str(self.updated_at),
+            "posts": self.posts
         }
 
     def create(self):
@@ -71,23 +75,32 @@ class Shelter(db.Model):
         return Shelter.query.filter_by(id=id).first()
 
     @classmethod
-    def by_proximity(cls, proximity, coordinates):
+    def by_contacts(cls, phone_number, email, shelter_name, address):
+        return Shelter.query.filter_by(phone_number=phone_number, email=email, shelter_name=shelter_name, address=address).first()
+
+    @classmethod
+    def find_all(cls):
+        return Shelter.query.all()
+
+    @classmethod
+    def by_proximity(cls, coordinates, proximity):
         shelters = Shelter.find_all()
-        all_shelters = [shelter.json().pop("password_digest")
-                        for shelter in shelters]
+        all_shelters = [shelter.json() for shelter in shelters]
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
         if proximity:
             lat_r = proximity/68.93
             lon_r = proximity/54.58
-            max_lat = coordinates["latitude"] + lat_r
-            min_lat = coordinates["latitude"] - lat_r
-            max_lon = coordinates["longitude"] + lon_r
-            min_lon = coordinates["longitude"] - lon_r
+            lat = coordinates["latitude"]
+            lon = coordinates["longitude"]
+            max_lat = lat + lat_r
+            min_lat = lat - lat_r
+            max_lon = lon + lon_r
+            min_lon = lon - lon_r
             for index, shelter in enumerate(all_shelters):
                 lat = shelter["latitude"]
                 lon = shelter["longitude"]
                 if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
-                    all_shelters.pop(index)
+                    del all_shelters[index]
         return all_shelters

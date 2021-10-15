@@ -11,7 +11,7 @@ class Post(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(500), nullable=False)
-    review = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.String(10), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
     shelter_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
@@ -25,7 +25,7 @@ class Post(db.Model):
 # Relationship(s)
     images = db.relationship(
         'Image', cascade='all, delete', passive_deletes=True,
-        backref=db.backref('post', lazy="joined", innerjoin=True))
+        backref=db.backref('parent_post', lazy="joined", innerjoin=True))
     comments = db.relationship(
         'Comment', cascade='all, delete', passive_deletes=True,
         backref=db.backref('post', lazy=True))
@@ -34,7 +34,7 @@ class Post(db.Model):
     def __init__(self, body, title, review, user_id, img_file_name, shelter_id):
         self.body = body
         self.title = title
-        self.review = review
+        self.review = float(review)
         self.user_id = user_id
         self.img_file_name = img_file_name
         self.shelter_id = shelter_id

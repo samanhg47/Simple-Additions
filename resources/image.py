@@ -30,7 +30,8 @@ class Images(Resource):
             image = Image.by_id(id)
             if not image:
                 return 'Image Not Found', 404
-            return image.json().pop("password_digest")
+
+            return image.json()
         else:
             return "Unauthorized", 403
 
