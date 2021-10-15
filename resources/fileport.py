@@ -13,21 +13,20 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
 def allowed_file(filename):
-    return filename.count('.') == 1 and \
-        filename.split('.', 1)[1].lower() in ALLOWED_EXTENSIONS \
-        and "/" not in filename
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def random_address():
-    str = "zaxsc15387"
-    address = ""
-    for char in random.choices(str):
+    str = "zaxsc15387_"
+    address = "/"
+    for char in random.choices(str, k=5):
         address += char
-    return address + "/"
+    return address
 
 
 class Uploads(Resource):
-    def post():
+    def post(self):
         token = strip_token(request)
         if read_token(token):
             if 'file' not in request.files:
@@ -37,7 +36,8 @@ class Uploads(Resource):
                 return "File Format Not Accepted", 403
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
-                filename = random_address() + filename
+                prefix = random_address()
+                filename = prefix + filename
                 file.save(os.path.join(UPLOAD_DIRECTORY, filename))
                 redirect(url_for('download_file', name=filename))
                 return filename, 201
@@ -48,5 +48,5 @@ class Uploads(Resource):
 
 
 class Downloads(Resource):
-    def download_file(name):
+    def download_file(self, name):
         return send_from_directory(UPLOAD_DIRECTORY, name)

@@ -16,7 +16,7 @@ UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
-class AllPosts(Resource):
+class AdminAllPosts(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
@@ -66,7 +66,7 @@ def censor_language(data):
     return data["body"]
 
 
-class AllImages(Resource):
+class AdminAllImages(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
@@ -92,7 +92,7 @@ class AllImages(Resource):
             return "Unauthorized", 403
 
 
-class AllUsers(Resource):
+class AdminAllUsers(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
@@ -118,7 +118,7 @@ class AllUsers(Resource):
             return "Unauthorized", 403
 
 
-class AllComments(Resource):
+class AdminAllComments(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
@@ -144,7 +144,7 @@ class AllComments(Resource):
             return "Unauthorized", 403
 
 
-class AllShelters(Resource):
+class AdminAllShelters(Resource):
     def get(self):
         token = strip_token(request)
         if read_token(token):
@@ -170,7 +170,7 @@ class AllShelters(Resource):
             return "Unauthorized", 403
 
 
-class AllUploads(Resource):
+class AdminAllUploads(Resource):
     def list_files():
         token = strip_token(request)
         if read_token(token):

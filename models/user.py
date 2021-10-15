@@ -1,7 +1,5 @@
 from sqlalchemy.dialects.postgresql import UUID
-from models.comment import Comment
 from datetime import datetime
-from models.post import Post
 from models.db import db
 import uuid
 
@@ -20,11 +18,14 @@ class User(db.Model):
 
 # Association(s)
     posts = db.relationship(
-        "Post", cascade='all, delete', backref=db.backref('user', lazy=True))
+        "Post", cascade='all, delete', passive_deletes=True,
+        backref=db.backref('user', lazy="joined", innerjoin=True))
     comments = db.relationship(
-        "Comment", cascade='all, delete', backref=db.backref('user', lazy=True))
+        "Comment", cascade='all, delete', passive_deletes=True,
+        backref=db.backref('user', lazy="joined", innerjoin=True))
     images = db.relationship(
-        "Image", cascade='all, delete', backref=db.backref('user', lazy=True))
+        "Image", cascade='all, delete', passive_deletes=True,
+        backref=db.backref('user', lazy="joined", innerjoin=True))
 
 # Declarative Method(s)
     def __init__(self, user_name, password_digest):
@@ -32,18 +33,12 @@ class User(db.Model):
         self.password_digest = password_digest
 
     def json(self):
-        comments = Comment.query.filter_by(user_id=self.id).all()
-        user_comments = [comment.json() for comment in comments]
-        posts = Post.query.filter_by(user_id=self.id).all()
-        user_posts = [post.json() for post in posts]
         return {
             "id": str(self.id),
             "user_name": self.user_name,
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at),
-            "comments": user_comments,
-            "posts": user_posts
+            "updated_at": str(self.updated_at)
         }
 
     def create(self):

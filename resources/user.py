@@ -16,7 +16,7 @@ class Users(Resource):
                 user = User.by_id(id)
                 if not user:
                     return 'User Not found', 404
-                return user.json().pop("password_digest")
+                return user.json()
             else:
                 return "Unauthorized", 403
         else:

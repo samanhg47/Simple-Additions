@@ -1,11 +1,7 @@
-from models.comment import Comment
 from models.db import db
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-
-from models.image import Image
-from models.user import User
 
 
 class Post(db.Model):
@@ -29,9 +25,9 @@ class Post(db.Model):
 # Relationship(s)
     images = db.relationship(
         'Image', cascade='all, delete', passive_deletes=True,
-        backref=db.backref('post', lazy=True))
+        backref=db.backref('post', lazy="joined", innerjoin=True))
     comments = db.relationship(
-        'Image', cascade='all, delete', passive_deletes=True,
+        'Comment', cascade='all, delete', passive_deletes=True,
         backref=db.backref('post', lazy=True))
 
 # Declarative Method(s)
@@ -44,23 +40,15 @@ class Post(db.Model):
         self.shelter_id = shelter_id
 
     def json(self):
-        images = Image.by_post(self.id)
-        post_images = [image.json() for image in images]
-        comments = Comment.by_post(self.id)
-        post_comments = [comment.json() for comment in comments]
-        user_name = User.by_id(self.user_id).json()["user_name"]
         return {
             'id': str(self.id),
             'title': self.title,
             'body': self.body,
             'review': self.review,
             'user_id': str(self.user_id),
-            'user_name': user_name,
             "shelter_id": str(self.shelter_id),
             'created_at': str(self.created_at),
-            'updated_at': str(self.updated_at),
-            "image(s)": post_images,
-            "comment(s)": post_comments
+            'updated_at': str(self.updated_at)
         }
 
     def create(self):

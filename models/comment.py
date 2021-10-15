@@ -3,8 +3,6 @@ from datetime import datetime
 from models.db import db
 import uuid
 
-from models.user import User
-
 
 class Comment(db.Model):
     __tablename__ = 'comment'
@@ -28,12 +26,10 @@ class Comment(db.Model):
         self.post_id = post_id
 
     def json(self):
-        user_name = User.by_id(self.user_id).json()["user_name"]
         return {
             'id': str(self.id),
             "body": self.body,
             'user_id': str(self.user_id),
-            "user_name": user_name,
             'post_id': str(self.post_id),
             'created_at': str(self.created_at),
             'updated_at': str(self.updated_at)
