@@ -1,52 +1,54 @@
-from flask import request, redirect, url_for, send_from_directory
+from gevent import sleep
+from flask import request, redirect, url_for, send_from_directory, jsonify
 from middleware import read_token, strip_token
 from werkzeug.utils import secure_filename
 from dotenv.main import load_dotenv
 from flask_restful import Resource
-import random
+from random import choices, randbytes
 import os
-
+import boto3
 load_dotenv()
 
-UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+S3_BUCKET = os.getenv("S3_BUCKET")
+S3_ADMIN_ID = os.getenv("S3_ADMIN_ID")
+S3_ADMIN_SECRET = os.getenv("S3_ADMIN_SECRET")
+S3_REGION = os.getenv("S3_REGION")
+S3_USER_ID = os.getenv("S3_USER_ID")
+S3_USER_SECRET = os.getenv("S3_USER_SECRET")
 
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-
-def random_address():
-    str = "zaxsc15387_"
-    address = "/"
-    for char in random.choices(str, k=5):
-        address += char
-    return address
-
-
-class Uploads(Resource):
-    def post(self):
+class S3Upload(Resource):
+    def get(self):
+        sleep(1)
         token = strip_token(request)
         if read_token(token):
-            if 'file' not in request.files:
-                return "No File Uploaded", 403
-            file = request.files['file']
-            if file.filename == '':
-                return "File Format Not Accepted", 403
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                prefix = random_address()
-                filename = prefix + filename
-                file.save(os.path.join(UPLOAD_DIRECTORY, filename))
-                redirect(url_for('download_file', name=filename))
-                return filename, 201
-            else:
-                return "File Format Not Accepted", 403
-        else:
-            return "Unauthorized", 403
+            s3_user = boto3.client(
+                's3',
+                aws_access_key_id=S3_USER_ID,
+                aws_secret_access_key=S3_USER_SECRET,
+                region_name=S3_REGION
+            )
+            image_name = str(randbytes(16), "UTF-16")
+            params = {
+                "Bucket": S3_BUCKET,
+                "Key": image_name
+            }
+            response = s3_user.generate_presigned_url(
+                'put_object', Params=params, ExpiresIn=5)
+            return response
 
 
-class Downloads(Resource):
-    def download_file(self, name):
-        return send_from_directory(UPLOAD_DIRECTORY, name)
+class S3Delete(Resource):
+    def delete(self, key):
+        sleep(1)
+        token = strip_token(request)
+        if read_token(token):
+            data = request.get_json()
+            key = data["key"]
+            s3_user = boto3.client(
+                's3',
+                aws_access_key_id=S3_ADMIN_ID,
+                aws_secret_access_key=S3_ADMIN_SECRET,
+                region_name=S3_REGION
+            )
+            s3_user.delete_object(Bucket=S3_BUCKET, KEY=key)

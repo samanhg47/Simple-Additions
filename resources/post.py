@@ -1,19 +1,13 @@
-from flask import request, abort, jsonify, send_from_directory
 from middleware import read_token, strip_token, admin_check, id_check
 from resources.admin import censor_language
 from flask_restful import Resource
-from dotenv import load_dotenv
 from datetime import datetime
 from models.user import User
 from models.post import Post
+from flask import request
 from models.db import db
 from uuid import UUID
 import os
-
-
-load_dotenv()
-
-UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 
 class AllPosts(Resource):

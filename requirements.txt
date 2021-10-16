@@ -2,6 +2,7 @@ alembic==1.7.4
 amqp==5.0.6
 aniso8601==9.0.1
 appnope==0.1.2
+asgiref==3.4.1
 autopep8==1.5.7
 aws==0.2.5
 awscli==1.20.60
@@ -27,11 +28,13 @@ decorator==5.1.0
 docutils==0.15.2
 entrypoints==0.3
 fabric==2.6.0
+Faker==9.3.1
 Flask==2.0.2
 Flask-Cors==3.0.10
 Flask-Migrate==3.1.0
 Flask-RESTful==0.3.9
 Flask-SQLAlchemy==2.5.1
+gevent==21.8.0
 google-api-core==2.1.1
 google-api-python-client==2.26.1
 google-auth==2.3.0
@@ -85,6 +88,7 @@ python-dotenv==0.19.0
 pytz==2021.3
 PyYAML==5.4.1
 pyzmq==22.3.0
+random-dog==1.0.2
 redis==3.5.3
 requests==2.26.0
 requests-oauthlib==1.3.0
@@ -92,6 +96,8 @@ rsa==4.7.2
 s3transfer==0.5.0
 six==1.16.0
 SQLAlchemy==1.4.25
+SQLAlchemy-Utils==0.37.8
+text-unidecode==1.3
 toml==0.10.2
 tornado==6.1
 traitlets==5.1.0
@@ -100,3 +106,5 @@ urllib3==1.26.7
 vine==5.0.0
 wcwidth==0.2.5
 Werkzeug==2.0.2
+zope.event==4.5.0
+zope.interface==5.4.0

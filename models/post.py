@@ -11,7 +11,7 @@ class Post(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(500), nullable=False)
-    review = db.Column(db.String(10), nullable=False)
+    review = db.Column(db.String(2), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
     shelter_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
@@ -31,12 +31,11 @@ class Post(db.Model):
         backref=db.backref('post', lazy=True))
 
 # Declarative Method(s)
-    def __init__(self, body, title, review, user_id, img_file_name, shelter_id):
+    def __init__(self, body, title, review, user_id, shelter_id):
         self.body = body
         self.title = title
-        self.review = float(review)
+        self.review = review
         self.user_id = user_id
-        self.img_file_name = img_file_name
         self.shelter_id = shelter_id
 
     def json(self):
@@ -44,7 +43,7 @@ class Post(db.Model):
             'id': str(self.id),
             'title': self.title,
             'body': self.body,
-            'review': self.review,
+            'review': float(self.review),
             'user_id': str(self.user_id),
             "shelter_id": str(self.shelter_id),
             'created_at': str(self.created_at),
