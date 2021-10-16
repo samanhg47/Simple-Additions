@@ -1,6 +1,11 @@
+from flask.cli import load_dotenv
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
+import os
 
+load_dotenv()
+
+SHELTER_PASSWORD = os.getenv("SHELTER_PASSWORD")
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 SERVICE_ACCOUNT_FILE = '.keys.json'
@@ -17,19 +22,28 @@ service = build('sheets', 'v4', credentials=creds)
 # Call the Sheets API K10137
 sheet = service.spreadsheets()
 result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                            range="shelters!A1:K30").execute()
+                            range="shelters!A1:K10137").execute()
 values = result.get('values', [])
 
 
 def nested_list_to_json(nested_list):
+
     titles = []
     shelter_list = []
     headers = nested_list[0]
     shelters = nested_list[1:]
+
+    def letter_check(string):
+        string = string.replace(")", "").replace(
+            "(", "").replace("-", "", 3).replace(" ", "")
+        if string.isnumeric():
+            return True
+        return False
     for title in headers:
         titles.append(title.replace(' ', '_').lower())
     for shelter in shelters:
-        if "CA" not in shelter and "" not in shelter[2:5] and "" not in shelter[6:10] and len(shelter) == 11:
+        if "CA" not in shelter and "@" in shelter[4] and "" not in shelter[2:5]\
+                and "" not in shelter[6:10] and len(shelter) == 11 and letter_check(shelter[9]):
             shelt = {}
             for i, data in enumerate(shelter):
                 if i != 1 and i != 5 and i != 3:
@@ -43,28 +57,16 @@ def nested_list_to_json(nested_list):
                     if i == 4:
                         data = data.lower()
                     if i == 9:
+                        if data[0] == "1" and data[1] == "-":
+                            data = data.replace("1", "").replace("-", "")
                         data = data.replace(")", "").replace(
                             "(", "").replace("-", "", 3).replace(" ", "")
                         data = "(" + data[:3] + ")-" + \
                             data[3:6] + "-" + data[6:]
                     shelt.update({titles[i]: data})
-            shelt.update({"password": "1234"})
+            shelt.update({"password": SHELTER_PASSWORD})
             shelter_list.append(shelt)
     return shelter_list
 
 
 all_shelters = nested_list_to_json(values)
-# print(nested_list_to_json(values))
-
-# seed = insert(Shelter).values(nested_list_to_json(values))
-# seed = seed.on_conflict_do_update(
-#     index_elements=[Shelter.shelter_name], set_=dict(
-#         phone_number=seed.excluded.phone_number)
-# ).returning(Shelter)
-# orm_stmt = (select(Shelter).from_statement(
-#     seed).execution_options(populate_existing=True))
-
-# for user in db.session.execute(
-#     orm_stmt,
-# ).scalars():
-#     print("inserted or updated: %s" % user)

@@ -1,15 +1,14 @@
-import random
-
-from flask.cli import with_appcontext
-from middleware import gen_password
 from resources import fileport, shelter, image, post, user, auth, comment, admin
 from faker.providers.person.en import Provider
-from faker.providers import internet
+from sheets import all_shelters
+from middleware import gen_password
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
+from random import shuffle, seed
 from models.image import Image
 from dotenv import load_dotenv
+from flask.cli import AppGroup
 from flask_restful import Api
 from models.user import User
 from models.post import Post
@@ -17,11 +16,9 @@ from flask_cors import CORS
 from models.db import db
 from flask import Flask
 from faker import Faker
+import random
 import click
 import os
-from random import shuffle, seed
-from sheets import all_shelters
-from flask.cli import AppGroup
 
 load_dotenv()
 
@@ -32,15 +29,12 @@ CORS(app)
 api = Api(app)
 seed_cli = AppGroup("seed")
 
+# seed users
+
 
 @seed_cli.command("users")
 @click.option('--amount', default=20, help='number of users to be generated')
-# @click.command('--create')
-# @click.option('--create', default="none", help='number of users to be generated')
-# @click.option('--amount', default=0, help='number of users to be generated')
-# @click.option('--run', default=, help='number of users to be generated')
-# @with_appcontext
-def seeder(amount):
+def user_seeder(amount):
     if amount > 0:
         first_names = list(set(Provider.first_names))
         last_names = list(set(Provider.last_names))
@@ -51,7 +45,6 @@ def seeder(amount):
         random_emails = []
 
         click.echo('Working...')
-        # Ensure we get the makeusers number of usernames.
 
         def name_check(rand_names, index):
             for username in random_usernames:
@@ -87,6 +80,43 @@ def seeder(amount):
 
     click.echo(
         '{} users were added to the database.'.format(amount,))
+
+
+# seed shelters
+@seed_cli.command("shelters")
+@click.option('--amount', default="20", help='number of users to be generated')
+def shelter_seeder(amount):
+    if int(amount) > 0 or amount == "all":
+        if amount == "all":
+            amount = 10137
+        else:
+            amount = int(amount)
+        click.echo('Working...')
+
+        shelter_list = []
+        for shelter in all_shelters:
+            if len(shelter_list) >= amount:
+                break
+            if not Shelter.by_contacts(shelter['phone_number'], shelter['email'], shelter['shelter_name'], shelter['address']):
+                shelter_name = shelter['shelter_name']
+                password_digest = gen_password(shelter['password'])
+                email = shelter['email']
+                address = shelter['address']
+                state = shelter['state']
+                city = shelter['city']
+                phone_number = shelter['phone_number']
+                latitude = shelter['latitude']
+                longitude = shelter['longitude']
+                this_model = Shelter(
+                    shelter_name, address, city, state, email,
+                    phone_number, latitude, longitude, password_digest
+                )
+                db.session.add(this_model)
+                db.session.commit()
+                shelter_list.append(shelter)
+
+    click.echo(
+        '{} shelters were added to the database.'.format(amount))
 
 
 app.cli.add_command(seed_cli)

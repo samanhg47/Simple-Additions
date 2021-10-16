@@ -163,6 +163,7 @@ class AdminAllShelters(Resource):
                 shelters = Shelter.find_all()
                 for shelter in shelters:
                     db.session.delete(shelter)
+                db.session.commit()
                 return "All Shelters Successfully Deleted"
             else:
                 return "Unauthorized", 403
