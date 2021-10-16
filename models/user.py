@@ -20,10 +20,10 @@ class User(db.Model):
 # Association(s)
     posts = db.relationship(
         "Post", cascade='all, delete', passive_deletes=True,
-        backref=db.backref('poster', lazy="joined", innerjoin=True))
+        backref=db.backref('user', lazy="joined", innerjoin=True))
     comments = db.relationship(
         "Comment", cascade='all, delete', passive_deletes=True,
-        backref=db.backref('commenter', lazy="joined", innerjoin=True))
+        backref=db.backref('user', lazy="joined", innerjoin=True))
     images = db.relationship(
         "Image", cascade='all, delete', passive_deletes=True,
         backref=db.backref('user', lazy="joined", innerjoin=True))

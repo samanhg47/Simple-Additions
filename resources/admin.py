@@ -12,8 +12,6 @@ import os
 
 load_dotenv()
 
-UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
-
 
 def censor_language(data):
     censored_words = [
@@ -58,6 +56,7 @@ class AdminAllPosts(Resource):
                 posts = Post.find_all()
                 for post in posts:
                     db.session.delete(post)
+                db.session.commit()
                 return "All Posts Successfully Deleted"
             else:
                 return "Unauthorized", 403
@@ -137,6 +136,7 @@ class AdminAllComments(Resource):
                 comments = Comment.find_all()
                 for comment in comments:
                     db.session.delete(comment)
+                db.session.commit()
                 return "All Comments Successfully Deleted"
             else:
                 return "Unauthorized", 403
@@ -167,19 +167,5 @@ class AdminAllShelters(Resource):
                 return "All Shelters Successfully Deleted"
             else:
                 return "Unauthorized", 403
-        else:
-            return "Unauthorized", 403
-
-
-class AdminAllUploads(Resource):
-    def list_files():
-        token = strip_token(request)
-        if read_token(token):
-            files = []
-            for filename in os.listdir(UPLOAD_DIRECTORY):
-                path = os.path.join(UPLOAD_DIRECTORY, filename)
-                if os.path.isfile(path):
-                    files.append(filename)
-            return jsonify(files)
         else:
             return "Unauthorized", 403

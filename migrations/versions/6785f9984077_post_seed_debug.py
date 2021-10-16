@@ -1,8 +1,8 @@
-"""empty message
+"""post seed debug
 
-Revision ID: 1f34e0aac63b
+Revision ID: 6785f9984077
 Revises: 
-Create Date: 2021-10-15 18:43:07.101336
+Create Date: 2021-10-16 14:11:17.966460
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '1f34e0aac63b'
+revision = '6785f9984077'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,8 +46,8 @@ def upgrade():
     op.create_table('post',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('title', sa.String(length=100), nullable=False),
-    sa.Column('body', sa.String(length=500), nullable=False),
-    sa.Column('review', sa.String(length=10), nullable=False),
+    sa.Column('body', sa.String(length=1000), nullable=False),
+    sa.Column('review', sa.String(length=2), nullable=False),
     sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('shelter_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),

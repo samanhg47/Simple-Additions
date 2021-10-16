@@ -10,7 +10,7 @@ class Post(db.Model):
 # Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(100), nullable=False)
-    body = db.Column(db.String(500), nullable=False)
+    body = db.Column(db.String(1000), nullable=False)
     review = db.Column(db.String(2), nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
@@ -25,7 +25,7 @@ class Post(db.Model):
 # Relationship(s)
     images = db.relationship(
         'Image', cascade='all, delete', passive_deletes=True,
-        backref=db.backref('parent_post', lazy="joined", innerjoin=True))
+        backref=db.backref('post', lazy="joined", innerjoin=True))
     comments = db.relationship(
         'Comment', cascade='all, delete', passive_deletes=True,
         backref=db.backref('post', lazy=True))
@@ -43,9 +43,11 @@ class Post(db.Model):
             'id': str(self.id),
             'title': self.title,
             'body': self.body,
-            'review': float(self.review),
+            'review': self.review,
             'user_id': str(self.user_id),
             "shelter_id": str(self.shelter_id),
+            "images": [image.json() for image in self.images],
+            "comments": [comment.json() for comment in self.comments],
             'created_at': str(self.created_at),
             'updated_at': str(self.updated_at)
         }

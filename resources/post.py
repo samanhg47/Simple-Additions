@@ -1,3 +1,4 @@
+import requests
 from middleware import read_token, strip_token, admin_check, id_check
 from resources.admin import censor_language
 from flask_restful import Resource
@@ -24,6 +25,16 @@ class AllPosts(Resource):
 
 
 class Posts(Resource):
+    def get(self, id):
+        token = strip_token(request)
+        if read_token(token):
+            if id_check(request, Post, id) or admin_check(request):
+                id = UUID(id)
+                post = Post.by_id(id)
+                if not post:
+                    return 'Post Not Found', 404
+                return post.json()
+
     def patch(self, id):
         token = strip_token(request)
         if read_token(token):

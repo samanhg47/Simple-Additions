@@ -1,3 +1,4 @@
+from uuid import UUID
 from requests.api import get
 from resources import fileport, shelter, image, post, user, auth, comment, admin
 from faker.providers.person.en import Provider
@@ -25,7 +26,6 @@ import boto3
 from gevent import sleep
 
 load_dotenv()
-
 UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 app = Flask(__name__)
@@ -84,8 +84,7 @@ def user_seeder(amount):
             password = gen_password("1234")
             email = random_emails.pop()
             user = User(username, password, email)
-            db.session.add(user)
-            db.session.commit()
+            user.create()
 
     click.echo(
         '{} users were added to the database.'.format(amount,))
@@ -120,9 +119,8 @@ def shelter_seeder(amount):
                     shelter_name, address, city, state, email,
                     phone_number, latitude, longitude, password_digest
                 )
-                db.session.add(this_model)
-                db.session.commit()
-                shelter_list.append(shelter)
+                this_model.create()
+                shelter_list.append(this_model)
 
     click.echo(
         '{} shelters were added to the database.'.format(amount))
@@ -134,80 +132,70 @@ def post_seeder(amount):
     sleep(1)
     if amount > 0:
         click.echo('seeding...')
+        count = 0
         users = User.find_all()
         shelters = Shelter.find_all()
         users = [user.json() for user in users]
         shelters = [shelter.json() for shelter in shelters]
-        # randoms = [num for num in range(0, len(users))]
         seed(4321)
         post_arr = []
         while amount > len(post_arr):
             shuffle(users)
             shuffle(shelters)
+            length = choice(range(20, 50))
+            body = ""
+            while len(body.split(' ')) < length:
+                body = body + " " + Faker().catch_phrase() + "."
+                body = body + " " + Faker().bs().capitalize() + "."
+            title = Faker().catch_phrase()
+            review = choice(range(7, 10))
+            post = Post(body, title, review, UUID(
+                users[0]["id"]), UUID(shelters[0]["id"]))
+            db.session.add(post)
+            db.session.commit()
+
+            # post images
+            img_list = []
             s3_user = boto3.client(
                 's3',
                 aws_access_key_id=S3_USER_ID,
                 aws_secret_access_key=S3_USER_SECRET,
                 region_name=S3_REGION
             )
-            key_smith = "qwertyuiopasdfghjklzxcvbnm1234567890"
-            dog = getDog(directory="./puppers")
-            image_name = ''.join(
-                choices(key_smith, k=70))+dog.replace("./puppers", "")
-            click.echo(image_name)
-            params = {
-                "Bucket": S3_BUCKET,
-                "Key": image_name
-            }
-            response = s3_user.generate_presigned_url(
-                'put_object', Params=params, ExpiresIn=20)
-            img_url = response.split('?')[0]
-            r = requests.put(response, data=open(dog, "rb").read())
-            click.echo("status %s" % r.status_code)
-            click.echo(img_url)
-            post_arr.append(img_url)
-        # first_names = list(set(Provider.first_names))
-        # last_names = list(set(Provider.last_names))
-        # seed(4321)
-        # shuffle(first_names)
-        # shuffle(last_names)
-        # random_usernames = []
-        # random_emails = []
+            key_smith = "qwertyuiopasdfghjklzxcvbnm1234567890@#&_-"
+            number = choice(range(1, 6))
+            for num in range(0, number):
+                dog_file = requests.get(
+                    "https://dog.ceo/api/breeds/image/random", stream=True)
+                dog = requests.get(dog_file.json()["message"], stream=True)
+                image_name = ''.join(
+                    choices(key_smith, k=70))+dog_file.json()["message"]
+                params = {
+                    "Bucket": S3_BUCKET,
+                    "Key": image_name
+                }
+                response = s3_user.generate_presigned_url(
+                    'put_object', Params=params, ExpiresIn=5)
+                img_url = response.split('?')[0]
+                img_list.append(img_url)
 
-    #     def name_check(rand_names, index):
-    #         for username in random_usernames:
-    #             if rand_names[index] in username or "'" in rand_names[index]:
-    #                 index += 1
-    #                 name_check(rand_names, index)
-    #         return rand_names[index]
-
-    #     def random_address():
-    #         str = "123456789"
-    #         address = ""
-    #         num = random.choice(str[1:4])[0]
-    #         for char in random.choices(str, k=int(num)):
-    #             address += char
-    #         return address
-
-    #     for i in range(0, amount):
-    #         random_usernames.insert(0, name_check(
-    #             first_names, i)+"_"+name_check(last_names, i) + random_address())
-    #     for name in random_usernames:
-    #         random_emails.append(
-    #             name + "@" + Faker().free_email_domain())
-    #     while True:
-    #         if len(random_usernames) == 0 or len(random_emails) == 0:
-    #             break
-
-    #         username = random_usernames.pop()
-    #         password = gen_password("1234")
-    #         email = random_emails.pop()
-    #         user = User(username, password, email)
-    #         db.session.add(user)
-    #         db.session.commit()
-
-    # click.echo(
-    #     '{} posts were added to the database.'.format(amount,))
+                r = requests.put(response, data=dog.raw.read())
+                click.echo()
+                click.echo("status %s" % r.status_code)
+            for img in img_list:
+                params = {
+                    "img_url": img,
+                    "user_id": UUID(post.json()["user_id"]),
+                    "post_id": UUID(post.json()["id"])
+                }
+                image = Image(**params)
+                image.create()
+            count += len(img_list)
+            post_arr.append(post)
+    click.echo(
+        '{} posts were added to the database.'.format(amount))
+    click.echo(
+        '{} images were added to the database.'.format(count))
 
 
 app.cli.add_command(seed_cli)
