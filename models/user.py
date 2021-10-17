@@ -41,7 +41,9 @@ class User(db.Model):
             "email": self.email,
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
-            "updated_at": str(self.updated_at)
+            "updated_at": str(self.updated_at),
+            "posts": [post.json()["id"] for post in self.posts],
+            "comments": [comment.json()["id"] for comment in self.comments]
         }
 
     def create(self):

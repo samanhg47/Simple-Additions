@@ -56,6 +56,8 @@ def nested_list_to_json(nested_list):
                             data = data + ", " + shelter[1]
                     if i == 4:
                         data = data.lower()
+                    if i == 6 or i == 7:
+                        data = float(data)
                     if i == 9:
                         if data[0] == "1" and data[1] == "-":
                             data = data.replace("1", "").replace("-", "")

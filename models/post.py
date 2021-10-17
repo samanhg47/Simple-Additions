@@ -11,7 +11,7 @@ class Post(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title = db.Column(db.String(100), nullable=False)
     body = db.Column(db.String(1000), nullable=False)
-    review = db.Column(db.String(2), nullable=False)
+    review = db.Column(db.Integer, nullable=False)
     user_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'user.id', ondelete='cascade'), nullable=False)
     shelter_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
@@ -24,10 +24,10 @@ class Post(db.Model):
 
 # Relationship(s)
     images = db.relationship(
-        'Image', cascade='all, delete', passive_deletes=True,
+        'Image', cascade='all',
         backref=db.backref('post', lazy="joined", innerjoin=True))
     comments = db.relationship(
-        'Comment', cascade='all, delete', passive_deletes=True,
+        'Comment', cascade='all',
         backref=db.backref('post', lazy=True))
 
 # Declarative Method(s)
@@ -46,8 +46,8 @@ class Post(db.Model):
             'review': self.review,
             'user_id': str(self.user_id),
             "shelter_id": str(self.shelter_id),
-            "images": [image.json() for image in self.images],
-            "comments": [comment.json() for comment in self.comments],
+            "images": [image.json()["id"] for image in self.images],
+            "comments": [comment.json()["id"] for comment in self.comments],
             'created_at': str(self.created_at),
             'updated_at': str(self.updated_at)
         }

@@ -9,7 +9,7 @@ class Comment(db.Model):
 
 # Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    body = db.Column(db.String(100), nullable=False)
+    body = db.Column(db.String(500), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(

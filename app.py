@@ -1,29 +1,28 @@
-from uuid import UUID
-from requests.api import get
 from resources import fileport, shelter, image, post, user, auth, comment, admin
+from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
-from sheets import all_shelters
 from middleware import gen_password
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
-from random import shuffle, seed, randbytes, choices, choice
+from sheets import all_shelters
 from models.image import Image
-from dotenv import load_dotenv
 from flask.cli import AppGroup
+from dotenv import load_dotenv
 from flask_restful import Api
 from models.user import User
 from models.post import Post
 from flask_cors import CORS
 from models.db import db
+from gevent import sleep
 from flask import Flask
 from faker import Faker
 from dog import getDog
-import click
-import os
+from uuid import UUID
 import requests
+import click
 import boto3
-from gevent import sleep
+import os
 
 load_dotenv()
 UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
@@ -38,9 +37,8 @@ S3_USER_ID = os.getenv("S3_USER_ID")
 S3_USER_SECRET = os.getenv("S3_USER_SECRET")
 S3_REGION = os.getenv("S3_REGION")
 
+
 # seed users
-
-
 @seed_cli.command("users")
 @click.option('--amount', default=20, help='number of users to be generated')
 def user_seeder(amount):
@@ -62,7 +60,7 @@ def user_seeder(amount):
                     name_check(rand_names, index)
             return rand_names[index]
 
-        def random_address():
+        def num_tail():
             str = "123456789"
             address = ""
             num = choice(str[1:4])[0]
@@ -72,7 +70,7 @@ def user_seeder(amount):
 
         for i in range(0, amount):
             random_usernames.insert(0, name_check(
-                first_names, i)+"_"+name_check(last_names, i) + random_address())
+                first_names, i)+"_"+name_check(last_names, i) + num_tail())
         for name in random_usernames:
             random_emails.append(
                 name + "@" + Faker().free_email_domain())
@@ -92,7 +90,7 @@ def user_seeder(amount):
 
 # seed shelters
 @seed_cli.command("shelters")
-@click.option('--amount', default="20", help='number of shelterszx to be generated')
+@click.option('--amount', default="20", help='number of shelters to be generated')
 def shelter_seeder(amount):
     if int(amount) > 0 or amount == "all":
         if amount == "all":
@@ -127,75 +125,115 @@ def shelter_seeder(amount):
 
 
 @seed_cli.command("posts")
-@click.option('--amount', default=20, help='number of posts to be generated')
-def post_seeder(amount):
+def post_seeder():
     sleep(1)
-    if amount > 0:
-        click.echo('seeding...')
-        count = 0
-        users = User.find_all()
-        shelters = Shelter.find_all()
-        users = [user.json() for user in users]
-        shelters = [shelter.json() for shelter in shelters]
-        seed(4321)
-        post_arr = []
-        while amount > len(post_arr):
-            shuffle(users)
-            shuffle(shelters)
-            length = choice(range(20, 50))
-            body = ""
-            while len(body.split(' ')) < length:
-                body = body + " " + Faker().catch_phrase() + "."
-                body = body + " " + Faker().bs().capitalize() + "."
-            title = Faker().catch_phrase()
-            review = choice(range(7, 10))
-            post = Post(body, title, review, UUID(
-                users[0]["id"]), UUID(shelters[0]["id"]))
-            db.session.add(post)
-            db.session.commit()
+    seed(4321)
+    click.echo('seeding...')
+    shelter_comi = [shelter.json() for shelter in Shelter.find_all()]
+    img_count = 0
+    post_count = 0
+    users = User.find_all()
+    users = [user.json() for user in users]
+    shelters = [shelter.json() for shelter in Shelter.find_all()]
+    post_arr = []
+    for shelt in shelter_comi:
+        if len(shelt["posts"]) == 0:
 
-            # post images
-            img_list = []
-            s3_user = boto3.client(
-                's3',
-                aws_access_key_id=S3_USER_ID,
-                aws_secret_access_key=S3_USER_SECRET,
-                region_name=S3_REGION
-            )
-            key_smith = "qwertyuiopasdfghjklzxcvbnm1234567890@#&_-"
-            number = choice(range(1, 6))
-            for num in range(0, number):
-                dog_file = requests.get(
-                    "https://dog.ceo/api/breeds/image/random", stream=True)
-                dog = requests.get(dog_file.json()["message"], stream=True)
-                image_name = ''.join(
-                    choices(key_smith, k=70))+dog_file.json()["message"]
+            number = choice(range(1, 5))
+            post_arr = []
+            while number > len(post_arr):
+                shuffle(users)
+                shuffle(shelters)
+                length = choice(range(20, 50))
+                body = ""
+                while len(body.split(' ')) < length:
+                    body = body + " " + Faker().catch_phrase() + "."
+                    body = body + " " + Faker().bs().capitalize() + "."
+                title = Faker().catch_phrase()
+                review = choice(range(7, 10))
                 params = {
-                    "Bucket": S3_BUCKET,
-                    "Key": image_name
+                    "body": body,
+                    "title": title,
+                    "review": review,
+                    "user_id": UUID(choice(users)["id"]),
+                    "shelter_id": UUID(shelt["id"])
                 }
-                response = s3_user.generate_presigned_url(
-                    'put_object', Params=params, ExpiresIn=5)
-                img_url = response.split('?')[0]
-                img_list.append(img_url)
+                post = Post(**params)
+                post.create()
 
-                r = requests.put(response, data=dog.raw.read())
-                click.echo()
-                click.echo("status %s" % r.status_code)
-            for img in img_list:
+                # post images
+                img_list = []
+                s3_user = boto3.client(
+                    's3',
+                    aws_access_key_id=S3_USER_ID,
+                    aws_secret_access_key=S3_USER_SECRET,
+                    region_name=S3_REGION
+                )
+                key_smith = "qwertyuiopasdfghjklzxcvbnm1234567890@#&_-"
+                number = choice(range(0, 6))
+                for num in range(0, number):
+                    dog_file = requests.get(
+                        "https://dog.ceo/api/breeds/image/random", stream=True)
+                    dog = requests.get(dog_file.json()["message"], stream=True)
+                    image_name = ''.join(
+                        choices(key_smith, k=70))+dog_file.json()["message"]
+                    params = {
+                        "Bucket": S3_BUCKET,
+                        "Key": image_name
+                    }
+                    response = s3_user.generate_presigned_url(
+                        'put_object', Params=params, ExpiresIn=5)
+                    img_url = response.split('?')[0]
+                    img_list.append(img_url)
+
+                    r = requests.put(response, data=dog.raw.read())
+                    click.echo()
+                    click.echo("status %s" % r.status_code)
+                for img in img_list:
+                    params = {
+                        "img_url": img,
+                        "user_id": UUID(post.json()["user_id"]),
+                        "post_id": UUID(post.json()["id"])
+                    }
+                    image = Image(**params)
+                    image.create()
+                img_count += len(img_list)
+                post_arr.append(post)
+                post_count += 1
+    click.echo(
+        '{} posts were added to the database.'.format(post_count))
+    click.echo(
+        '{} images were added to the database.'.format(img_count))
+
+
+@seed_cli.command("comments")
+def comment_seeder():
+    click.echo("...seeding")
+
+    seed(4321)
+    count = 0
+    posts = [post.json() for post in Post.find_all()]
+    users = [user.json() for user in User.find_all()]
+    for post in posts:
+        if len(post["comments"]) == 0:
+            array = [1, 2, 3, 4, 5, 6]
+            for num in range(0, choice(array)):
+                shuffle(users)
+                user = users[0]
+                length = choice(range(5, 20))
+                body = ""
+                while len(body.split(' ')) < length:
+                    body = body + " " + Faker().catch_phrase() + "."
+                    body = body + " " + Faker().bs().capitalize() + "."
                 params = {
-                    "img_url": img,
-                    "user_id": UUID(post.json()["user_id"]),
-                    "post_id": UUID(post.json()["id"])
+                    "body": body,
+                    "post_id": post["id"],
+                    "user_id": user["id"]
                 }
-                image = Image(**params)
-                image.create()
-            count += len(img_list)
-            post_arr.append(post)
-    click.echo(
-        '{} posts were added to the database.'.format(amount))
-    click.echo(
-        '{} images were added to the database.'.format(count))
+                comment = Comment(**params)
+                comment.create()
+                count += 1
+    click.echo('{} comments were added to the database.'.format(count))
 
 
 app.cli.add_command(seed_cli)

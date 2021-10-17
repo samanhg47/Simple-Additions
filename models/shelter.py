@@ -17,9 +17,9 @@ class Shelter(db.Model):
     email = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(14), nullable=False)
     latitude = db.Column(
-        db.String(10), nullable=False)
+        db.DECIMAL(11, 6), nullable=False)
     longitude = db.Column(
-        db.String(10), nullable=False)
+        db.DECIMAL(11, 6), nullable=False)
     password_digest = db.Column(db.String(255), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
@@ -61,7 +61,7 @@ class Shelter(db.Model):
             "password_digest": self.password_digest,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at),
-            "posts": self.posts
+            "posts": [post.json()["id"] for post in self.posts]
         }
 
     def create(self):
