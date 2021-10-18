@@ -20,6 +20,7 @@ let store = {};
   store.modules = store.modules || {}
 
   resolveStoreModules(require('../store/auth.js'), 'auth.js')
+  resolveStoreModules(require('../store/globals.js'), 'globals.js')
 
   // If the environment supports hot reloading...
 
@@ -27,6 +28,7 @@ let store = {};
     // Whenever any Vuex module is updated...
     module.hot.accept([
       '../store/auth.js',
+      '../store/globals.js',
       '../store/index.js',
     ], () => {
       // Update `root.modules` with the latest definitions.

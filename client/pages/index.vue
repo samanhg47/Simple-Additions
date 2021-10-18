@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <section class="formCont">
     <form @submit.prevent="handleSubmit()">
@@ -172,3 +173,5 @@ export default {
 <style scoped>
 
 </style>
+=======
+>>>>>>> 88a071ce2c2ae03ecfbcc15b3d2dffaa6f34edbe

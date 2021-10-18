@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Client } from './auth'
 
 // state
@@ -7,12 +8,23 @@ export const state = () => ({
   users: [],
   comments: [],
   posts: []
+=======
+// state
+export const state = () => ({
+  Authorized: false,
+  User: {},
+  Shelters: [],
+  Users: [],
+  Comments: [],
+  Posts: []
+>>>>>>> 88a071ce2c2ae03ecfbcc15b3d2dffaa6f34edbe
 })
 
 //getters
 export const getters = {}
 
 //actions
+<<<<<<< HEAD
 export const actions = {
   async userGetShelters(proximity, coordinates) {
     body = {
@@ -35,3 +47,9 @@ export const mutations = {
     state.shelters.push({ ...shelters })
   }
 }
+=======
+export const actions = {}
+
+//mutations
+export const mutations = {}
+>>>>>>> 88a071ce2c2ae03ecfbcc15b3d2dffaa6f34edbe
