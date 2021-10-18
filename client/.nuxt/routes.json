@@ -1,0 +1,23 @@
+[
+  {
+    "name": "inspire",
+    "path": "/inspire",
+    "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/inspire.vue",
+    "chunkName": "pages/inspire",
+    "_name": "_fdef3594"
+  },
+  {
+    "name": "skeleton",
+    "path": "/skeleton",
+    "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/skeleton.vue",
+    "chunkName": "pages/skeleton",
+    "_name": "_5fee1821"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_04cbc02e"
+  }
+]

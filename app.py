@@ -31,6 +31,7 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 seed_cli = AppGroup("seed")
+burn_cli = AppGroup("burn")
 
 S3_BUCKET = os.getenv("S3_BUCKET")
 S3_USER_ID = os.getenv("S3_USER_ID")
@@ -88,6 +89,24 @@ def user_seeder(amount):
         '{} users were added to the database.'.format(amount,))
 
 
+# burn users
+@burn_cli.command("users")
+@click.option("--amount", default="all", help='number of users to be deleted')
+def user_destroyer(amount):
+    users = [user for user in User.find_all()]
+    if amount == "all":
+        amount = len(users)
+    else:
+        amount = int(amount)
+    count = 0
+    if amount > 0:
+        for _ in range(0, amount):
+            db.session.delete(users[count])
+            db.session.commit()
+            count += 1
+    click.echo("{} users where destroyed".format(count))
+
+
 # seed shelters
 @seed_cli.command("shelters")
 @click.option('--amount', default="20", help='number of shelters to be generated')
@@ -124,6 +143,25 @@ def shelter_seeder(amount):
         '{} shelters were added to the database.'.format(amount))
 
 
+# burn shelters
+@burn_cli.command("shelters")
+@click.option("--amount", default="all", help='number of shelters to be deleted')
+def shelter_destroyer(amount):
+    shelters = [shelter for shelter in Shelter.find_all()]
+    if amount == "all":
+        amount = len(shelters)
+    else:
+        amount = int(amount)
+    count = 0
+    if amount > 0:
+        for _ in range(0, amount):
+            db.session.delete(shelters[count])
+            db.session.commit()
+            count += 1
+    click.echo("{} shelters where destroyed".format(count))
+
+
+# seed posts
 @seed_cli.command("posts")
 def post_seeder():
     sleep(1)
@@ -206,6 +244,25 @@ def post_seeder():
         '{} images were added to the database.'.format(img_count))
 
 
+# burn posts
+@burn_cli.command("posts")
+@click.option("--amount", default="all", help='number of posts to be deleted')
+def post_destroyer(amount):
+    posts = [post for post in Post.find_all()]
+    if amount == "all":
+        amount = len(posts)
+    else:
+        amount = int(amount)
+    count = 0
+    if amount > 0:
+        for _ in range(0, amount):
+            db.session.delete(posts[count])
+            db.session.commit()
+            count += 1
+    click.echo("{} posts where destroyed".format(count))
+
+
+# seed comments
 @seed_cli.command("comments")
 def comment_seeder():
     click.echo("...seeding")
@@ -236,6 +293,25 @@ def comment_seeder():
     click.echo('{} comments were added to the database.'.format(count))
 
 
+# burn comments
+@burn_cli.command("comments")
+@click.option("--amount", default="all", help='number of comments to be deleted')
+def comment_destroyer(amount):
+    comments = [comment for comment in Comment.find_all()]
+    if amount == "all":
+        amount = len(comments)
+    else:
+        amount = int(amount)
+    count = 0
+    if amount > 0:
+        for _ in range(0, amount):
+            db.session.delete(comments[count])
+            db.session.commit()
+            count += 1
+    click.echo("{} comments where destroyed".format(count))
+
+
+app.cli.add_command(burn_cli)
 app.cli.add_command(seed_cli)
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost:5432/simple_additions_db"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -266,18 +342,15 @@ api.add_resource(user.Users, '/user/<string:id>')
 
 # Comment Resource(s)
 api.add_resource(comment.UserComments, '/user/comments/<string:id>')
-# api.add_resource(comment.PostComments, '/comments/<string:id>')
 api.add_resource(comment.Comments, '/comment/<string:id>')
 api.add_resource(comment.AllComments, '/comments')
 
 # Post Resource(s)
 api.add_resource(post.UserPosts, '/user/posts/<string:id>')
-# api.add_resource(post.ShelterPosts, '/posts/<string:id>')
 api.add_resource(post.Posts, '/post/<string:id>')
 api.add_resource(post.AllPosts, '/posts')
 
 # Image Resource(s)
-# api.add_resource(image.PostImages, '/images/<string:id>')
 api.add_resource(image.Images, '/image/<string:id>')
 api.add_resource(image.AllImages, '/images')
 
@@ -291,5 +364,5 @@ api.add_resource(shelter.Allshelters, '/shelters')
 
 
 if __name__ == '__main__':
-    # seeder()
-    app.run(debug=True)
+    app.run()
+# debug=True

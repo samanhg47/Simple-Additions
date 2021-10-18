@@ -1,8 +1,10 @@
 from flask_restful import Resource
-from flask import request
+from flask_cors import cross_origin
+from flask import request, make_response, jsonify
+from werkzeug.wrappers import response
 from models.shelter import Shelter
 from models.user import User
-from middleware import admin_check, create_token, gen_password, compare_password
+from middleware import admin_check, create_token, gen_password, compare_password, read_token, strip_token
 
 
 class UserLogin(Resource):
@@ -18,6 +20,11 @@ class UserLogin(Resource):
                 return 'Unauthorized', 404
         else:
             return 'Unauthorized', 404
+
+    def get(self):
+        token = strip_token(request)
+        bool = read_token(token)
+        return bool
 
 
 class ShelterLogin(Resource):
@@ -51,7 +58,15 @@ class UserRegister(Resource):
             return user, 201
         del user["password_digest"]
         del user["id"]
-        return user, 201
+        response = make_response(
+            jsonify(
+                {"message": "REQUEST SUCCESSFUL"}
+            ), 201
+        )
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        # if request.method == "OPTIONS":
+        #   response.wr
+        return response
 
 
 class ShelterRegister(Resource):
@@ -74,3 +89,9 @@ class ShelterRegister(Resource):
         del shelter["password_digest"]
         del shelter["id"]
         return shelter, 201
+
+    # response = jsonify(message="Simple server is running")
+
+    # # Enable Access-Control-Allow-Origin
+    # response.headers.add("Access-Control-Allow-Origin", "*")
+    # return response

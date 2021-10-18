@@ -1,77 +1,174 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <section class="formCont">
+    <form @submit.prevent="handleSubmit()">
+      <div v-for="(field,index) in form" :key="index" class="inputCont">
+        <label :for="index">{{field.for}}</label>
+        <input @input="handleChange($event)" @keypress.enter="handleSubmit()" @blur="handleBlur($event)"
+        :name="index"
+        :type="field.type"
+        :placeholder="field.placeholder"
+        :class="field.class"
+        />
+        <div :class="field.class">
+          <p v-if="field.msg" class="errMsg">{{field.msg}}</p>
+          <p v-if="field.minLen">{{field.value.length}}/{{field.minLen}}</p>
+        </div>
+      </div>
+      <button type="submit">login</button>
+    </form>
+  </section>
 </template>
+
+<script>
+import axios from 'axios'
+import {BASE_URL} from "../store/auth"
+export default {
+  name: "index",
+  data:()=>({
+    form: {
+    'email': {
+      value:'', class: "neutral", type: "email",
+      for: "Valid Email Address",  placeholder: "you@youremail.com",
+      visited: false, minLen: 10, msg:null
+            },
+    'userName': {
+      value:'', class: "neutral", type: "text",
+      for: "Your Username", placeholder: "DoggoDaddy73",
+      visited: false, minLen: 5, msg:null
+            },
+    'password': {
+      value:'', class: "neutral", type: "password",
+      for: "Password", placeholder: "",
+      visited: false, minLen: 8, msg:null
+            },
+    'confirm': {
+      value:'', class: "neutral", type: "password",
+      for: "Confirm Password", placeholder: "",
+      visited: false, minLen: 8, msg:null
+            }
+    },
+  }),
+  methods:{
+    charCheck(field){
+      const charBools = []
+      const acceptable = "1234567890qwertyuiopasdfghjklzxcvbnm"
+      const charArr = this.form[field].value.split('')
+      if(field === "userName"){
+        charArr.forEach((char, i) => {
+          
+          if(acceptable.includes(char)){
+            charBools.push("t")
+          }else{
+            charBools.push("f")
+          }
+          
+        })
+      }
+      if(field === "email"){
+        charArr.forEach((char, i) => {
+            if (acceptable.includes(char)|| char === "@" || char ===".") {
+              charBools.push("t")
+            } else {
+              charBools.push("f")
+            }
+        })
+      }
+      return charBools
+    },
+    checkIfInvalid(event){
+      if(this.charCheck("email").indexOf("f") > -1){
+        this.form.email.class = 'invalid'
+        this.form.email.msg = "Must Be A Valid Address"
+      } else if (this.form.email.class !== "valid"){
+        this.form.email.class === "neutral"
+      }
+      if(this.charCheck("userName").includes("f")){
+        
+        this.form.userName.class = "invalid"
+        this.form.userName.msg = "Username Must Be Alphanumeric"
+      } else if (this.form.userName.class !== "valid"){
+        this.form.userName.class === "neutral"
+      }
+      if(event.target.name == "confirm" && this.form.password.value.length
+      < this.form.confirm.value.length){
+        this.form.confirm.class = "invalid"
+        this.form.confirm.msg = "Confirmation Must Match Original"
+      } else if (this.form.confirm.class !== "valid"){
+        this.form.confirm.class === "neutral"
+      }
+    },
+    checkIfValid(){
+    if(this.form.email.value.indexOf("@")>-1 && this.form.email.value.indexOf(".")>-1
+      && this.form.email.value.length >= 10 && this.form.email.value.length < 50){
+      this.form.email.class = "valid"
+      this.form.email.msg = null
+    }
+    if(!( this.charCheck("userName").includes("f"))
+      && this.form.userName.value.length >= 5 && this.form.userName.value.length < 50){
+      this.form.userName.class = "valid"
+      this.form.userName.msg = null
+    }
+    if (this.form.password.value.length >= 8 && this.form.password.value.length < 50){
+      this.form.password.class = "valid"
+      this.form.password.msg = null
+    }
+    if(this.form.password.class === "valid" && this.form.confirm.value
+      === this.form.password.value){
+      this.form.confirm.class = "valid"
+      this.form.confirm.msg = null
+    }
+    },
+    checkLength(event){
+      const cond1 = this.form[event.target.name].visited === true || this.form[event.target.name].class 
+      ==="valid"
+      const cond2 = this.form[event.target.name].minLen && 
+      event.target.value.length < this.form[event.target.name].minLen
+      if (cond1){
+        if(event.target.value.length > 50){
+        this.form[event.target.name].class = "invalid"
+        this.form[event.target.name].msg = `${event.target.name} must be less that 50 characters long`
+      }else if(cond2){
+        this.form[event.target.name].class = "invalid"
+        this.form[event.target.name].msg = `${event.target.name} must be at least ${this.form[event.target.name].minLen} characters long`
+      }else if (this.form[event.target.name].class !== "valid"){
+        this.form[event.target.name].class === "neutral"
+      }
+      }
+    },
+    handleBlur(event){
+      this.form[event.target.name].visited = true
+      this.checkLength(event)
+    },
+    handleChange(event) {
+      this.form[event.target.name].value = event.target.value
+      this.checkIfValid()
+      this.checkIfInvalid(event)
+      this.checkLength(event)
+    },
+    handleSubmit(){
+      if(
+        this.form.userName.class === "valid" &&
+        this.form.email.class === "valid" &&
+        this.form.password.class === "valid" &&
+        this.form.confirm.class === "valid"
+      ){
+        const body = {
+          "user_name": this.form.userName.value,
+          "password": this.form.confirm.value,
+          "email": this.form.email.value,
+        }
+        try{
+          const req = axios.post(`http://127.0.0.1:5000/register/users`, body)
+          console.log(req)
+        }catch(err){
+          return err
+        }
+      }
+    }
+  },
+}
+</script>
+
+<style scoped>
+
+</style>

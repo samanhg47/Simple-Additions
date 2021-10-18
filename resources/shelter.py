@@ -77,14 +77,7 @@ class Allshelters(Resource):
 
             data = request.get_json()
             if "proximity" not in data.keys():
-                shelters = Shelter.find_all()
-                shelter_list = [shelter.json() for shelter in shelters]
-                if admin_check(request):
-                    return shelter_list
-                for shelter in shelter_list:
-                    del shelter["password_digest"]
-                    del shelter["id"]
-                return shelter_list
+                return "Proximity Not Provided", 400
             if "coordinates" not in data.keys():
                 return "Coordinates Not Provided", 400
             shelters = Shelter.by_proximity(
