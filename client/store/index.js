@@ -1,31 +1,81 @@
-<<<<<<< HEAD
 import { Client } from './auth'
 
 // state
 export const state = () => ({
+  authenticated: false,
+  newAccount: true,
+  currentUser: {},
   location: [],
   shelters: [],
   users: [],
   comments: [],
-  posts: []
-=======
-// state
-export const state = () => ({
-  Authorized: false,
-  User: {},
-  Shelters: [],
-  Users: [],
-  Comments: [],
-  Posts: []
->>>>>>> 88a071ce2c2ae03ecfbcc15b3d2dffaa6f34edbe
+  posts: [],
+  states: [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'IllinoisIndiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'MontanaNebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'PennsylvaniaRhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming'
+  ],
+  cities: []
 })
 
 //getters
 export const getters = {}
 
 //actions
-<<<<<<< HEAD
 export const actions = {
+  async checkToken() {
+    let auth = false
+    const token = localStorage.getItem('token')
+    if (token) {
+      auth = await Client.get('/login/users')
+    }
+    commit('assignAuth', auth)
+    return auth
+  },
   async userGetShelters(proximity, coordinates) {
     body = {
       coordinates: coordinates,
@@ -43,13 +93,13 @@ export const actions = {
 
 //mutations
 export const mutations = {
+  assignAuth(state, auth) {
+    state.authenticated = auth
+  },
   addShelters(state, shelters) {
     state.shelters.push({ ...shelters })
+  },
+  toggleNewAccount(state, bool) {
+    state.newAccount = bool
   }
 }
-=======
-export const actions = {}
-
-//mutations
-export const mutations = {}
->>>>>>> 88a071ce2c2ae03ecfbcc15b3d2dffaa6f34edbe

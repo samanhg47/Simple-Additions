@@ -1,11 +1,11 @@
 from resources import fileport, shelter, image, post, user, auth, comment, admin
 from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
+from sheets.shelters import all_shelters
 from middleware import gen_password
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
-from sheets import all_shelters
 from models.image import Image
 from flask.cli import AppGroup
 from dotenv import load_dotenv
@@ -17,7 +17,6 @@ from models.db import db
 from gevent import sleep
 from flask import Flask
 from faker import Faker
-from dog import getDog
 from uuid import UUID
 import requests
 import click
@@ -220,7 +219,7 @@ def post_seeder():
                         "Key": image_name
                     }
                     response = s3_user.generate_presigned_url(
-                        'put_object', Params=params, ExpiresIn=5)
+                        'put_object', Params=params, ExpiresIn=15)
                     img_url = response.split('?')[0]
                     img_list.append(img_url)
 
@@ -338,7 +337,6 @@ api.add_resource(admin.AdminAllPosts, "/admin/posts")
 
 # User Resource(s)
 api.add_resource(user.Users, '/user/<string:id>')
-# api.add_resource(user.AllUsers, '/users')
 
 # Comment Resource(s)
 api.add_resource(comment.UserComments, '/user/comments/<string:id>')
@@ -364,5 +362,4 @@ api.add_resource(shelter.Allshelters, '/shelters')
 
 
 if __name__ == '__main__':
-    app.run()
-# debug=True
+    app.run(debug=True)

@@ -14,9 +14,10 @@ export const actions = {
     let auth = false
     const token = localStorage.getItem('token')
     if (token) {
-      auth = await Client.get('/login/users')
+      const res = await Client.get('/login/users')
+      console.log(res)
     }
-    commit('assignAuth', auth)
+    // commit('assignAuth', auth)
     return auth
   }
 }
@@ -31,8 +32,8 @@ export const mutations = {
 //Server Request Auth
 export const BASE_URL =
   process.env.NODE_ENV === 'production'
-    ? `${window.location.origin}/api`
-    : 'http://localhost:5000/api'
+    ? `${window.location.origin}`
+    : 'http://localhost:5000'
 
 export const Client = Axios.create({ baseURL: BASE_URL })
 
@@ -48,5 +49,3 @@ Client.interceptors.request.use(
   },
   error => Promise.reject(error)
 )
-
-axios.defaults.withCredentials = true

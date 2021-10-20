@@ -96,7 +96,8 @@ class AdminAllUsers(Resource):
         if read_token(token):
             if admin_check(request):
                 users = User.find_all()
-                return [user.json() for user in users]
+                allUsers = [user.json() for user in users]
+                return allUsers
             else:
                 return "Unauthorized", 403
         else:

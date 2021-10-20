@@ -17,9 +17,9 @@ class UserLogin(Resource):
                     {"id": str(user.id), "user_name": user.user_name})
                 return token
             else:
-                return 'Unauthorized', 404
+                return 'Unauthorized', 403
         else:
-            return 'Unauthorized', 404
+            return 'Unauthorized', 403
 
     def get(self):
         token = strip_token(request)
@@ -38,9 +38,9 @@ class ShelterLogin(Resource):
                     {"id": str(shelter.id), "shelter_name": shelter.shelter_name})
                 return token
             else:
-                return 'Unauthorized', 404
+                return 'Unauthorized', 403
         else:
-            return 'Unauthorized', 404
+            return 'Unauthorized', 403
 
 
 class UserRegister(Resource):
@@ -48,7 +48,14 @@ class UserRegister(Resource):
         data = request.get_json()
         user = User.by_name(data["user_name"])
         if user:
-            return "Error: Username Taken", 403
+            if compare_password(data["password"], user.json()["password_digest"]):
+                token = create_token(
+                    {"id": str(user.id), "user_name": user.user_name})
+                return token
+            else:
+                return """Password Doesn't Match. If You Are A New User, Choose A
+                Different Username, This One Has Already Been Taken.
+                If You Are Returning, Try Again.""", 403
         data.update({"password_digest": gen_password(data["password"])})
         del data["password"]
         user = User(**data)
@@ -57,16 +64,9 @@ class UserRegister(Resource):
         if admin_check(request):
             return user, 201
         del user["password_digest"]
-        del user["id"]
-        response = make_response(
-            jsonify(
-                {"message": "REQUEST SUCCESSFUL"}
-            ), 201
-        )
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        # if request.method == "OPTIONS":
-        #   response.wr
-        return response
+        token = create_token(
+            {"id": str(user.id), "user_name": user.user_name})
+        return {"user": user, "token": token}, 201
 
 
 class ShelterRegister(Resource):
@@ -75,10 +75,18 @@ class ShelterRegister(Resource):
         shelter = Shelter.by_contacts(
             data["phone_number"], data["email"], data["shelter_name"], data["address"])
         if shelter:
-            a = "A"
-            if shelter.json()["shelter_name"][0] in ["A", "E", "I", "O", "U"]:
-                a = "An"
-            return "Error: {} {} Already Exists In This Location".format(a, shelter.json()["shelter_name"]), 403
+            if compare_password(data["password"], shelter.json()["password_digest"]):
+                token = create_token(
+                    {"id": str(shelter.id), "shelter_name": shelter.shelter_name})
+                return token
+            else:
+                a = "A"
+                if shelter.json()["shelter_name"][0] in ["A", "E", "I", "O", "U"]:
+                    a = "An"
+                return """Error: {} {} Already Exists In This Location.
+                If You Are Registering, Choose Either Another Shelter Name Or Location.
+                If You Are Logining In As The Before Mentioned Shelter, Try Again.
+                """.format(a, shelter.json()["shelter_name"]), 403
         data.update({"password_digest": gen_password(data["password"])})
         del data["password"]
         shelter = Shelter(**data)
@@ -87,11 +95,6 @@ class ShelterRegister(Resource):
         if admin_check(request):
             return shelter, 201
         del shelter["password_digest"]
-        del shelter["id"]
-        return shelter, 201
-
-    # response = jsonify(message="Simple server is running")
-
-    # # Enable Access-Control-Allow-Origin
-    # response.headers.add("Access-Control-Allow-Origin", "*")
-    # return response
+        token = create_token(
+            {"id": str(shelter.id), "shelter_name": shelter.shelter_name})
+        return {"shelter": shelter, "token": token}, 201
