@@ -30,10 +30,9 @@ def integrate_states(list):
     states = []
     for state in list:
         obj = {}
-        obj.update({'state': state[0], "shorthand": state[1]})
+        obj.update({'state_name': state[0], "shorthand": state[1]})
         states.append(obj)
     return states
 
 
 states_list = integrate_states(values)
-print(states_list)

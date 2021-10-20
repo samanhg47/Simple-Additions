@@ -27,7 +27,7 @@ values = result.get('values', [])
 
 
 def integrate_cities(values):
-    headers = ["city", "state", "zipcode", "latitude", "longitude"]
+    headers = ["city_name", "state_name", "zipcode", "latitude", "longitude"]
     city_list = []
     for city in values:
         if city[1] != "PR":
@@ -42,5 +42,4 @@ def integrate_cities(values):
     return city_list
 
 
-cities = integrate_cities(values)
-print(cities)
+cities_list = integrate_cities(values)

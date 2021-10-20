@@ -1,11 +1,15 @@
-from resources import fileport, shelter, image, post, user, auth, comment, admin
+from resources import fileport, shelter, image, post, user, auth, comment, admin, city
 from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
-from sheets.shelters import all_shelters
+from sheets.read.shelters import all_shelters
+from sheets.read.states import states_list
+from sheets.read.cities import cities_list
 from middleware import gen_password
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
+from models.state import State
+from models.city import City
 from models.image import Image
 from flask.cli import AppGroup
 from dotenv import load_dotenv
@@ -87,8 +91,9 @@ def user_seeder(amount):
     click.echo(
         '{} users were added to the database.'.format(amount,))
 
-
 # burn users
+
+
 @burn_cli.command("users")
 @click.option("--amount", default="all", help='number of users to be deleted')
 def user_destroyer(amount):
@@ -141,8 +146,9 @@ def shelter_seeder(amount):
     click.echo(
         '{} shelters were added to the database.'.format(amount))
 
-
 # burn shelters
+
+
 @burn_cli.command("shelters")
 @click.option("--amount", default="all", help='number of shelters to be deleted')
 def shelter_destroyer(amount):
@@ -242,8 +248,9 @@ def post_seeder():
     click.echo(
         '{} images were added to the database.'.format(img_count))
 
-
 # burn posts
+
+
 @burn_cli.command("posts")
 @click.option("--amount", default="all", help='number of posts to be deleted')
 def post_destroyer(amount):
@@ -291,8 +298,9 @@ def comment_seeder():
                 count += 1
     click.echo('{} comments were added to the database.'.format(count))
 
-
 # burn comments
+
+
 @burn_cli.command("comments")
 @click.option("--amount", default="all", help='number of comments to be deleted')
 def comment_destroyer(amount):
@@ -308,6 +316,62 @@ def comment_destroyer(amount):
             db.session.commit()
             count += 1
     click.echo("{} comments where destroyed".format(count))
+
+
+# seed states
+@seed_cli.command("states")
+def state_seeder():
+    if len(State.find_all()) == 0:
+        count = 0
+        for state in states_list:
+            state = State(**state)
+            state.create()
+            count += 1
+    click.echo("{} states were added to the database.".format(count))
+
+# burn state
+
+
+@burn_cli.command("states")
+def state_destroyer():
+    if len(State.find_all()) > 0:
+        count = 0
+        for state in State.find_all():
+            db.session.delete(state)
+            db.session.commit()
+            count += 1
+    click.echo("{} states were destroyed.".format(count))
+
+
+# seed cities
+@seed_cli.command("cities")
+def city_seeder():
+    if len(City.find_all()) == 0:
+        count = 0
+        states = [state.json() for state in State.find_all()]
+        for city in cities_list:
+            for state in states:
+                state_name = state["shorthand"]
+                state_id = state["id"]
+                if city["state_name"] == state_name:
+                    city["state_id"] = state_id
+                    this_city = City(**city)
+                    this_city.create()
+                    count += 1
+    click.echo("{} cities were added to the database.".format(count))
+
+# burn cities
+
+
+@burn_cli.command("cities")
+def city_destroyer():
+    if len(City.find_all()) > 0:
+        count = 0
+        for city in City.find_all():
+            db.session.delete(city)
+            db.session.commit()
+            count += 1
+    click.echo("{} cities were destroyed.".format(count))
 
 
 app.cli.add_command(burn_cli)
@@ -359,6 +423,9 @@ api.add_resource(fileport.S3Delete, "/s3/<string:key>")
 # Shelter Resource(s)
 api.add_resource(shelter.Shelters, '/shelter/<string:id>')
 api.add_resource(shelter.Allshelters, '/shelters')
+
+# City Resource(s)
+api.add_resource(city.AllCities, "/cities")
 
 
 if __name__ == '__main__':
