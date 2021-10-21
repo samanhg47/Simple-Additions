@@ -54,9 +54,9 @@ export const state = () => ({
       class: 'neutral',
       type: 'text',
       for: 'Address',
-      placeholder: '',
+      placeholder: '1234 West State St.',
       visited: false,
-      minLen: 10,
+      minLen: 1,
       msg: null
     },
     city: {
@@ -65,9 +65,8 @@ export const state = () => ({
       class: 'neutral',
       type: 'text',
       for: 'City',
-      placeholder: '',
+      placeholder: 'city',
       visited: false,
-      minLen: 10,
       msg: null
     },
     state: {
@@ -76,9 +75,8 @@ export const state = () => ({
       class: 'neutral',
       type: 'text',
       for: 'State',
-      placeholder: '',
+      placeholder: 'state',
       visited: false,
-      minLen: 10,
       msg: null
     },
     zipcode: {
@@ -86,10 +84,9 @@ export const state = () => ({
       name: 'Zipcode',
       class: 'neutral',
       type: 'text',
-      for: 'State',
-      placeholder: '',
+      for: 'Zipcode',
+      placeholder: 'zipcode',
       visited: false,
-      minLen: 10,
       msg: null
     },
     shelter_name: {
@@ -98,9 +95,9 @@ export const state = () => ({
       class: 'neutral',
       type: 'text',
       for: 'Shelter Name',
-      placeholder: '',
+      placeholder: 'Nice Shelter People Inc.',
       visited: false,
-      minLen: 10,
+      minLen: 1,
       msg: null
     },
     phone_number: {
@@ -109,28 +106,35 @@ export const state = () => ({
       class: 'neutral',
       type: 'text',
       for: 'Phone Number',
-      placeholder: '',
+      placeholder: '(123)-456-7891',
       visited: false,
-      minLen: 10,
+      minLen: 14,
       msg: null
     }
   },
   user_form: true,
-  user: {},
+  user: {
+    email: '',
+    user_name: '',
+    password: '',
+    city: '',
+    state: '',
+    zipcode: ''
+  },
   shelter: {}
 })
 
 //getters
 export const getters = {
   userForm: state => {
-    form = state.form
+    let form = state.form
     delete form.phone_number
     delete form.shelter_name
     delete form.address
     return form
   },
   shelterForm: state => {
-    form = state.form
+    let form = state.form
     delete form.username
   }
 }
@@ -205,29 +209,47 @@ export const actions = {
     }
     return charBools
   },
-  checkIfInvalid(state) {
-    if (this.charCheck('email').indexOf('f') > -1) {
-      this.form.email.class = 'invalid'
-      this.form.email.msg = 'Must Be A Valid Address'
-    } else if (this.form.email.class !== 'valid') {
-      this.form.email.class === 'neutral'
-    }
-    if (this.charCheck('userName').includes('f')) {
-      this.form.userName.class = 'invalid'
-      this.form.userName.msg = 'Username Must Be Alphanumeric'
-    } else if (this.form.userName.class !== 'valid') {
-      this.form.userName.class === 'neutral'
-    }
-    if (
-      event.target.name == 'confirm' &&
-      this.form.password.value.length < this.form.confirm.value.length
-    ) {
-      this.form.confirm.class = 'invalid'
-      this.form.confirm.msg = 'Confirmation Must Match Original'
-    } else if (this.form.confirm.class !== 'valid') {
-      this.form.confirm.class === 'neutral'
-    }
+  checkIfInvalid(state, event) {
+    console.log()
+    // if (state.charCheck('email').indexOf('f') > -1) {
+    //   state.form.email.class = 'invalid'
+    //   state.form.email.msg = 'Must Be A Valid Address'
+    // } else if (state.form.email.class !== 'valid') {
+    //   state.form.email.class === 'neutral'
+    // }
+    // if (state.charCheck('userName').includes('f')) {
+    //   state.form.userName.class = 'invalid'
+    //   state.form.userName.msg = 'Username Must Be Alphanumeric'
+    // } else if (state.form.userName.class !== 'valid') {
+    //   state.form.userName.class === 'neutral'
+    // }
+    // if (
+    //   state.form.password.value.length < state.form.confirm.value.length
+    // ) {
+    //   state.form.confirm.class = 'invalid'
+    //   state.form.confirm.msg = 'Confirmation Must Match Original'
+    // } else if (state.form.confirm.class !== 'valid') {
+    //   state.form.confirm.class === 'neutral'
+    // }
+  },
+  handleChange(store, event) {
+    // store.state.form[event.target.name].value = event.target.value
+    // console.log(store.state)
+    // store.checkIfValid()
+    // store.checkIfInvalid(event)
+    // store.checkLength(event)
+    store.commit('commitChange', event)
+  },
+  handleBlur(event) {
+    console.log(event)
+    //     this.form[event.target.name].visited = true
+    //     this.checkLength(event)
   }
 }
 
 //mutations
+export const mutations = {
+  commitChange(state, event) {
+    state.form[event.target.name].value = event.target.value
+  }
+}

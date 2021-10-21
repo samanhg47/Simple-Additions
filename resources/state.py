@@ -6,9 +6,17 @@ from flask import request
 
 class By_Short(Resource):
     def get(self, state):
-        token = strip_token(request)
-        if read_token(token):
-            state = State.by_shorthand(state)
-            return state.json()
-        else:
-            return "Unauthorized", 401
+        state = State.by_shorthand(state)
+        return state.json()
+
+
+class States(Resource):
+    def get(self):
+        states = State.find_all()
+        return [state.json() for state in states]
+
+
+class By_Id(Resource):
+    def get(self, id):
+        state = State.by_id()
+        return state.json()

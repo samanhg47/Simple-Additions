@@ -126,12 +126,12 @@ export default {
   //     this.form[event.target.name].visited = true
   //     this.checkLength(event)
   //   },
-  //   handleChange(event) {
-  //     this.form[event.target.name].value = event.target.value
-  //     this.checkIfValid()
-  //     this.checkIfInvalid(event)
-  //     this.checkLength(event)
-  //   },
+    // handleChange(event) {
+    //   this.form[event.target.name].value = event.target.value
+    //   this.checkIfValid()
+    //   this.checkIfInvalid(event)
+    //   this.checkLength(event)
+    // },
   //   async handleSubmit(){
   //     if(
   //       this.form.userName.class === "valid" &&

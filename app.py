@@ -443,9 +443,14 @@ api.add_resource(shelter.Allshelters, '/shelters')
 
 # City Resource(s)
 api.add_resource(city.By_State, "/cities/<string:state>")
+api.add_resource(city.By_Id, "/city/<string:id>")
+api.add_resource(
+    city.Detailed, "/city/<string:state>/<string:name>/<int:zipcode>")
 
 # State Resource(s)
+api.add_resource(state.States, "/states")
 api.add_resource(state.By_Short, "/state/<string:state>")
+api.add_resource(state.By_Id, "/state/<string:id>")
 
 
 if __name__ == '__main__':
