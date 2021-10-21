@@ -28,12 +28,17 @@ class State(db.Model):
         self.shorthand = shorthand
 
     def json(self):
+        cities = []
+        for city in self.cities:
+            city = city.json()["id"]
+            cities.append(city)
         return {
-            "id": self.id,
+            "id": str(self.id),
             "state_name": self.state_name,
             "shorthand": self.shorthand,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "cities": cities,
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at)
         }
 
     def create(self):
@@ -43,10 +48,15 @@ class State(db.Model):
 
     @classmethod
     def find_all(cls):
-        posts = State.query.all()
-        return posts
+        states = State.query.all()
+        return states
 
     @classmethod
     def by_shorthand(cls, state_shorthand):
-        posts = State.query.filter_by(shorthand=state_shorthand).first()
-        return posts
+        state = State.query.filter_by(shorthand=state_shorthand).first()
+        return state
+
+    @classmethod
+    def by_id(cls, state_id):
+        state = State.query.filter_by(id=state_id).first()
+        return state

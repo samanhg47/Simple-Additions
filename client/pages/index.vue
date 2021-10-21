@@ -1,5 +1,6 @@
 <template>
-  <form @submit.prevent="handleSubmit()">
+<input type="text"/>
+  <!-- <form @submit.prevent="handleSubmit()">
     {{console()}}
         <div v-for="(field,index) in form" :key="index" class="inputCont flex">
           <label :for="index">{{field.for}}</label>
@@ -18,17 +19,19 @@
           <button type="submit">Login/Register</button>
           <button type="toggle">Shelters Login/Register Here</button>
         </div>
-      </form>
+      </form> -->
 </template>
 
 <script>
+import {mapState, mapGetters, mapActions, mapMutations} from "vuex"
 export default {
-  name: "index",
-  props:["form"],
-  methods: {
-    console(){
-      console.log(form)
-    }
-  }
+  computed: mapState(login["form"])
+  // name: "index",
+  // props:["form"],
+  // methods: {
+  //   console(){
+  //     console.log(form)
+  //   }
+  // }
 }
 </script>

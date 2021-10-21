@@ -7,6 +7,12 @@ from models.db import db
 from uuid import UUID
 
 
+class AllUsers(Resource):
+    def get(self):
+        users = [user.json() for user in User.find_all()]
+        return len(users)
+
+
 class Users(Resource):
     def get(self, id):
         token = strip_token(request)

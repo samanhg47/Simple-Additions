@@ -52,7 +52,7 @@ export const state = () => ({
       value: '',
       name: 'Address',
       class: 'neutral',
-      type: 'password',
+      type: 'text',
       for: 'Address',
       placeholder: '',
       visited: false,
@@ -63,7 +63,7 @@ export const state = () => ({
       value: '',
       name: 'City',
       class: 'neutral',
-      type: 'password',
+      type: 'text',
       for: 'City',
       placeholder: '',
       visited: false,
@@ -74,7 +74,18 @@ export const state = () => ({
       value: '',
       name: 'State',
       class: 'neutral',
-      type: 'password',
+      type: 'text',
+      for: 'State',
+      placeholder: '',
+      visited: false,
+      minLen: 10,
+      msg: null
+    },
+    zipcode: {
+      value: '',
+      name: 'Zipcode',
+      class: 'neutral',
+      type: 'text',
       for: 'State',
       placeholder: '',
       visited: false,
@@ -85,7 +96,7 @@ export const state = () => ({
       value: '',
       name: 'Shelter name',
       class: 'neutral',
-      type: 'password',
+      type: 'text',
       for: 'Shelter Name',
       placeholder: '',
       visited: false,
@@ -96,7 +107,7 @@ export const state = () => ({
       value: '',
       name: 'phone_number',
       class: 'neutral',
-      type: 'password',
+      type: 'text',
       for: 'Phone Number',
       placeholder: '',
       visited: false,
@@ -104,10 +115,25 @@ export const state = () => ({
       msg: null
     }
   },
-  user: true
+  user_form: true,
+  user: {},
+  shelter: {}
 })
 
 //getters
+export const getters = {
+  userForm: state => {
+    form = state.form
+    delete form.phone_number
+    delete form.shelter_name
+    delete form.address
+    return form
+  },
+  shelterForm: state => {
+    form = state.form
+    delete form.username
+  }
+}
 
 //actions
 export const actions = {
@@ -149,7 +175,58 @@ export const actions = {
         }
       })
     }
+    if (`${field}` === 'state') {
+      if (''.join(charArr) == 'state') {
+        charBools.push('f')
+      } else {
+        charBools.push('t')
+      }
+    }
+    if (`${field}` === 'city') {
+      if (''.join(charArr) == 'city') {
+        charBools.push('f')
+      } else {
+        charBools.push('t')
+      }
+    }
+    if (`${field}` === 'zipcode') {
+      if (''.join(charArr) == 'zipcode') {
+        charBools.push('f')
+      } else {
+        charBools.push('t')
+      }
+    }
+    if (`${field}` === 'phone_number') {
+      if (charArr.length > 14 || charArr.join('') === 'phone_number') {
+        charBools.push('f')
+      } else {
+        charBools.push('t')
+      }
+    }
     return charBools
+  },
+  checkIfInvalid(state) {
+    if (this.charCheck('email').indexOf('f') > -1) {
+      this.form.email.class = 'invalid'
+      this.form.email.msg = 'Must Be A Valid Address'
+    } else if (this.form.email.class !== 'valid') {
+      this.form.email.class === 'neutral'
+    }
+    if (this.charCheck('userName').includes('f')) {
+      this.form.userName.class = 'invalid'
+      this.form.userName.msg = 'Username Must Be Alphanumeric'
+    } else if (this.form.userName.class !== 'valid') {
+      this.form.userName.class === 'neutral'
+    }
+    if (
+      event.target.name == 'confirm' &&
+      this.form.password.value.length < this.form.confirm.value.length
+    ) {
+      this.form.confirm.class = 'invalid'
+      this.form.confirm.msg = 'Confirmation Must Match Original'
+    } else if (this.form.confirm.class !== 'valid') {
+      this.form.confirm.class === 'neutral'
+    }
   }
 }
 

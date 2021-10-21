@@ -21,7 +21,7 @@ class AllPosts(Resource):
             post.create()
             return post.json(), 201
         else:
-            return "Unauthorized", 403
+            return "Unauthorized", 401
 
 
 class Posts(Resource):
@@ -50,9 +50,9 @@ class Posts(Resource):
                 db.session.commit()
                 return post.json()
             else:
-                return "Unauthorized", 403
+                return "This Method Is Inaccessable", 403
         else:
-            return "Unauthorized", 403
+            return "Unauthorized", 401
 
     def delete(self, id):
         token = strip_token(request)
@@ -70,9 +70,9 @@ class Posts(Resource):
                 db.session.commit()
                 return 'Deletion Successful', copy
             else:
-                return "Unauthorized", 403
+                return "This Method Is Inaccessable", 403
         else:
-            return "Unauthorized", 403
+            return "Unauthorized", 401
 
 
 class UserPosts(Resource):
@@ -84,6 +84,6 @@ class UserPosts(Resource):
                 posts = Post.by_user(user_id)
                 return [post.json() for post in posts]
             else:
-                return "Unauthorized", 403
+                return "This Method Is Inaccessable", 403
         else:
-            return "Unauthorized", 403
+            return "Unauthorized", 401

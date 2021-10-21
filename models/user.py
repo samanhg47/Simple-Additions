@@ -12,6 +12,8 @@ class User(db.Model):
     user_name = db.Column(db.String(50), nullable=False, unique=True)
     password_digest = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    city_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        'city.id', ondelete='cascade'), nullable=False)
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(
@@ -29,10 +31,11 @@ class User(db.Model):
         backref=db.backref('user', lazy="joined", innerjoin=True))
 
 # Declarative Method(s)
-    def __init__(self, user_name, password_digest, email):
+    def __init__(self, user_name, password_digest, email, city_id):
         self.user_name = user_name
         self.password_digest = password_digest
         self.email = email
+        self.city_id = city_id
 
     def json(self):
         return {
@@ -40,6 +43,7 @@ class User(db.Model):
             "user_name": self.user_name,
             "email": self.email,
             "password_digest": self.password_digest,
+            "city_id": str(self.city_id),
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at),
             "posts": [post.json()["id"] for post in self.posts],

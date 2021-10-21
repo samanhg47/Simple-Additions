@@ -42,7 +42,7 @@ def nested_list_to_json(nested_list):
     for title in headers:
         titles.append(title.replace(' ', '_').lower())
     for shelter in shelters:
-        if "CA" not in shelter and "@" in shelter[4] and "" not in shelter[2:5]\
+        if "CA" not in shelter and len(shelter) == 11 and "@" in shelter[4] and "" not in shelter[2:5]\
                 and "" not in shelter[6:10] and len(shelter) == 11 and letter_check(shelter[9]):
             shelt = {}
             for i, data in enumerate(shelter):

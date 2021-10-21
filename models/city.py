@@ -10,7 +10,6 @@ class City(db.Model):
 # Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     city_name = db.Column(db.String(150), nullable=False)
-    state_name = db.Column(db.String(25), nullable=False)
     state_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'state.id', ondelete='cascade'), nullable=False)
     zipcode = db.Column(db.Integer, nullable=False)
@@ -21,26 +20,34 @@ class City(db.Model):
     updated_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False, onupdate=datetime.utcnow)
 
+# Association(s)
+    users = db.relationship(
+        "User", cascade='all, delete', passive_deletes=True,
+        backref=db.backref('user', lazy="joined", innerjoin=True))
+
 # Declarative Method(s)
-    def __init__(self, city_name, state_name, state_id, zipcode, latitude, longitude):
+    def __init__(self, city_name, state_id, zipcode, latitude, longitude):
         self.city_name = city_name
-        self.state_name = state_name
         self.zipcode = zipcode
         self.state_id = state_id
         self.latitude = latitude
         self.longitude = longitude
 
     def json(self):
+        users = []
+        for user in self.users:
+            user = user.json()["id"]
+            users.append(user)
         return {
-            "id": self.id,
+            "id": str(self.id),
             "city": self.city_name,
-            "state": self.state_name,
             "zipcode": self.zipcode,
-            "latitude": self.latitude,
-            "longitude": self.longitude,
-            "state_id": self.state_id,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "latitude": float(self.latitude),
+            "longitude": float(self.longitude),
+            "state_id": str(self.state_id),
+            "users": users,
+            "created_at": str(self.created_at),
+            "updated_at": str(self.updated_at)
         }
 
     def create(self):
@@ -50,15 +57,15 @@ class City(db.Model):
 
     @classmethod
     def find_all(cls):
-        posts = City.query.all()
-        return posts
+        cities = City.query.all()
+        return cities
 
     @classmethod
     def by_state(cls, state_name):
-        posts = City.query.filter_by(state=state_name).all()
-        return posts
+        cities = City.query.filter_by(state_name=state_name).all()
+        return cities
 
     @classmethod
     def by_id(cls, city_id):
-        post = City.query.filter_by(id=city_id).first()
-        return post
+        city = City.query.filter_by(id=city_id).first()
+        return city
