@@ -31,10 +31,10 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 - [Far In Space](https://www.farinspace.com/tag/sql-dump/)
 
 
-### Personal Links:
+### Getting Started:
 - [Trello Board](https://trello.com/b/YhTDQTY6/simple-additions)
 - [LinkedIn](https://www.linkedin.com/in/saman-griffiths/)
-- [Company Website]()
+- [Company Website](https://simple-additions.herokuapp.com/)
 - [Portfolio]()
 
 
