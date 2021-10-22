@@ -28,15 +28,10 @@ class State(db.Model):
         self.shorthand = shorthand
 
     def json(self):
-        cities = []
-        for city in self.cities:
-            city = city.json()["id"]
-            cities.append(city)
         return {
             "id": str(self.id),
             "state_name": self.state_name,
             "shorthand": self.shorthand,
-            "cities": cities,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
         }

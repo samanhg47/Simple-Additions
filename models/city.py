@@ -63,8 +63,8 @@ class City(db.Model):
         return cities
 
     @classmethod
-    def by_state(cls, state_name):
-        cities = City.query.filter_by(state_name=state_name).all()
+    def by_state(cls, name):
+        cities = City.query.filter_by(state_name=name).all()
         return cities
 
     @classmethod
@@ -77,3 +77,9 @@ class City(db.Model):
         city = City.query.filter_by(
             state_name=state, city_name=name, zipcode=zip).first()
         return city
+
+    @classmethod
+    def zipcodes(cls, state, name):
+        cities = City.query.filter_by(
+            state_name=state, city_name=name).all()
+        return cities

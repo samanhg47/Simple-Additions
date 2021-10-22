@@ -1,4 +1,5 @@
-import { Client } from './auth'
+import axios from 'axios'
+import { BASE_URL, Client } from './auth'
 
 // state
 export const state = () => ({
@@ -15,7 +16,27 @@ export const state = () => ({
 })
 
 //getters
-export const getters = {}
+export const getters = {
+  city_list: state => {
+    const city_list = []
+    state.cities.forEach(city => {
+      if (!city_list.includes(city.city)) {
+        city_list.push(city.city)
+      }
+    })
+    return city_list
+  },
+  zipcode_list: state => {
+    const zipcode_list = []
+    const city = state.login.form.city.value
+    state.cities.forEach(obj => {
+      if (obj.city === city) {
+        zipcode_list.push(obj.zipcode)
+      }
+    })
+    return zipcode_list
+  }
+}
 
 //actions
 export const actions = {
@@ -28,18 +49,31 @@ export const actions = {
     commit('assignAuth', auth)
     return auth
   },
-  async userGetShelters(proximity, coordinates) {
+  async userGetShelters(store, proximity, coordinates) {
     body = {
       coordinates: coordinates,
       proximity: proximity
     }
     const shelters = await Client.get('/shelters', body)
-    commit('addShelters', shelters)
+    store.commit('addShelters', shelters)
     return shelters
   },
-  async adminGetShelters() {
+  async adminGetShelters(store) {
     const shelters = await Client.get('/admin/shelters')
-    commit('addShelters', shelters)
+    store.commit('addShelters', shelters)
+  },
+  async getStates(store) {
+    const states = await axios.get(`${BASE_URL}/states`)
+    const state_list = []
+    states.data.forEach(state => state_list.push(state.shorthand))
+    store.commit('addStates', state_list)
+  },
+  async getCities(store, event) {
+    const state = event.target.value
+    if (state !== 'state') {
+      const cities = await axios.get(`${BASE_URL}/cities/${state}`)
+      store.commit('addCities', cities.data)
+    }
   }
 }
 
@@ -53,5 +87,11 @@ export const mutations = {
   },
   toggleNewAccount(state, bool) {
     state.newAccount = bool
+  },
+  addStates(state, states) {
+    state.states = states
+  },
+  addCities(state, cities) {
+    state.cities = cities
   }
 }

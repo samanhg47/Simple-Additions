@@ -1,22 +1,29 @@
-from middleware import read_token, strip_token
 from models.state import State
 from flask_restful import Resource
-from flask import request
 
 
 class By_Short(Resource):
     def get(self, state):
         state = State.by_shorthand(state)
-        return state.json()
+        if state:
+            return state.json()
+        else:
+            return "State Not Found", 404
 
 
 class States(Resource):
     def get(self):
         states = State.find_all()
-        return [state.json() for state in states]
+        if states:
+            return [state.json() for state in states]
+        else:
+            return "State Not Found", 404
 
 
-class By_Id(Resource):
+class State_Id(Resource):
     def get(self, id):
         state = State.by_id()
-        return state.json()
+        if state:
+            return state.json()
+        else:
+            return "State Not Found", 404
