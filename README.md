@@ -14,6 +14,10 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 <img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="150vh" width="275vw">
 </div>
 
+![screenshot1](z_img/ss3.png)
+![screenshot1](z_img/ss2.png)
+![screenshot1](z_img/ss1.png)
+
 ### A Huge Thank You To all Of Our Sources!
 - [Kaggle Shelter Database](https://www.kaggle.com/aaronschlegel/petfinder-animal-shelters-database/version/4)
 - [Colors.co](https://coolors.co/606c38-283618-fefae0-dda15e-bc6c25)
