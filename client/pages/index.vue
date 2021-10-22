@@ -7,7 +7,6 @@
       <section class="inpSec">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <i></i>
           <input @input="aHandleChange($event)" @keypress.enter="aHandleSubmit()" @blur="aHandleBlur($event)"
           :name="index"
           :type="field.type"
@@ -60,9 +59,6 @@ export default {
   async created(){
     await this.getStates()
   },
-  // data: () => ({
-  //   valid: true
-  // }),
   computed: {
     ...mapState("login", ["user_auth", "registration"]),
     ...mapState(["states"]),
@@ -103,7 +99,6 @@ export default {
         }
     },
   },
-
   methods: {
     ...mapActions(["getStates", "getCities"]),
     ...mapActions("login", ["aHandleBlur", "aHandleChange", "aHandleSubmit", "aToggleRegistration"]),

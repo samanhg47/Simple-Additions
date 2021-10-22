@@ -179,11 +179,10 @@ export const actions = {
         delete user['state']
         delete user['zipcode']
         const res = await axios.post(`${BASE_URL}/register/users`, user)
-        console.log('register', res)
-        if (res.status < 200) {
+        if (res.status < 300) {
           const log = await axios.post(`${BASE_URL}/login/users`, user)
-          console.log(res)
           localStorage.setItem('token', res.data.token)
+          console.log('login', res)
           user = res.data.user
         }
       }
@@ -193,6 +192,7 @@ export const actions = {
     } else if (!bool1 && bool2) {
       const res = await axios.post(`${BASE_URL}/register/shelters`)
       console.log('login', res)
+      user = res.data.user
     } else {
     }
     const currentUser = store
@@ -332,7 +332,6 @@ export const actions = {
 export const mutations = {
   mHandleSubmit(state, { user, currentUser }) {
     currentUser.rootState.currentUser = user
-    console.log(currentUser)
   },
   mToggleRegistration(state) {
     state.registration

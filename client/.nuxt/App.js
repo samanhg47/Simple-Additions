@@ -8,10 +8,9 @@ import NuxtBuildIndicator from './components/nuxt-build-indicator'
 
 import '../node_modules/vuetify/dist/vuetify.css'
 
-import _743c700e from '../layouts/authenticated.vue'
 import _6f6c098b from '../layouts/default.vue'
 
-const layouts = { "_authenticated": sanitizeComponent(_743c700e),"_default": sanitizeComponent(_6f6c098b) }
+const layouts = { "_default": sanitizeComponent(_6f6c098b) }
 
 export default {
   render (h, props) {

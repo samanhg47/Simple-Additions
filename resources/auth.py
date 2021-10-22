@@ -19,7 +19,6 @@ class UserLogin(Resource):
                     token = create_token(
                         {"id": str(user.id), "user_name": user.user_name})
                     user = user.json()
-                    del user["password_digest"]
                     return {"user": user, "token": token}
             except:
                 return "Password Incorrect, Try Again.", 403
@@ -58,9 +57,6 @@ class UserRegister(Resource):
             user = User(**data)
             user.create()
             user = user.json()
-            # if admin_check(request):
-            #     return user, 201
-            # del user["password_digest"]
             return user, 201
         except:
             return "Error Occured"

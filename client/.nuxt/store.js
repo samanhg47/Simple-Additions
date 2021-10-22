@@ -21,6 +21,7 @@ let store = {};
 
   resolveStoreModules(require('../store/auth.js'), 'auth.js')
   resolveStoreModules(require('../store/login.js'), 'login.js')
+  resolveStoreModules(require('../store/updateUser.js'), 'updateUser.js')
 
   // If the environment supports hot reloading...
 
@@ -30,6 +31,7 @@ let store = {};
       '../store/auth.js',
       '../store/index.js',
       '../store/login.js',
+      '../store/updateUser.js',
     ], () => {
       // Update `root.modules` with the latest definitions.
       updateModules()

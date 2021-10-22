@@ -3,28 +3,24 @@
     "name": "home",
     "path": "/home",
     "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/home.vue",
-    "chunkName": "pages/home",
-    "_name": "_6088b9b3"
+    "chunkName": "pages/home"
   },
   {
     "name": "inspire",
     "path": "/inspire",
     "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/inspire.vue",
-    "chunkName": "pages/inspire",
-    "_name": "_fdef3594"
+    "chunkName": "pages/inspire"
   },
   {
     "name": "skeleton",
     "path": "/skeleton",
     "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/skeleton.vue",
-    "chunkName": "pages/skeleton",
-    "_name": "_5fee1821"
+    "chunkName": "pages/skeleton"
   },
   {
     "name": "index",
     "path": "/",
     "component": "/Users/dcd/ga_seir/Portfolio/Simple-Additions/client/pages/index.vue",
-    "chunkName": "pages/index",
-    "_name": "_04cbc02e"
+    "chunkName": "pages/index"
   }
 ]
