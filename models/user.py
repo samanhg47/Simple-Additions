@@ -13,7 +13,7 @@ class User(db.Model):
     password_digest = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     city_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
-        'city.id', ondelete='cascade'), nullable=False)
+        'city.id', ondelete='cascade'))
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     updated_at = db.Column(
