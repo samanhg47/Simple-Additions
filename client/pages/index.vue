@@ -177,7 +177,7 @@ h1{
 #cityInp{
   width: 17vw;
   margin: 0 2vw 0 2vw;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 
