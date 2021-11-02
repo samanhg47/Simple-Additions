@@ -63,7 +63,7 @@ export const state = () => ({
       value: '',
       class: 'neutral',
       type: 'text',
-      placeholder: 'state',
+      name: 'state',
       visited: false,
       msg: null
     },
@@ -71,7 +71,7 @@ export const state = () => ({
       value: '',
       class: 'neutral',
       type: 'text',
-      placeholder: 'city',
+      name: 'city',
       visited: false,
       msg: null
     },
@@ -79,7 +79,7 @@ export const state = () => ({
       value: '',
       class: 'neutral',
       type: 'text',
-      placeholder: 'zipcode',
+      name: 'zipcode',
       visited: false,
       msg: null
     },
@@ -201,7 +201,8 @@ export const actions = {
   },
   charCheck(store, field) {
     const charBools = []
-    const acceptable = '1234567890qwertyuiopasdfghjklzxcvbnm'
+    const acceptable =
+      '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
     const charArr = store.state.form[field].value.split('')
     if (field === 'user_name') {
       charArr.forEach((char, i) => {
@@ -267,7 +268,7 @@ export const actions = {
     }
     return charBools
   },
-  async aCheckIfInvalid(store) {
+  async aCheckIfInvalid(store, event) {
     const charCheck = field => {
       return store.dispatch('charCheck', field)
     }
@@ -288,10 +289,11 @@ export const actions = {
       nameCheck,
       addressCheck,
       phoneCheck,
-      city_list
+      city_list,
+      event
     })
   },
-  async aCheckIfValid(store) {
+  async aCheckIfValid(store, event) {
     const charCheck = field => {
       return store.dispatch('charCheck', field)
     }
@@ -310,7 +312,8 @@ export const actions = {
       zipCheck,
       nameCheck,
       addressCheck,
-      phoneCheck
+      phoneCheck,
+      event
     })
   },
   aCheckLength(store, event) {
@@ -318,8 +321,8 @@ export const actions = {
   },
   aHandleChange({ commit, dispatch }, event) {
     commit('mHandleChange', event)
-    dispatch('aCheckIfValid')
-    dispatch('aCheckIfInvalid')
+    dispatch('aCheckIfValid', event)
+    dispatch('aCheckIfInvalid', event)
     dispatch('aCheckLength', event)
   },
   aHandleBlur(store, event) {
@@ -378,97 +381,123 @@ export const mutations = {
       nameCheck,
       addressCheck,
       phoneCheck,
-      city_list
+      city_list,
+      event
     }
   ) {
-    if (
-      emailCheck.includes('f') ||
-      (state.form.email.minLen < state.form.email.value.length &&
-        !state.form.email.value.includes('@')) ||
-      (state.form.email.minLen < state.form.email.value.length &&
-        !state.form.email.value.includes('.'))
-    ) {
-      state.form.email.class = 'invalid'
-      state.form.email.msg = 'Must Be A Valid Address'
-    } else if (
-      state.form.email.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.email.class === 'neutral'
+    if (event.target.name === 'email') {
+      if (
+        emailCheck.includes('f') ||
+        (state.form.email.minLen < state.form.email.value.length &&
+          !state.form.email.value.includes('@')) ||
+        (state.form.email.minLen < state.form.email.value.length &&
+          !state.form.email.value.includes('.'))
+      ) {
+        state.form.email.class = 'invalid'
+        state.form.email.msg = 'Must Be A Valid Address'
+      } else if (
+        state.form.email.class !== 'valid' &&
+        !state.form.email.visited
+      ) {
+        state.form.email.class = 'neutral'
+        state.form.email.msg = null
+      }
     }
 
-    if (stateCheck.includes('f')) {
-      state.form.state.class = 'invalid'
-      state.form.state.msg = 'Required'
-    } else if (
-      state.form.state.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.state.class === 'neutral'
-    }
-    if (
-      cityCheck.includes('f') ||
-      (city_list.length > 0 && !city_list.includes(state.form.city.value))
-    ) {
-      state.form.city.class = 'invalid'
-      state.form.city.msg = 'Choose From Suggestions'
-    } else if (
-      state.form.city.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.city.class = 'neutral'
-    }
-    if (zipCheck.includes('f')) {
-      state.form.zipcode.class = 'invalid'
-      state.form.zipcode.msg = 'Required'
-    } else if (
-      state.form.zipcode.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.zipcode.class === 'neutral'
+    if (event.target.name === 'state') {
+      if (stateCheck.includes('f')) {
+        state.form.state.class = 'invalid'
+        state.form.state.msg = 'Required'
+      } else if (
+        state.form.state.class !== 'valid' &&
+        !state.form.state.visited
+      ) {
+        state.form.state.class = 'neutral'
+        state.form.state.msg = null
+      }
     }
 
-    if (state.user_auth && nameCheck.includes('f')) {
-      state.form.user_name.class = 'invalid'
-      state.form.user_name.msg = 'Username Must Be Alphanumeric'
-    } else if (
-      state.user_auth &&
-      state.form.user_name.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.user_name.class === 'neutral'
+    if (event.target.name === 'city') {
+      if (
+        cityCheck.includes('f') ||
+        (city_list.length > 0 && !city_list.includes(state.form.city.value))
+      ) {
+        state.form.city.class = 'invalid'
+        state.form.city.msg = 'Choose From Suggestions'
+      } else if (
+        state.form.city.class !== 'valid' &&
+        !state.form.city.visited
+      ) {
+        state.form.city.class = 'neutral'
+        state.form.city.msg = null
+      }
     }
 
-    if (!state.user_auth && phoneCheck.includes('f')) {
-      state.form.phone_number.class = 'invalid'
-      state.form.phone_number.msg = 'Phone Number Must Be Numeric'
-    } else if (
-      !state.user_auth &&
-      state.form.phone_number.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.phone_number.class === 'neutral'
+    if (event.target.name === 'zipcode') {
+      if (zipCheck.includes('f')) {
+        state.form.zipcode.class = 'invalid'
+        state.form.zipcode.msg = 'Required'
+      } else if (
+        state.form.zipcode.class !== 'valid' &&
+        !state.form.zipcode.visited
+      ) {
+        state.form.zipcode.class = 'neutral'
+        state.form.zipcode.msg = null
+      }
     }
 
-    if (!state.user_auth && addressCheck.includes('f')) {
-      state.form.address.class = 'invalid'
-      state.form.address.msg = 'Address Must Be Alphanumeric Besides "."'
-    } else if (
-      !state.user_auth &&
-      state.form.user_name.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.user_name.class === 'neutral'
+    if (event.target.name === 'user_name') {
+      console.log('class', state.form.user_name.class)
+      console.log('visited', state.form.user_name.visited)
+      if (nameCheck.includes('f')) {
+        state.form.user_name.class = 'invalid'
+        state.form.user_name.msg = 'Username Must Be Alphanumeric'
+      } else if (
+        state.form.user_name.class !== 'valid' &&
+        !state.form.user_name.visited
+      ) {
+        state.form.user_name.class = 'neutral'
+        state.form.user_name.msg = null
+      }
     }
 
-    if (state.form.password.value.length < state.form.confirm.value.length) {
-      state.form.confirm.class = 'invalid'
-      state.form.confirm.msg = 'Password Confirmation Must Match Original'
-    } else if (
-      state.form.confirm.class !== 'valid' &&
-      !state.form.zipcode.visited
-    ) {
-      state.form.confirm.class === 'neutral'
+    if (event.target.name === 'phone_number') {
+      if (phoneCheck.includes('f')) {
+        state.form.phone_number.class = 'invalid'
+        state.form.phone_number.msg = 'Phone Number Must Be Numeric'
+      } else if (
+        state.form.phone_number.class !== 'valid' &&
+        !state.form.phone_number.visited
+      ) {
+        state.form.phone_number.class = 'neutral'
+        state.form.phone_number.msg = null
+      }
+    }
+
+    if (event.target.name === 'address') {
+      if (addressCheck.includes('f')) {
+        state.form.address.class = 'invalid'
+        state.form.address.msg = 'Address Must Be Alphanumeric Besides "."'
+      } else if (
+        state.form.address.class !== 'valid' &&
+        !state.form.address.visited
+      ) {
+        state.form.address.class = 'neutral'
+        state.form.address.msg = null
+      }
+    }
+
+    if (event.target.name === 'confirm') {
+      if (state.form.password.value.length < state.form.confirm.value.length) {
+        state.form.confirm.class = 'invalid'
+        state.form.confirm.msg = 'Password Confirmation Must Match Original'
+      } else if (
+        state.form.confirm.class !== 'valid' &&
+        !state.form.confirm.visited
+      ) {
+        state.form.confirm.class = 'neutral'
+        state.form.confirm.msg = null
+      }
     }
   },
   mCheckIfValid(
@@ -480,50 +509,115 @@ export const mutations = {
       zipCheck,
       nameCheck,
       addressCheck,
-      phoneCheck
+      phoneCheck,
+      event
     }
   ) {
-    if (!emailCheck.includes('f')) {
-      state.form.email.class = 'valid'
-      state.form.email.msg = null
+    if (event.target.name === 'email') {
+      if (
+        !emailCheck.includes('f') &&
+        state.form.email.value.length >= state.form.email.minLen &&
+        state.form.email.value.length < 50
+      ) {
+        state.form.email.class = 'valid'
+        state.form.email.visited = true
+        state.form.email.msg = null
+      }
     }
-    if (state.user_auth && !nameCheck.includes('f')) {
-      state.form.user_name.class = 'valid'
-      state.form.user_name.msg = null
-    }
-    if (!state.user_auth && !phoneCheck.includes('f')) {
-      state.form.phone_number.class = 'valid'
-      state.form.phone_number.msg = null
-    }
-    if (!state.user_auth && !addressCheck.includes('f')) {
-      state.form.address.class = 'valid'
-      state.form.address.msg = null
-    }
-    if (!stateCheck.includes('f')) {
-      state.form.state.class = 'valid'
-      state.form.state.msg = null
-    }
-    if (!cityCheck.includes('f')) {
-      state.form.city.class = 'valid'
-      state.form.city.msg = null
-    }
-    if (!zipCheck.includes('f')) {
-      state.form.zipcode.class = 'valid'
-      state.form.zipcode.msg = null
-    }
-    if (!state.user_auth) {
-      state.form.shelter_name.class = 'valid'
-      state.form.shelter_name.msg = null
-    }
-    state.form.password.class = 'valid'
-    state.form.password.msg = null
 
     if (
-      state.form.password.class === 'valid' &&
-      state.form.confirm.value === state.form.password.value
+      event.target.name === 'user_name' &&
+      state.form.user_name.value.length >= state.form.user_name.minLen &&
+      state.form.user_name.value.length < 50
     ) {
-      state.form.confirm.class = 'valid'
-      state.form.confirm.msg = null
+      if (!nameCheck.includes('f')) {
+        state.form.user_name.class = 'valid'
+        state.form.user_name.visited = true
+        state.form.user_name.msg = null
+      }
+    }
+
+    if (
+      event.target.name === 'phone_number' &&
+      state.form.phone_number.value.length >= state.form.phone_number.minLen &&
+      state.form.phone_number.value.length < 50
+    ) {
+      if (!phoneCheck.includes('f')) {
+        state.form.phone_number.class = 'valid'
+        state.form.phone_number.visited = true
+        state.form.phone_number.msg = null
+      }
+    }
+
+    if (
+      event.target.name === 'address' &&
+      state.form.address.value.length >= state.form.address.minLen &&
+      state.form.address.value.length < 50
+    ) {
+      if (!addressCheck.includes('f')) {
+        state.form.address.class = 'valid'
+        state.form.address.visited = true
+        state.form.address.msg = null
+      }
+    }
+
+    if (event.target.name === 'state') {
+      if (!stateCheck.includes('f')) {
+        state.form.state.class = 'valid'
+        state.form.state.visited = true
+        state.form.state.msg = null
+      }
+    }
+
+    if (event.target.name === 'city') {
+      if (!cityCheck.includes('f')) {
+        state.form.city.class = 'valid'
+        state.form.city.visited = true
+        state.form.city.msg = null
+      }
+    }
+
+    if (event.target.name === 'zipcode') {
+      if (!zipCheck.includes('f')) {
+        state.form.zipcode.class = 'valid'
+        state.form.zipcode.visited = true
+        state.form.zipcode.msg = null
+      }
+    }
+
+    if (
+      event.target.name === 'shelter_name' &&
+      state.form.shelter_name.value.length >= state.form.shelter_name.minLen &&
+      state.form.shelter_name.value.length < 50
+    ) {
+      state.form.shelter_name.class = 'valid'
+      state.form.shelter_name.visited = true
+      state.form.shelter_name.msg = null
+    }
+
+    if (
+      event.target.name === 'password' &&
+      state.form.password.value.length >= state.form.password.minLen &&
+      state.form.password.value.length < 50
+    ) {
+      state.form.password.class = 'valid'
+      state.form.password.visited = true
+      state.form.password.msg = null
+    }
+
+    if (
+      event.target.name === 'confirm' &&
+      state.form.confirm.value.length >= state.form.confirm.minLen &&
+      state.form.confirm.value.length < 50
+    ) {
+      if (
+        state.form.password.class === 'valid' &&
+        state.form.confirm.value === state.form.password.value
+      ) {
+        state.form.confirm.class = 'valid'
+        state.form.confirm.visited = true
+        state.form.confirm.msg = null
+      }
     }
   },
   mCheckLength(state, event) {
@@ -556,7 +650,8 @@ export const mutations = {
         !state.form[event.target.name].visited &&
         state.form[event.target.name].class !== 'valid'
       ) {
-        state.form[event.target.name].class === 'neutral'
+        state.form[event.target.name].class = 'neutral'
+        state.form[event.target.name].msg = null
       }
     }
   }

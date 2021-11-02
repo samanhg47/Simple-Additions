@@ -4,15 +4,13 @@
     <h1 v-if="registration">Register</h1>
     <h1 v-if="!registration">Login</h1>
     <div v-for="(field,index) in userForm" :key="index" class="inputCont">
-      <section class="inpSec">
+      <section class="inpSec" :class="field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <i></i>
           <input @input="aHandleChange($event)" @keypress.enter="aHandleSubmit()" @blur="aHandleBlur($event)"
           :name="index"
           :type="field.type"
           :placeholder="field.placeholder"
-          :class="field.class"
           />
         </div>
         <div class="errDiv">
@@ -36,12 +34,12 @@
             </datalist>
             <label v-if="index === 'zipcode'" :for="index">{{field.for}}</label>
             <select v-if="index === 'zipcode'" :name="index" @change="aHandleChange($event)">
-              <option value="zipcode">zipcode ▾</option>
+              <option value="zipcode" id="optInp">zipcode ▾</option>
               <option v-for="zipcode in zipcode_list" :key="zipcode" :value="zipcode" class="zip">{{zipcode}}</option>
             </select>
             <div class="errDiv2 flex">
-          <p v-if="field.msg" class="errMsg">{{field.msg}}</p>
-        </div>
+              <p v-if="field.msg" class="errMsg2">{{field.msg}}</p>
+            </div>
           </section>
         </div>
       </div>
@@ -49,8 +47,8 @@
       <button type="submit" v-if="registration" id="sub">Register</button>
       <button type="submit" v-if="!registration" id="sub">Login</button>
     </div>
-    <p @click="aToggleRegistration" v-if="registration">Returning user? Click here for login.</p>
-    <p @click="aToggleRegistration" v-if="!registration">New user? Click here to register.</p>
+    <button @click.prevent="aToggleRegistration" v-if="registration">Returning user? Click here for login.</button>
+    <button @click.prevent="aToggleRegistration" v-if="!registration">New user? Click here to register.</button>
   </form>
 </template>
 
@@ -60,9 +58,6 @@ export default {
   async created(){
     await this.getStates()
   },
-  // data: () => ({
-  //   valid: true
-  // }),
   computed: {
     ...mapState("login", ["user_auth", "registration"]),
     ...mapState(["states"]),
@@ -89,18 +84,18 @@ export default {
         document.querySelector("#cityInp").disabled = true
       }
     },
-    validVals: function(){
-        if(this.validVals.includes("invalid")){
-          document.getElementById("sub").disabled = true
-        }else{
-          document.getElementById("sub").disabled = false
-        }
-      },
     city_list: function(){
       if(this.registration){
         document.querySelector("#cityInp").placeholder = "city"
         document.querySelector("#cityInp").disabled = false
         }
+    },
+    validVals: function(){
+      if(this.validVals.includes("invalid")){
+        document.getElementById("sub").disabled = true
+      }else{
+        document.getElementById("sub").disabled = false
+      }
     },
   },
 
@@ -155,14 +150,19 @@ h1{
   max-width: inherit;
   flex-direction: row-reverse;
   justify-content: space-between;
+  color: rgb(214, 16, 16)
 }
 .errDiv2{
   font-size: 1.2vw;
   max-width: inherit;
   align-items: center;
   justify-content: center;
+  justify-content: space-between;
+  color: rgb(214, 16, 16)
 }
-.invalid
+.errMsg{
+  margin-left: 14vw;
+}
 .preSec{
   display: flex;
   justify-content: center;
@@ -179,6 +179,12 @@ h1{
   margin: 0 2vw 0 2vw;
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
+}
+.valid > .errDiv,.errDiv2{
+  color:green
+}
+.neutral > .errDiv,.errDiv2{
+  color:black
 }
 
 </style>

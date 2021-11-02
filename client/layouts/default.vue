@@ -20,7 +20,7 @@ html, body, #__nuxt, #__layout{
   justify-content: center;
 }
 #__layout{
-  background-color: #e2fdff;
+  background-color: wheat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,6 +32,7 @@ html, body, #__nuxt, #__layout{
   border-radius: 20px;
   margin: 0;
   padding: 0;
+  box-shadow: 0 0 3vw .1vw rgba(0, 0, 0, 0.808);
 }
 .inputSec{
   height: 37vw;
