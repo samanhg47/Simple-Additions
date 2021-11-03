@@ -39,7 +39,7 @@ export const state = () => ({
     },
     confirm: {
       value: '',
-      name: 'Password Confirmation',
+      name: 'Confirm',
       class: 'neutral',
       type: 'password',
       for: 'Confirm Password',
@@ -246,21 +246,27 @@ export const actions = {
       })
     }
     if (field === 'state') {
-      if (charArr.join('') == 'state') {
+      if (!store.state.form.state.value) {
+        charBools.push('n')
+      } else if (!store.rootState.states.includes(charArr.join(''))) {
         charBools.push('f')
       } else {
         charBools.push('t')
       }
     }
     if (field === 'city') {
-      if (charArr.join('') == 'city') {
+      if (!store.state.form.city.value) {
+        charBools.push('n')
+      } else if (!store.rootGetters.city_list.includes(charArr.join(''))) {
         charBools.push('f')
       } else {
         charBools.push('t')
       }
     }
     if (field === 'zipcode') {
-      if (charArr.join('') == 'zipcode') {
+      if (!store.state.form.zipcode.value) {
+        charBools.push('n')
+      } else if (!store.rootGetters.zipcode_list.includes(charArr.join(''))) {
         charBools.push('f')
       } else {
         charBools.push('t')
@@ -273,14 +279,26 @@ export const actions = {
       return store.dispatch('charCheck', field)
     }
     const user_auth = store.state.user_auth
-    const nameCheck = user_auth ? await charCheck('user_name') : null
-    const phoneCheck = user_auth ? null : await charCheck('phone_number')
-    const addressCheck = user_auth ? null : await charCheck('address')
-    const emailCheck = await charCheck('email')
-    const stateCheck = await charCheck('state')
-    const cityCheck = await charCheck('city')
-    const zipCheck = await charCheck('zipcode')
-    const city_list = store.rootGetters.city_list
+    const nameCheck =
+      user_auth && event.target.name === 'user_name'
+        ? await charCheck('user_name')
+        : null
+    const phoneCheck =
+      user_auth && event.target.name === 'phone_number'
+        ? await charCheck('phone_number')
+        : null
+    const addressCheck =
+      user_auth && event.target.name === 'address'
+        ? await charCheck('address')
+        : null
+    const emailCheck =
+      event.target.name === 'email' ? await charCheck('email') : null
+    const stateCheck =
+      event.target.name === 'state' ? await charCheck('state') : null
+    const cityCheck =
+      event.target.name === 'city' ? await charCheck('city') : null
+    const zipCheck =
+      event.target.name === 'zipcode' ? await charCheck('zipcode') : null
     store.commit('mCheckIfInvalid', {
       emailCheck,
       stateCheck,
@@ -289,7 +307,6 @@ export const actions = {
       nameCheck,
       addressCheck,
       phoneCheck,
-      city_list,
       event
     })
   },
@@ -298,13 +315,26 @@ export const actions = {
       return store.dispatch('charCheck', field)
     }
     const user_auth = store.state.user_auth
-    const nameCheck = user_auth ? await charCheck('user_name') : null
-    const phoneCheck = user_auth ? null : await charCheck('phone_number')
-    const addressCheck = user_auth ? null : await charCheck('address')
-    const emailCheck = await charCheck('email')
-    const stateCheck = await charCheck('state')
-    const cityCheck = await charCheck('city')
-    const zipCheck = await charCheck('zipcode')
+    const nameCheck =
+      user_auth && event.target.name === 'user_name'
+        ? await charCheck('user_name')
+        : null
+    const phoneCheck =
+      user_auth && event.target.name === 'phone_number'
+        ? await charCheck('phone_number')
+        : null
+    const addressCheck =
+      user_auth && event.target.name === 'address'
+        ? await charCheck('address')
+        : null
+    const emailCheck =
+      event.target.name === 'email' ? await charCheck('email') : null
+    const stateCheck =
+      event.target.name === 'state' ? await charCheck('state') : null
+    const cityCheck =
+      event.target.name === 'city' ? await charCheck('city') : null
+    const zipCheck =
+      event.target.name === 'zipcode' ? await charCheck('zipcode') : null
     store.commit('mCheckIfValid', {
       emailCheck,
       stateCheck,
@@ -328,6 +358,7 @@ export const actions = {
   aHandleBlur(store, event) {
     store.commit('mHandleBlur', event)
     store.dispatch('aCheckLength', event)
+    store.dispatch('aCheckIfInvalid', event)
   }
 }
 
@@ -381,7 +412,6 @@ export const mutations = {
       nameCheck,
       addressCheck,
       phoneCheck,
-      city_list,
       event
     }
   ) {
@@ -405,9 +435,12 @@ export const mutations = {
     }
 
     if (event.target.name === 'state') {
-      if (stateCheck.includes('f')) {
+      if (stateCheck.includes('n')) {
         state.form.state.class = 'invalid'
         state.form.state.msg = 'Required'
+      } else if (stateCheck.includes('f')) {
+        state.form.state.class = 'invalid'
+        state.form.state.msg = 'Choose From Suggestions'
       } else if (
         state.form.state.class !== 'valid' &&
         !state.form.state.visited
@@ -418,10 +451,10 @@ export const mutations = {
     }
 
     if (event.target.name === 'city') {
-      if (
-        cityCheck.includes('f') ||
-        (city_list.length > 0 && !city_list.includes(state.form.city.value))
-      ) {
+      if (cityCheck.includes('n')) {
+        state.form.city.class = 'invalid'
+        state.form.city.msg = 'Required'
+      } else if (cityCheck.includes('f')) {
         state.form.city.class = 'invalid'
         state.form.city.msg = 'Choose From Suggestions'
       } else if (
@@ -434,7 +467,13 @@ export const mutations = {
     }
 
     if (event.target.name === 'zipcode') {
-      if (zipCheck.includes('f')) {
+      if (zipCheck.includes('n')) {
+        state.form.zipcode.class = 'invalid'
+        state.form.zipcode.msg = 'Required'
+      } else if (zipCheck.includes('f')) {
+        state.form.zipcode.class = 'invalid'
+        state.form.zipcode.msg = 'Choose From Suggestions'
+      } else if (state.form.zipcode.value == 'zipcode') {
         state.form.zipcode.class = 'invalid'
         state.form.zipcode.msg = 'Required'
       } else if (
@@ -490,7 +529,7 @@ export const mutations = {
     if (event.target.name === 'confirm') {
       if (state.form.password.value.length < state.form.confirm.value.length) {
         state.form.confirm.class = 'invalid'
-        state.form.confirm.msg = 'Password Confirmation Must Match Original'
+        state.form.confirm.msg = 'Confirm Password Must Match Original'
       } else if (
         state.form.confirm.class !== 'valid' &&
         !state.form.confirm.visited
