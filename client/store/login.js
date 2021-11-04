@@ -10,7 +10,7 @@ export const state = () => ({
       class: 'neutral',
       type: 'email',
       for: 'Email Address',
-      placeholder: 'you@youremail.com',
+      placeholder: 'You@YourEmail.com',
       visited: false,
       minLen: 10,
       msg: null
@@ -165,11 +165,15 @@ export const actions = {
   aToggleRegistration({ commit }) {
     commit('mToggleRegistration')
   },
+  aClearForm(store) {
+    store.commit('mClearForm')
+  },
   async aHandleSubmit(store) {
-    const bool1 = store.state.user_auth
-    const bool2 = store.state.registration
+    const userForm = store.state.user_auth
+    const registration = store.state.registration
     let user = store.state.user
-    if (bool1 && bool2) {
+
+    if (userForm && registration) {
       const res = await axios.get(
         `${BASE_URL}/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
       )
@@ -179,25 +183,35 @@ export const actions = {
         delete user['state']
         delete user['zipcode']
         const res = await axios.post(`${BASE_URL}/register/users`, user)
-        console.log('register', res)
         if (res.status < 200) {
           const log = await axios.post(`${BASE_URL}/login/users`, user)
-          console.log(res)
           localStorage.setItem('token', res.data.token)
           user = res.data.user
         }
       }
-    } else if (bool1 && !bool2) {
-      const res = await axios.post(`${BASE_URL}/login/users`, user)
-      user = res.data.user
-    } else if (!bool1 && bool2) {
+    } else if (userForm && !registration) {
+      try {
+        const res = await axios.post(`${BASE_URL}/login/users`, user)
+        user = res.data.user
+      } catch (err) {
+        console.log(err.response)
+        if (err.response.status == 404) {
+          store.state.registration = true
+          alert(
+            `No Profile Found For ${user.user_name}. Please Register Profile.`
+          )
+        }
+        user = null
+      }
+    } else if (!userForm && registration) {
       const res = await axios.post(`${BASE_URL}/register/shelters`)
-      console.log('login', res)
     } else {
     }
-    const currentUser = store
-    store.commit('mHandleSubmit', { user, currentUser })
-    $nuxt._router.push('/home')
+    if (user) {
+      const currentUser = store
+      $nuxt._router.push('/home')
+      store.commit('mHandleSubmit', { user, currentUser })
+    }
   },
   charCheck(store, field) {
     const charBools = []
@@ -266,7 +280,10 @@ export const actions = {
     if (field === 'zipcode') {
       if (!store.state.form.zipcode.value) {
         charBools.push('n')
-      } else if (!store.rootGetters.zipcode_list.includes(charArr.join(''))) {
+      } else if (
+        !parseInt(charArr.join('')) ||
+        !store.rootGetters.zipcode_list.includes(parseInt(charArr.join('')))
+      ) {
         charBools.push('f')
       } else {
         charBools.push('t')
@@ -364,9 +381,16 @@ export const actions = {
 
 //mutations
 export const mutations = {
+  mClearForm(state) {
+    Object.keys(state.form).forEach(key => {
+      state.form[key].class = 'neutral'
+      state.form[key].value = ''
+      state.form[key].visited = false
+      state.form[key].msg = null
+    })
+  },
   mHandleSubmit(state, { user, currentUser }) {
     currentUser.rootState.currentUser = user
-    console.log(currentUser)
   },
   mToggleRegistration(state) {
     state.registration
@@ -388,6 +412,23 @@ export const mutations = {
       }
     } else {
       state.form[event.target.name].value = eventValue
+      if (!eventValue) {
+        state.form[event.target.name].class = 'neutral'
+        state.form[event.target.name].visited = false
+      }
+      if (event.target.name === 'state') {
+        state.form.city.class = 'neutral'
+        state.form.city.value = ''
+        state.form.city.msg = null
+        state.form.zipcode.class = 'neutral'
+        state.form.zipcode.value = ''
+        state.form.zipcode.msg = null
+      }
+      if (event.target.name === 'city') {
+        state.form.zipcode.class = 'neutral'
+        state.form.zipcode.value = ''
+        state.form.zipcode.msg = null
+      }
       if (state.user_auth) {
         if (event.target.name !== 'confirm') {
           state.user[event.target.name] = eventValue
@@ -425,12 +466,6 @@ export const mutations = {
       ) {
         state.form.email.class = 'invalid'
         state.form.email.msg = 'Must Be A Valid Address'
-      } else if (
-        state.form.email.class !== 'valid' &&
-        !state.form.email.visited
-      ) {
-        state.form.email.class = 'neutral'
-        state.form.email.msg = null
       }
     }
 
@@ -441,12 +476,6 @@ export const mutations = {
       } else if (stateCheck.includes('f')) {
         state.form.state.class = 'invalid'
         state.form.state.msg = 'Choose From Suggestions'
-      } else if (
-        state.form.state.class !== 'valid' &&
-        !state.form.state.visited
-      ) {
-        state.form.state.class = 'neutral'
-        state.form.state.msg = null
       }
     }
 
@@ -457,12 +486,6 @@ export const mutations = {
       } else if (cityCheck.includes('f')) {
         state.form.city.class = 'invalid'
         state.form.city.msg = 'Choose From Suggestions'
-      } else if (
-        state.form.city.class !== 'valid' &&
-        !state.form.city.visited
-      ) {
-        state.form.city.class = 'neutral'
-        state.form.city.msg = null
       }
     }
 
@@ -476,27 +499,13 @@ export const mutations = {
       } else if (state.form.zipcode.value == 'zipcode') {
         state.form.zipcode.class = 'invalid'
         state.form.zipcode.msg = 'Required'
-      } else if (
-        state.form.zipcode.class !== 'valid' &&
-        !state.form.zipcode.visited
-      ) {
-        state.form.zipcode.class = 'neutral'
-        state.form.zipcode.msg = null
       }
     }
 
     if (event.target.name === 'user_name') {
-      console.log('class', state.form.user_name.class)
-      console.log('visited', state.form.user_name.visited)
       if (nameCheck.includes('f')) {
         state.form.user_name.class = 'invalid'
         state.form.user_name.msg = 'Username Must Be Alphanumeric'
-      } else if (
-        state.form.user_name.class !== 'valid' &&
-        !state.form.user_name.visited
-      ) {
-        state.form.user_name.class = 'neutral'
-        state.form.user_name.msg = null
       }
     }
 
@@ -504,12 +513,6 @@ export const mutations = {
       if (phoneCheck.includes('f')) {
         state.form.phone_number.class = 'invalid'
         state.form.phone_number.msg = 'Phone Number Must Be Numeric'
-      } else if (
-        state.form.phone_number.class !== 'valid' &&
-        !state.form.phone_number.visited
-      ) {
-        state.form.phone_number.class = 'neutral'
-        state.form.phone_number.msg = null
       }
     }
 
@@ -517,12 +520,6 @@ export const mutations = {
       if (addressCheck.includes('f')) {
         state.form.address.class = 'invalid'
         state.form.address.msg = 'Address Must Be Alphanumeric Besides "."'
-      } else if (
-        state.form.address.class !== 'valid' &&
-        !state.form.address.visited
-      ) {
-        state.form.address.class = 'neutral'
-        state.form.address.msg = null
       }
     }
 
@@ -530,13 +527,15 @@ export const mutations = {
       if (state.form.password.value.length < state.form.confirm.value.length) {
         state.form.confirm.class = 'invalid'
         state.form.confirm.msg = 'Confirm Password Must Match Original'
-      } else if (
-        state.form.confirm.class !== 'valid' &&
-        !state.form.confirm.visited
-      ) {
-        state.form.confirm.class = 'neutral'
-        state.form.confirm.msg = null
       }
+    }
+    if (
+      state.form[event.target.name].class === 'neutral' ||
+      (state.form[event.target.name].class === 'invalid' &&
+        !state.form[event.target.name].visited)
+    ) {
+      state.form[event.target.name].class = 'neutral'
+      state.form[event.target.name].msg = null
     }
   },
   mCheckIfValid(
@@ -601,7 +600,7 @@ export const mutations = {
     }
 
     if (event.target.name === 'state') {
-      if (!stateCheck.includes('f')) {
+      if (!stateCheck.includes('f') && !stateCheck.includes('n')) {
         state.form.state.class = 'valid'
         state.form.state.visited = true
         state.form.state.msg = null
@@ -609,7 +608,7 @@ export const mutations = {
     }
 
     if (event.target.name === 'city') {
-      if (!cityCheck.includes('f')) {
+      if (!cityCheck.includes('f') && !cityCheck.includes('n')) {
         state.form.city.class = 'valid'
         state.form.city.visited = true
         state.form.city.msg = null
@@ -617,7 +616,7 @@ export const mutations = {
     }
 
     if (event.target.name === 'zipcode') {
-      if (!zipCheck.includes('f')) {
+      if (!zipCheck.includes('f') && !zipCheck.includes('f')) {
         state.form.zipcode.class = 'valid'
         state.form.zipcode.visited = true
         state.form.zipcode.msg = null

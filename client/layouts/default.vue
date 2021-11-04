@@ -1,12 +1,12 @@
 <template>
   <div id="contDiv">
-    <img class='i1' src="../assets/saLogo.png"/>
-    <section class="formCont flex">
-      <section class="inputSec flex">
+    <img class='liLogo left' src="../assets/saLogo.png"/>
+    <section class="formCont">
+      <section class="inputSec">
         <Nuxt />
       </section>
     </section>
-    <img class="i2" src="../assets/saLogo.png"/>
+    <img class="liLogo right" src="../assets/saLogo.png"/>
   </div>
 </template>
 
@@ -28,20 +28,25 @@ html, body, #__nuxt, #__layout,#contDiv{
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 45vw;
-  max-width: 50vw;
+  /* min-height: 45vw; */
+  /* max-width: 50vw; */
   background-color: #606E38;
+  background: linear-gradient(
+    to top right,
+    #7c8f49,
+    #566332
+  );
   border-radius: 20px;
   margin: 0;
-  padding: 0;
+  padding: 4vw;
   box-shadow: 0 0 3vw .1vw rgba(0, 0, 0, 0.808);
 }
 .inputSec{
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 37vw;
-  max-width: 40vw;
+  /* height: 37vw; */
+  /* max-width: 40vw; */
   margin: 0;
   padding: 0;
   background-color: wheat;
@@ -49,16 +54,16 @@ html, body, #__nuxt, #__layout,#contDiv{
 .inputCont{
   flex-direction: column;
 }
-.i1{
-  margin-right: 5vw;
+.liLogo{
   width: 15vw;
   box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.808);
   border-radius: 100%;
+  padding-bottom: .1vw;
 }
-.i2{
+.left{
+  margin-right: 5vw;
+}
+.right{
   margin-left: 5vw;
-  width: 15vw;
-  box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.808);
-  border-radius: 100%;
 }
 </style>

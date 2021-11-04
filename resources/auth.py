@@ -14,17 +14,19 @@ class UserLogin(Resource):
         try:
             data = request.get_json()
             user = User.by_name(data["user_name"])
-            try:
-                if compare_password(data["password"], user.json()["password_digest"]):
-                    token = create_token(
-                        {"id": str(user.id), "user_name": user.user_name})
-                    user = user.json()
-                    del user["password_digest"]
-                    return {"user": user, "token": token}
-            except:
-                return "Password Incorrect, Try Again.", 403
+            user.json()
         except:
-            "User Not Found", 404
+            return "User Not Found", 404
+        try:
+            user = User.by_name(data["user_name"])
+            if compare_password(data["password"], user.json()["password_digest"]):
+                token = create_token(
+                    {"id": str(user.id), "user_name": user.user_name})
+                user = user.json()
+                del user["password_digest"]
+                return {"user": user, "token": token}
+        except:
+            return "Password Incorrect, Try Again.", 401
 
     def get(self):
         token = strip_token(request)
@@ -63,7 +65,7 @@ class UserRegister(Resource):
             # del user["password_digest"]
             return user, 201
         except:
-            return "Error Occured"
+            return "Error Occured", 401
 
 
 class ShelterRegister(Resource):

@@ -27,14 +27,16 @@ export const getters = {
     return city_list
   },
   zipcode_list: state => {
-    const zipcode_list = []
-    const city = state.login.form.city.value
-    state.cities.forEach(obj => {
-      if (obj.city === city) {
-        zipcode_list.push(obj.zipcode)
-      }
-    })
-    return zipcode_list
+    if (state.login.form.city.class === 'valid') {
+      const zipcode_list = []
+      const city = state.login.form.city.value
+      state.cities.forEach(obj => {
+        if (obj.city === city) {
+          zipcode_list.push(obj.zipcode)
+        }
+      })
+      return zipcode_list
+    }
   }
 }
 
@@ -68,12 +70,9 @@ export const actions = {
     states.data.forEach(state => state_list.push(state.shorthand))
     store.commit('addStates', state_list)
   },
-  async getCities(store, event) {
-    const state = event.target.value
-    if (state !== 'state') {
-      const cities = await axios.get(`${BASE_URL}/cities/${state}`)
-      store.commit('addCities', cities.data)
-    }
+  async getCities(store, state) {
+    const cities = await axios.get(`${BASE_URL}/cities/${state}`)
+    store.commit('addCities', cities.data)
   }
 }
 
