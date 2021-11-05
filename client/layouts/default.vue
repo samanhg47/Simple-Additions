@@ -52,7 +52,7 @@ html, body, #__nuxt, #__layout,#contDiv{
 }
 .liLogo{
   width: 15vw;
-  box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.808);
+  box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.753);
   border-radius: 100%;
   margin-top: .05vw;
 }

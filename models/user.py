@@ -9,9 +9,9 @@ class User(db.Model):
 
 # Column(s)
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_name = db.Column(db.String(50), nullable=False, unique=True)
+    user_name = db.Column(db.String(50), nullable=False)
     password_digest = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False, unique=True)
     city_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
         'city.id', ondelete='cascade'), nullable=False)
     created_at = db.Column(

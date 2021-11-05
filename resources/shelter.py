@@ -1,5 +1,5 @@
 import re
-from middleware import admin_check, id_check, read_token, strip_token
+from middleware import id_check, read_token, strip_admin, strip_token
 from flask_restful import Resource
 from models.shelter import Shelter
 from datetime import datetime
@@ -17,7 +17,7 @@ class Shelters(Resource):
             if not shelter:
                 return 'Shelter Not found', 404
             shelter = shelter.json()
-            if admin_check(request):
+            if read_token(strip_admin(request)):
                 return shelter
             del shelter["password_digest"]
             return shelter
@@ -25,9 +25,8 @@ class Shelters(Resource):
             return "Unauthorized", 403
 
     def patch(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Shelter, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Shelter, id) or read_token(strip_admin(request)):
                 data = request.get_json()
                 id = UUID(id)
                 shelter = Shelter.by_id(id)
@@ -37,7 +36,7 @@ class Shelters(Resource):
                     setattr(shelter, key, data[key])
                 db.session.commit()
                 shelter = shelter.json()
-                if admin_check(request):
+                if read_token(strip_admin(request)):
                     return shelter
                 del shelter["password_digest"]
                 return shelter
@@ -49,7 +48,7 @@ class Shelters(Resource):
     def delete(self, id):
         token = strip_token(request)
         if read_token(token):
-            if id_check(request, Shelter, id) or admin_check(request):
+            if id_check(request, Shelter, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 shelter = Shelter.by_id(id)
                 if not shelter:
@@ -60,7 +59,7 @@ class Shelters(Resource):
                     copy['updated_at'] = str(datetime.utcnow())
                 db.session.delete(shelter)
                 db.session.commit()
-                if admin_check(request):
+                if read_token(strip_admin(request)):
                     return {'Deletion Successful': copy}
                 del copy["password_digest"]
                 return {'Deletion Successful': copy}
@@ -84,11 +83,10 @@ class Allshelters(Resource):
                 data["coordinates"], data["proximity"])
             if len(shelters) == 0:
                 return "No Shelters Within Proximity Limit"
-            if admin_check(request):
+            if read_token(strip_admin(request)):
                 return shelters
             for shelter in shelters:
                 del shelter["password_digest"]
-                del shelter["id"]
             return shelters
         else:
             return "Unauthorized", 403

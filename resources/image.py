@@ -1,4 +1,4 @@
-from middleware import admin_check, id_check, read_token, strip_token
+from middleware import strip_admin, id_check, read_token, strip_token
 from flask_restful import Resource
 from models.image import Image
 from datetime import datetime
@@ -10,8 +10,7 @@ import os
 
 class AllImages(Resource):
     def post(self):
-        token = strip_token(request)
-        if read_token(token):
+        if read_token(strip_token(request)):
             data = request.get_json()
             params = {}
             for key in data.keys():
@@ -25,8 +24,7 @@ class AllImages(Resource):
 
 class Images(Resource):
     def get(self, id):
-        token = strip_token(request)
-        if read_token(token):
+        if read_token(strip_token(request)):
             id = UUID(id)
             image = Image.by_id(id)
             if not image:
@@ -37,9 +35,8 @@ class Images(Resource):
             return "Unauthorized", 403
 
     def patch(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Image, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Image, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 data = request.get_json()
                 image = Image.by_id(id)
@@ -55,9 +52,8 @@ class Images(Resource):
             return "Unauthorized", 403
 
     def delete(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Image, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Image, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 image = Image.by_id(id)
                 if not image:

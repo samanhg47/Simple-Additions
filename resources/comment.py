@@ -1,4 +1,4 @@
-from middleware import admin_check, id_check, read_token, strip_token
+from middleware import strip_admin, id_check, read_token, strip_token
 from resources.admin import censor_language
 from flask_restful import Resource
 from models.comment import Comment
@@ -11,8 +11,7 @@ from uuid import UUID
 
 class AllComments(Resource):
     def post(self):
-        token = strip_token(request)
-        if read_token(token)['data']:
+        if read_token(strip_token(request))['data']:
             data = request.get_json()
             data["body"] = censor_language(data)
             comment = Comment(**data)
@@ -24,9 +23,8 @@ class AllComments(Resource):
 
 class Comments(Resource):
     def patch(self, id):
-        token = strip_token(request)
-        if read_token(token)['data']:
-            if id_check(request, Comment, id) or admin_check(request):
+        if read_token(strip_token(request))['data']:
+            if id_check(request, Comment, id) or read_token(strip_admin(request)):
                 data = request.get_json()
                 id = UUID(id)
                 comment = Comment.by_id(id)
@@ -43,9 +41,8 @@ class Comments(Resource):
             return "Unauthorized", 403
 
     def delete(self, id):
-        token = strip_token(request)
-        if read_token(token)['data']:
-            if id_check(request, Comment, id) or admin_check(request):
+        if read_token(strip_token(request))['data']:
+            if id_check(request, Comment, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 comment = Comment.by_id(id)
                 if not comment:
@@ -65,9 +62,8 @@ class Comments(Resource):
 
 class UserComments(Resource):
     def get(self, user_id):
-        token = strip_token(request)
-        if read_token(token)['data']:
-            if id_check(request, User, user_id) or admin_check(request):
+        if read_token(strip_token(request))['data']:
+            if id_check(request, User, user_id) or read_token(strip_admin(request)):
                 user_id = UUID(user_id)
                 comments = Comment.by_user(user_id)
                 return [comment.json() for comment in comments]

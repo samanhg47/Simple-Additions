@@ -6,7 +6,6 @@ export const state = () => ({
   form: {
     shelter_name: {
       value: '',
-      name: 'Shelter name',
       class: 'neutral',
       type: 'text',
       for: 'Shelter Name',
@@ -17,7 +16,6 @@ export const state = () => ({
     },
     address: {
       value: '',
-      name: 'Address',
       class: 'neutral',
       type: 'text',
       for: 'Company Address',
@@ -28,10 +26,9 @@ export const state = () => ({
     },
     user_name: {
       value: '',
-      name: 'Username',
       class: 'neutral',
       type: 'text',
-      for: 'Your Username',
+      for: 'Username',
       placeholder: 'DoggoDaddy73',
       visited: false,
       minLen: 5,
@@ -39,7 +36,6 @@ export const state = () => ({
     },
     email: {
       value: '',
-      name: 'Email',
       class: 'neutral',
       type: 'email',
       for: 'Email Address',
@@ -50,7 +46,6 @@ export const state = () => ({
     },
     phone_number: {
       value: '',
-      name: 'Phone Number',
       class: 'neutral',
       type: 'text',
       for: 'Company Phone Number',
@@ -61,7 +56,6 @@ export const state = () => ({
     },
     password: {
       value: '',
-      name: 'Password',
       class: 'neutral',
       type: 'password',
       for: 'Password',
@@ -72,7 +66,6 @@ export const state = () => ({
     },
     confirm: {
       value: '',
-      name: 'Confirm',
       class: 'neutral',
       type: 'password',
       for: 'Confirm Password',
@@ -85,15 +78,13 @@ export const state = () => ({
       value: '',
       class: 'neutral',
       type: 'text',
-      name: 'state',
       visited: false,
-      msg: null
+      msg: 'Includes D.C.'
     },
     city: {
       value: '',
       class: 'neutral',
       type: 'text',
-      name: 'city',
       visited: false,
       msg: null
     },
@@ -101,7 +92,6 @@ export const state = () => ({
       value: '',
       class: 'neutral',
       type: 'text',
-      name: 'zipcode',
       visited: false,
       msg: null
     }
@@ -177,20 +167,18 @@ export const actions = {
     let user = store.state.user
 
     if (userForm && registration) {
-      const res = await axios.get(
+      let res = await axios.get(
         `${BASE_URL}/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
       )
+      delete user['city']
+      delete user['state']
+      delete user['zipcode']
       user['city_id'] = res.data.id
-      if (res.status < 300) {
-        delete user['city']
-        delete user['state']
-        delete user['zipcode']
-        const res = await axios.post(`${BASE_URL}/register/users`, user)
-        if (res.status < 200) {
-          const log = await axios.post(`${BASE_URL}/login/users`, user)
-          localStorage.setItem('token', res.data.token)
-          user = res.data.user
-        }
+      res = await axios.post(`${BASE_URL}/register/users`, user)
+      if (res.status < 200) {
+        const log = await axios.post(`${BASE_URL}/login/users`, user)
+        localStorage.setItem('token', res.data.token)
+        user = res.data.user
       }
     } else if (userForm && !registration) {
       try {
@@ -270,14 +258,6 @@ export const actions = {
               charBools.push('t')
             } else {
               charBools.push('f')
-              console.log(
-                parseInt(
-                  charArr
-                    .slice(1, 4)
-                    .concat(charArr.slice(6, 9).concat(charArr.slice(10)))
-                    .join('')
-                )
-              )
             }
           } else {
             charBools.push('t')
@@ -356,6 +336,7 @@ export const actions = {
     })
   },
   async aCheckIfValid(store, event) {
+    console.log(store.rootGetters['auth/Client'])
     const charCheck = field => {
       return store.dispatch('charCheck', field)
     }
@@ -429,7 +410,7 @@ export const mutations = {
     state.user_auth ? (state.user_auth = false) : (state.user_auth = true)
   },
   mHandleChange(state, event) {
-    let eventValue = event.target.value
+    const eventValue = event.target.value
 
     state.form[event.target.name].value = eventValue
 
@@ -479,7 +460,8 @@ export const mutations = {
       event
     }
   ) {
-    if (event.target.name === 'email') {
+    const eTarget = event.target.name
+    if (eTarget === 'email') {
       if (
         emailCheck.includes('f') ||
         (state.form.email.minLen < state.form.email.value.length &&
@@ -488,11 +470,11 @@ export const mutations = {
           !state.form.email.value.includes('.'))
       ) {
         state.form.email.class = 'invalid'
-        state.form.email.msg = 'Must Be A Valid Address'
+        state.form.email.msg = 'Must Be Valid Email Address'
       }
     }
 
-    if (event.target.name === 'state') {
+    if (eTarget === 'state') {
       if (stateCheck.includes('n')) {
         state.form.state.class = 'invalid'
         state.form.state.msg = 'Required'
@@ -502,7 +484,7 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'city') {
+    if (eTarget === 'city') {
       if (cityCheck.includes('n')) {
         state.form.city.class = 'invalid'
         state.form.city.msg = 'Required'
@@ -512,7 +494,7 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'zipcode') {
+    if (eTarget === 'zipcode') {
       if (zipCheck.includes('n')) {
         state.form.zipcode.class = 'invalid'
         state.form.zipcode.msg = 'Required'
@@ -525,40 +507,39 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'user_name') {
+    if (eTarget === 'user_name') {
       if (nameCheck.includes('f')) {
         state.form.user_name.class = 'invalid'
         state.form.user_name.msg = 'Username Must Be Alphanumeric'
       }
     }
 
-    if (event.target.name === 'phone_number') {
+    if (eTarget === 'phone_number') {
       if (phoneCheck.includes('f')) {
         state.form.phone_number.class = 'invalid'
         state.form.phone_number.msg = 'Phone Number Must Be 10 Numbers'
       }
     }
 
-    if (event.target.name === 'address') {
+    if (eTarget === 'address') {
       if (addressCheck.includes('f')) {
         state.form.address.class = 'invalid'
         state.form.address.msg = 'Address Must Be Alphanumeric Besides "."'
       }
     }
 
-    if (event.target.name === 'confirm') {
+    if (eTarget === 'confirm') {
       if (state.form.password.value.length < state.form.confirm.value.length) {
         state.form.confirm.class = 'invalid'
         state.form.confirm.msg = 'Confirm Password Must Match Original'
       }
     }
     if (
-      state.form[event.target.name].class === 'neutral' ||
-      (state.form[event.target.name].class === 'invalid' &&
-        !state.form[event.target.name].visited)
+      state.form[eTarget].class === 'neutral' ||
+      (state.form[eTarget].class === 'invalid' && !state.form[eTarget].visited)
     ) {
-      state.form[event.target.name].class = 'neutral'
-      state.form[event.target.name].msg = null
+      state.form[eTarget].class = 'neutral'
+      state.form[eTarget].msg = null
     }
   },
   mCheckIfValid(
@@ -574,7 +555,8 @@ export const mutations = {
       event
     }
   ) {
-    if (event.target.name === 'email') {
+    const eTarget = event.target.name
+    if (eTarget === 'email') {
       if (
         !emailCheck.includes('f') &&
         state.form.email.value.length >= state.form.email.minLen &&
@@ -587,7 +569,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'user_name' &&
+      eTarget === 'user_name' &&
       state.form.user_name.value.length >= state.form.user_name.minLen &&
       state.form.user_name.value.length < 50
     ) {
@@ -599,7 +581,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'phone_number' &&
+      eTarget === 'phone_number' &&
       state.form.phone_number.value.length >= state.form.phone_number.minLen &&
       state.form.phone_number.value.length < 50
     ) {
@@ -611,7 +593,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'address' &&
+      eTarget === 'address' &&
       state.form.address.value.length >= state.form.address.minLen &&
       state.form.address.value.length < 50
     ) {
@@ -622,7 +604,7 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'state') {
+    if (eTarget === 'state') {
       if (!stateCheck.includes('f') && !stateCheck.includes('n')) {
         state.form.state.class = 'valid'
         state.form.state.visited = true
@@ -630,7 +612,7 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'city') {
+    if (eTarget === 'city') {
       if (!cityCheck.includes('f') && !cityCheck.includes('n')) {
         state.form.city.class = 'valid'
         state.form.city.visited = true
@@ -638,7 +620,7 @@ export const mutations = {
       }
     }
 
-    if (event.target.name === 'zipcode') {
+    if (eTarget === 'zipcode') {
       if (!zipCheck.includes('f') && !zipCheck.includes('f')) {
         state.form.zipcode.class = 'valid'
         state.form.zipcode.visited = true
@@ -647,7 +629,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'shelter_name' &&
+      eTarget === 'shelter_name' &&
       state.form.shelter_name.value.length >= state.form.shelter_name.minLen &&
       state.form.shelter_name.value.length < 50
     ) {
@@ -657,7 +639,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'password' &&
+      eTarget === 'password' &&
       state.form.password.value.length >= state.form.password.minLen &&
       state.form.password.value.length < 50
     ) {
@@ -667,7 +649,7 @@ export const mutations = {
     }
 
     if (
-      event.target.name === 'confirm' &&
+      eTarget === 'confirm' &&
       state.form.confirm.value.length >= state.form.confirm.minLen &&
       state.form.confirm.value.length < 50
     ) {
@@ -682,38 +664,35 @@ export const mutations = {
     }
   },
   mCheckLength(state, event) {
+    const eTarget = event.target.name
+    const eLen = event.target.value.length
+    const minLen = state.form[eTarget].minLen
     const cond1 =
-      state.form[event.target.name].visited ||
-      state.form[event.target.name].class === 'valid' ||
-      event.target.name === 'phone_number'
-    const cond2 =
-      state.form[event.target.name].minLen &&
-      event.target.value.length < state.form[event.target.name].minLen
+      state.form[eTarget].visited || state.form[eTarget].class === 'valid'
+    const cond2 = minLen && eLen < minLen
+
+    if (minLen && eLen >= minLen) {
+      state.form[eTarget].visited = true
+    }
+
     if (cond1) {
-      if (event.target.value.length > 50) {
-        state.form[event.target.name].class = 'invalid'
-        state.form[event.target.name].msg = `${
-          state.form[event.target.name].name
-        } Must Be Less Than 50 Characters Long`
-      } else if (
-        event.target.name === 'phone_number' &&
-        ((cond1 && event.target.value.length !== 14) || cond2)
-      ) {
-        state.form[event.target.name].class = 'invalid'
-        state.form[event.target.name].msg = `${
-          state.form[event.target.name].name
-        } Must Be 10 Numbers`
+      if (eLen > 50) {
+        state.form[eTarget].class = 'invalid'
+        state.form[
+          eTarget
+        ].msg = `${state.form[eTarget].for} Must Be Less Than 50 Characters Long.`
+      } else if (eTarget === 'phone_number' && eLen !== 14) {
+        state.form[eTarget].class = 'invalid'
+        state.form[eTarget].msg = `Phone Number Must Be 10 Numbers.`
       } else if (cond2) {
-        state.form[event.target.name].class = 'invalid'
-        state.form[event.target.name].msg = `${
-          state.form[event.target.name].name
-        } Has A ${state.form[event.target.name].minLen} Character Minimum`
+        state.form[eTarget].class = 'invalid'
+        state.form[eTarget].msg = `Must Be At Least ${minLen} Characters Long.`
       } else if (
-        !state.form[event.target.name].visited &&
-        state.form[event.target.name].class !== 'valid'
+        !state.form[eTarget].visited &&
+        state.form[eTarget].class !== 'valid'
       ) {
-        state.form[event.target.name].class = 'neutral'
-        state.form[event.target.name].msg = null
+        state.form[eTarget].class = 'neutral'
+        state.form[eTarget].msg = null
       }
     }
   }

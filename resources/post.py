@@ -1,5 +1,5 @@
 import requests
-from middleware import read_token, strip_token, admin_check, id_check
+from middleware import read_token, strip_token, strip_admin, id_check
 from resources.admin import censor_language
 from flask_restful import Resource
 from datetime import datetime
@@ -13,8 +13,7 @@ import os
 
 class AllPosts(Resource):
     def post(self):
-        token = strip_token(request)
-        if read_token(token):
+        if read_token(strip_token(request)):
             data = request.get_json()
             data["body"] = censor_language(data)
             post = Post(**data)
@@ -26,9 +25,8 @@ class AllPosts(Resource):
 
 class Posts(Resource):
     def get(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Post, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Post, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 post = Post.by_id(id)
                 if not post:
@@ -36,9 +34,8 @@ class Posts(Resource):
                 return post.json()
 
     def patch(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Post, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Post, id) or read_token(strip_admin(request)):
                 data = request.get_json()
                 data["body"] = censor_language(data)
                 id = UUID(id)
@@ -55,9 +52,8 @@ class Posts(Resource):
             return "Unauthorized", 401
 
     def delete(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, Post, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, Post, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 post = Post.by_id(id)
                 if not post:
@@ -77,9 +73,8 @@ class Posts(Resource):
 
 class UserPosts(Resource):
     def get(self, user_id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, User, user_id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, User, user_id) or read_token(strip_admin(request)):
                 user_id = UUID(user_id)
                 posts = Post.by_user(user_id)
                 return [post.json() for post in posts]

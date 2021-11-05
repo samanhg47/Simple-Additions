@@ -34,11 +34,11 @@
       <section v-for="(field,index) in shelterForm" :key="index" :class="'inpSec ' + field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' class="sheltShowPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "password"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
-          <button tabindex="-1" v-if='index === "confirm"' class="sheltShowPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "confirm"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
@@ -260,34 +260,40 @@ export default {
       if(newVal.length){
         if(newVal.length > oldVal.length){
           if (this.phoneNumber.length === 1) {
+            this.phoneNumber = `(${this.phoneNumber}`
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = `(${this.phoneNumber}`
-          } else if (this.phoneNumber.length === 4) {
+            .firstElementChild.children[1].value = this.phoneNumber
+          } else if (this.phoneNumber.length === 5) {
+            this.phoneNumber = `${this.phoneNumber.slice(0,4)})-${this.phoneNumber.slice(4)}`
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = `${this.phoneNumber})-`
-          } else if (this.phoneNumber.length === 9) {
+            .firstElementChild.children[1].value = this.phoneNumber
+          } else if (this.phoneNumber.length === 10) {
+            this.phoneNumber = `${this.phoneNumber.slice(0,9)}-${this.phoneNumber.slice(9)}`
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = `${this.phoneNumber}-`
+            .firstElementChild.children[1].value = this.phoneNumber
           }
         }
         if(newVal.length < oldVal.length){
           if(newVal.length === 10){
+            this.phoneNumber = this.phoneNumber.slice(0,9)
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber.slice(0,9)
+            .firstElementChild.children[1].value = this.phoneNumber
           }
           if(newVal.length === 6){
+            this.phoneNumber = this.phoneNumber.slice(0,4)
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber.slice(0,4)
+            .firstElementChild.children[1].value = this.phoneNumber
           }
           if(newVal.length === 1){
+            this.phoneNumber = ''
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = ''
+            .firstElementChild.children[1].value = this.phoneNumber
           }
         }
       }
@@ -316,6 +322,7 @@ form{
 }
 .location > .inputCont{
   display: inline-block;
+  width: auto;
 }
 img{
   width: 10vw;
@@ -389,8 +396,6 @@ datalist{
 .preSec{
   display: inline-block;
   text-align: center;
-  /* justify-content: center;
-  align-items: center; */
   flex-direction: column;
 }
 .location{
@@ -403,41 +408,41 @@ datalist{
 }
 #cityInp{
   width: 17vw;
-  margin: 0 .5vw 0 .5vw;
+  /* margin: 0 .5vw 0 .5vw; */
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #stateInp{
   width: 7vw;
-  margin: 0 .5vw 0 .5vw;
+  /* margin: 0 .5vw 0 .5vw; */
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #zipInp{
   width: 9vw;
-  margin: 0 .5vw 0 .5vw;
+  /* margin: 0 .5vw 0 .5vw; */
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
-.valid > .errDiv,.errDiv2{
+.valid > .errDiv,.valid > .errDiv2{
   color:green
 }
-.invalid > .errDiv,.errDiv2{
+.invalid > .errDiv,.invalid > .errDiv2{
   color:rgb(214, 16, 16)
 }
-.valid > * > input,select{
+.valid > * > input{
   border: .2vw solid green;
 }
-.invalid > * > input,select{
+.invalid > * > input{
   border: .2vw solid rgb(214, 16, 16);
 }
-.neutral > * > input,select{
+.neutral > * > input{
   border: none;
 }
-.valid > input,select{
+.valid > input{
   border: .2vw solid green;
 }
-.invalid > input,select{
+.invalid > input{
   border: .2vw solid rgb(214, 16, 16);
 }
 .neutral > input,select{
@@ -492,7 +497,7 @@ datalist{
   align-items: center;
   justify-content: center;
   margin-top: .5vw;
-  margin-left: 33.7vw;
+  margin-left: 33.5vw;
 }
 .sheltShowPasswordBtn {
   position: absolute;
@@ -513,8 +518,11 @@ datalist{
 
 
 .toggleLink{
-  color: #606E38;
+  color: #758842;
   text-decoration: underline;
+}
+.toggleLink:hover{
+  color: #606E38;
 }
 .toggleLink:active{
   color: #98af58;
@@ -527,7 +535,7 @@ datalist{
     animation-iteration-count: 3;
 }
 @keyframes shake {
-    0% { top: -.3vw; }
-    100% { bottom: -.3vw; }
+    0% { top: -.2vw; }
+    100% { bottom: -.2vw; }
 }
 </style>

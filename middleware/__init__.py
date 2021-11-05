@@ -40,10 +40,10 @@ def strip_token(request):
         return None
 
 
-def admin_check(request):
+def strip_admin(request):
     try:
-        bool = request.headers['Admin']
-        return bool
+        admin = request.headers['Admin']
+        return admin
     except:
         return None
 

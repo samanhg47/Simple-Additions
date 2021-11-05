@@ -1,4 +1,4 @@
-from middleware import admin_check, id_check, read_token, strip_token
+from middleware import strip_admin, id_check, read_token, strip_token
 from flask_restful import Resource
 from datetime import datetime
 from models.user import User
@@ -15,14 +15,13 @@ class AllUsers(Resource):
 
 class Users(Resource):
     def get(self, id):
-        token = strip_token(request)
-        if read_token(token):
+        if read_token(strip_token(request)):
             id = UUID(id)
             user = User.by_id(id)
             if not user:
                 return 'User Not found', 404
             user = user.json()
-            if admin_check(request):
+            if read_token(strip_admin(request)):
                 return user
             del user["password_digest"]
             if id_check(request):
@@ -33,9 +32,8 @@ class Users(Resource):
             return "Unauthorized", 403
 
     def patch(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, User, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, User, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 data = request.get_json()
                 user = User.by_id(id)
@@ -45,7 +43,7 @@ class Users(Resource):
                     setattr(user, key, data[key])
                 db.session.commit()
                 user = user.json()
-                if admin_check(request):
+                if read_token(strip_admin(request)):
                     return user
                 del user["password_digest"]
                 return user
@@ -55,9 +53,8 @@ class Users(Resource):
             return "Unauthorized", 403
 
     def delete(self, id):
-        token = strip_token(request)
-        if read_token(token):
-            if id_check(request, User, id) or admin_check(request):
+        if read_token(strip_token(request)):
+            if id_check(request, User, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 user = User.by_id(id)
                 if not user:
@@ -68,7 +65,7 @@ class Users(Resource):
                     copy['updated_at'] = str(datetime.utcnow())
                 db.session.delete(user)
                 db.session.commit()
-                if admin_check(request):
+                if read_token(strip_admin(request)):
                     return 'Deletion Successful', copy
                 del copy["password_digest"]
                 return 'Deletion Successful', copy
