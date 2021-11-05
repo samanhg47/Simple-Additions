@@ -65,5 +65,5 @@ class User(db.Model):
         return User.query.filter_by(id=id).first()
 
     @classmethod
-    def by_name(cls, name):
-        return User.query.filter_by(user_name=name).first()
+    def by_email(cls, email):
+        return User.query.filter_by(email=email).first()

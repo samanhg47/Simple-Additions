@@ -78,8 +78,8 @@ class Shelter(db.Model):
         return Shelter.query.filter_by(id=id).first()
 
     @classmethod
-    def by_contacts(cls, phone_number, email, shelter_name, address):
-        return Shelter.query.filter_by(phone_number=phone_number, email=email, shelter_name=shelter_name, address=address).first()
+    def by_address(cls, shelter_name, address):
+        return Shelter.query.filter_by(shelter_name=shelter_name, address=address).first()
 
     @classmethod
     def find_all(cls):
