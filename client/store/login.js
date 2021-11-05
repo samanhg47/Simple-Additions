@@ -4,15 +4,26 @@ import { BASE_URL } from './auth'
 //state
 export const state = () => ({
   form: {
-    email: {
+    shelter_name: {
       value: '',
-      name: 'Email',
+      name: 'Shelter name',
       class: 'neutral',
-      type: 'email',
-      for: 'Email Address',
-      placeholder: 'You@YourEmail.com',
+      type: 'text',
+      for: 'Shelter Name',
+      placeholder: 'Nice Shelter People Inc.',
       visited: false,
-      minLen: 10,
+      minLen: 5,
+      msg: null
+    },
+    address: {
+      value: '',
+      name: 'Address',
+      class: 'neutral',
+      type: 'text',
+      for: 'Company Address',
+      placeholder: '1234 West State St.',
+      visited: false,
+      minLen: 5,
       msg: null
     },
     user_name: {
@@ -25,6 +36,28 @@ export const state = () => ({
       visited: false,
       minLen: 5,
       msg: null
+    },
+    email: {
+      value: '',
+      name: 'Email',
+      class: 'neutral',
+      type: 'email',
+      for: 'Email Address',
+      placeholder: 'You@YourEmail.com',
+      visited: false,
+      minLen: 10,
+      msg: null
+    },
+    phone_number: {
+      value: '',
+      name: 'Phone Number',
+      class: 'neutral',
+      type: 'text',
+      for: 'Company Phone Number',
+      placeholder: '(123)-456-7891',
+      visited: false,
+      minLen: 14,
+      msg: 'Only Enter Numbers'
     },
     password: {
       value: '',
@@ -46,17 +79,6 @@ export const state = () => ({
       placeholder: '',
       visited: false,
       minLen: 10,
-      msg: null
-    },
-    address: {
-      value: '',
-      name: 'Address',
-      class: 'neutral',
-      type: 'text',
-      for: 'Accurate Address',
-      placeholder: '1234 West State St.',
-      visited: false,
-      minLen: 5,
       msg: null
     },
     state: {
@@ -81,28 +103,6 @@ export const state = () => ({
       type: 'text',
       name: 'zipcode',
       visited: false,
-      msg: null
-    },
-    shelter_name: {
-      value: '',
-      name: 'Shelter name',
-      class: 'neutral',
-      type: 'text',
-      for: 'Shelter Name',
-      placeholder: 'Nice Shelter People Inc.',
-      visited: false,
-      minLen: 5,
-      msg: null
-    },
-    phone_number: {
-      value: '',
-      name: 'Phone Number',
-      class: 'neutral',
-      type: 'text',
-      for: 'Company Phone Number',
-      placeholder: '(123)-456-7891',
-      visited: false,
-      minLen: 14,
       msg: null
     }
   },
@@ -142,10 +142,10 @@ export const getters = {
     return userLoc
   },
   shelterForm: state => {
-    const shelterForm = state.form
+    const shelterForm = {}
     if (state.registration) {
       Object.keys(state.form).forEach(key => {
-        if (key !== 'user_name') {
+        if (!['user_name', 'city', 'state', 'zipcode'].includes(key)) {
           shelterForm[key] = state.form[key]
         }
       })
@@ -164,6 +164,9 @@ export const getters = {
 export const actions = {
   aToggleRegistration({ commit }) {
     commit('mToggleRegistration')
+  },
+  aToggleAuth({ commit }) {
+    commit('mToggleAuth')
   },
   aClearForm(store) {
     store.commit('mClearForm')
@@ -217,9 +220,9 @@ export const actions = {
     const charBools = []
     const acceptable =
       '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'
-    const charArr = store.state.form[field].value.split('')
+    const charArr = Array.from(store.state.form[field].value)
     if (field === 'user_name') {
-      charArr.forEach((char, i) => {
+      charArr.forEach(char => {
         if (acceptable.includes(char)) {
           charBools.push('t')
         } else {
@@ -228,7 +231,7 @@ export const actions = {
       })
     }
     if (field === 'email') {
-      charArr.forEach((char, i) => {
+      charArr.forEach(char => {
         if (acceptable.includes(char) || char === '@' || char === '.') {
           charBools.push('t')
         } else {
@@ -237,8 +240,8 @@ export const actions = {
       })
     }
     if (field === 'address') {
-      charArr.forEach((char, i) => {
-        if (acceptable.includes(char) || char === '.') {
+      charArr.forEach(char => {
+        if (acceptable.includes(char) || char === '.' || char === ',') {
           charBools.push('t')
         } else {
           charBools.push('f')
@@ -253,7 +256,30 @@ export const actions = {
           char === ')' ||
           char === '-'
         ) {
-          charBools.push('t')
+          if (i === 13) {
+            if (
+              `${parseInt(
+                charArr
+                  .slice(1, 4)
+                  .concat(charArr.slice(6, 9).concat(charArr.slice(10)))
+                  .join('')
+              )}`.length === 10
+            ) {
+              charBools.push('t')
+            } else {
+              charBools.push('f')
+              console.log(
+                parseInt(
+                  charArr
+                    .slice(1, 4)
+                    .concat(charArr.slice(6, 9).concat(charArr.slice(10)))
+                    .join('')
+                )
+              )
+            }
+          } else {
+            charBools.push('t')
+          }
         } else {
           charBools.push('f')
         }
@@ -301,11 +327,11 @@ export const actions = {
         ? await charCheck('user_name')
         : null
     const phoneCheck =
-      user_auth && event.target.name === 'phone_number'
+      !user_auth && event.target.name === 'phone_number'
         ? await charCheck('phone_number')
         : null
     const addressCheck =
-      user_auth && event.target.name === 'address'
+      !user_auth && event.target.name === 'address'
         ? await charCheck('address')
         : null
     const emailCheck =
@@ -337,11 +363,11 @@ export const actions = {
         ? await charCheck('user_name')
         : null
     const phoneCheck =
-      user_auth && event.target.name === 'phone_number'
+      !user_auth && event.target.name === 'phone_number'
         ? await charCheck('phone_number')
         : null
     const addressCheck =
-      user_auth && event.target.name === 'address'
+      !user_auth && event.target.name === 'address'
         ? await charCheck('address')
         : null
     const emailCheck =
@@ -397,46 +423,41 @@ export const mutations = {
       ? (state.registration = false)
       : (state.registration = true)
   },
+  mToggleAuth(state) {
+    state.user_auth ? (state.user_auth = false) : (state.user_auth = true)
+  },
   mHandleChange(state, event) {
     let eventValue = event.target.value
-    if (event.target.name === 'phone_number') {
-      if (state.form[event.target.name].value.length === 1) {
-        state.form[event.target.name].value = '(' + eventValue
-        state.shelter[event.target.name].value = '(' + eventValue
-      } else if (state.form[event.target.name].value.length === 4) {
-        state.form[event.target.name].value = eventValue + ')-'
-        state.shelter[event.target.name].value = eventValue + ')-'
-      } else if (state.form[event.target.name].value.length === 9) {
-        state.form[event.target.name].value = eventValue + '-'
-        state.shelter[event.target.name].value = eventValue + '-'
+
+    state.form[event.target.name].value = eventValue
+
+    if (!eventValue) {
+      state.form[event.target.name].class = 'neutral'
+      state.form[event.target.name].visited = false
+    }
+
+    if (event.target.name === 'state') {
+      state.form.city.class = 'neutral'
+      state.form.city.value = ''
+      state.form.city.msg = null
+      state.form.zipcode.class = 'neutral'
+      state.form.zipcode.value = ''
+      state.form.zipcode.msg = null
+    }
+
+    if (event.target.name === 'city') {
+      state.form.zipcode.class = 'neutral'
+      state.form.zipcode.value = ''
+      state.form.zipcode.msg = null
+    }
+
+    if (state.user_auth) {
+      if (event.target.name !== 'confirm') {
+        state.user[event.target.name] = eventValue
       }
     } else {
-      state.form[event.target.name].value = eventValue
-      if (!eventValue) {
-        state.form[event.target.name].class = 'neutral'
-        state.form[event.target.name].visited = false
-      }
-      if (event.target.name === 'state') {
-        state.form.city.class = 'neutral'
-        state.form.city.value = ''
-        state.form.city.msg = null
-        state.form.zipcode.class = 'neutral'
-        state.form.zipcode.value = ''
-        state.form.zipcode.msg = null
-      }
-      if (event.target.name === 'city') {
-        state.form.zipcode.class = 'neutral'
-        state.form.zipcode.value = ''
-        state.form.zipcode.msg = null
-      }
-      if (state.user_auth) {
-        if (event.target.name !== 'confirm') {
-          state.user[event.target.name] = eventValue
-        }
-      } else {
-        if (event.target.name !== 'confirm') {
-          state.shelter[event.target.name] = eventValue
-        }
+      if (event.target.name !== 'confirm') {
+        state.shelter[event.target.name] = eventValue
       }
     }
   },
@@ -512,7 +533,7 @@ export const mutations = {
     if (event.target.name === 'phone_number') {
       if (phoneCheck.includes('f')) {
         state.form.phone_number.class = 'invalid'
-        state.form.phone_number.msg = 'Phone Number Must Be Numeric'
+        state.form.phone_number.msg = 'Phone Number Must Be 10 Numbers'
       }
     }
 

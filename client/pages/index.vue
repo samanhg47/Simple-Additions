@@ -8,11 +8,11 @@
       <section v-for="(field,index) in userForm" :key="index" :class="'inpSec ' + field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' class="showPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "password"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
-          <button tabindex="-1" v-if='index === "confirm"' class="showPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "confirm"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
@@ -34,11 +34,11 @@
       <section v-for="(field,index) in shelterForm" :key="index" :class="'inpSec ' + field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' class="showPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "password"' class="sheltShowPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
-          <button tabindex="-1" v-if='index === "confirm"' class="showPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
+          <button tabindex="-1" v-if='index === "confirm"' class="sheltShowPasswordBtn" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
             <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
             <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
           </button>
@@ -50,7 +50,7 @@
         </div>
         <div class="errDiv">
           <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" class="errMsg">{{field.msg}}</p>
+          <p v-if="field.msg" class="sheltErrMsg">{{field.msg}}</p>
         </div>
       </section>
     </div >
@@ -87,10 +87,12 @@
         <button type="submit" v-if="registration" disabled id="sub">Register</button>
         <button type="submit" v-if="!registration" disabled id="sub">Login</button>
       </section>
-      <button @click.prevent="aToggleRegistration" id='toggleReg' type='button' v-if="user_auth && registration">Returning user? Click here to login.</button>
-      <button @click.prevent="aToggleRegistration" id='toggleReg' type='button' v-if="user_auth && !registration">New user? Click here to register.</button>
-      <button @click.prevent="aToggleRegistration" id='toggleReg' type='button' v-if="!user_auth && registration">Returning Shelter? Click here to login.</button>
-      <button @click.prevent="aToggleRegistration" id='toggleReg' type='button' v-if="!user_auth && !registration">New Shelter? Click here to register.</button>
+      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="user_auth">Shelter Login/Registration Here.</button>
+      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && registration">Returning user? Click Here To Login.</button>
+      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && !registration">New user? Click Here To Register.</button>
+      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="!user_auth">User Login/Registration Here</button>
+      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && registration">Returning Shelter? Click Here To Login.</button>
+      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && !registration">New Shelter? Click Here To Register.</button>
     </div>
   </form>
 </template>
@@ -103,9 +105,23 @@ export default {
   mounted () {
     window.addEventListener('beforeunload', this.clearForm)
   },
+  updated(){
+    if (this.layout === null){
+      this.layout = document.firstElementChild.children[1].children[0].children[1]
+      ? document.firstElementChild.children[1].children[0].children[1]
+      : document.firstElementChild.children[1].children[0].firstElementChild
+    }
+    if(!this.user_auth){
+        this.phoneNumber = this.layout
+        .firstElementChild.children[1].firstElementChild.firstElementChild.children[1]
+        .children[3].firstElementChild.children[1].value
+    }
+  },
   data: ()=>({
     hidePassword: true,
-    hideConfirm: true
+    hideConfirm: true,
+    phoneNumber: null,
+    layout: null
   }),
   computed: {
     ...mapState(
@@ -150,6 +166,7 @@ export default {
         "aHandleChange",
         "aHandleSubmit",
         "aToggleRegistration",
+        "aToggleAuth",
         "charCheck",
         'aClearForm'
         ]
@@ -217,6 +234,25 @@ export default {
         document.getElementById("sub").disabled = true
       }else{
         document.getElementById("sub").disabled = false
+      }
+    },
+    phoneNumber: function(newValue, oldValue){
+      if(newValue.length){
+        if(newValue.length > oldValue.length){
+          if (this.phoneNumber.length === 1) {
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = `(${this.phoneNumber}`
+          } else if (this.phoneNumber.length === 4) {
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = `${this.phoneNumber})-`
+          } else if (this.phoneNumber.length === 9) {
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = `${this.phoneNumber}-`
+          }
+        }
       }
     },
   },
@@ -293,6 +329,11 @@ datalist{
 }
 .errMsg{
   margin-left: 14vw;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+.sheltErrMsg{
+  margin-left: 18.8vw;
   margin-bottom: 0;
   margin-top: 0;
 }
@@ -413,7 +454,15 @@ datalist{
   align-items: center;
   justify-content: center;
   margin-top: .5vw;
-  margin-left: 33.58vw;
+  margin-left: 33.7vw;
+}
+.sheltShowPasswordBtn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: .5vw;
+  margin-left: 38.4vw;
 }
 .showPassword{
   width: 2vw;
@@ -425,11 +474,11 @@ datalist{
 }
 
 
-#toggleReg{
+.toggleLink{
   color: #606E38;
   text-decoration: underline;
 }
-#toggleReg:active{
+.toggleLink:active{
   color: #98af58;
 }
 </style>

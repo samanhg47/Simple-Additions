@@ -28,12 +28,10 @@ html, body, #__nuxt, #__layout,#contDiv{
   display: flex;
   align-items: center;
   justify-content: center;
-  /* min-height: 45vw; */
-  /* max-width: 50vw; */
   background-color: #606E38;
   background: linear-gradient(
-    to top right,
-    #7c8f49,
+    to bottom left,
+    #879b4f,
     #566332
   );
   border-radius: 20px;
@@ -45,8 +43,6 @@ html, body, #__nuxt, #__layout,#contDiv{
   display: flex;
   align-items: center;
   justify-content: center;
-  /* height: 37vw; */
-  /* max-width: 40vw; */
   margin: 0;
   padding: 0;
   background-color: wheat;
@@ -58,7 +54,7 @@ html, body, #__nuxt, #__layout,#contDiv{
   width: 15vw;
   box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.808);
   border-radius: 100%;
-  padding-bottom: .1vw;
+  margin-top: .05vw;
 }
 .left{
   margin-right: 5vw;
