@@ -15,7 +15,6 @@ export const actions = {
     const token = localStorage.getItem('token')
     if (token) {
       const res = await Client.get('/login/users')
-      console.log(res)
     }
     // commit('assignAuth', auth)
     return auth

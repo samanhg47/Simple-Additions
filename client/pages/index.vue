@@ -127,7 +127,8 @@ export default {
     ...mapState(
       "login",[
         "user_auth",
-        "registration"
+        "registration",
+        'form'
         ]
       ),
     ...mapState([
@@ -146,11 +147,18 @@ export default {
       ),
     validVals: function(){
       let validity = []
-      Object.keys(this.userForm).forEach(key => {
-        validity.push(this.userForm[key].class)
-      })
+      if(this.user_auth){
+        Object.keys(this.userForm).forEach(key => {
+          validity.push(`${key} ${this.userForm[key].class}`)
+        })
+      }
+      if(!this.user_auth){
+        Object.keys(this.shelterForm).forEach(key => {
+          validity.push(`${key} ${this.shelterForm[key].class}`)
+        })
+      }
       Object.keys(this.userLocation).forEach(key => {
-        validity.push(this.userLocation[key].class)
+        validity.push(`${key} ${this.userLocation[key].class}`)
       })
       return validity
     }
@@ -223,22 +231,34 @@ export default {
         (document.querySelector("#zipInp").disabled = true)
       }
     },
-    zipcode_list: function(){
+    zipcode_list: function(oldVal, newVal){
       if(this.registration && this.city_list.includes(this.userLocation.city.value)){
         document.querySelector("#zipInp").placeholder = "zipcode"
         document.querySelector("#zipInp").disabled = false
       }
     },
-    validVals: function(){
-      if(!this.validVals.every( val => val === "valid")){
+    validVals: function(newVal, oldVal){
+      if(!this.validVals.every( val => val.split(' ')[1] === "valid")){
         document.getElementById("sub").disabled = true
       }else{
         document.getElementById("sub").disabled = false
       }
+
+      if (oldVal.length === newVal.length){
+        this.validVals.forEach( (val, i) => {
+          if(val.split(' ')[1] === "invalid" && oldVal[i].split(' ')[1] !== val.split(' ')[1]){
+            const element = document.querySelector(`[name="${val.split(' ')[0]}"]`)
+            element.classList.add('error')
+            setTimeout(function() {
+              element.classList.remove('error')
+            }, 300)
+          }
+        })
+      }
     },
-    phoneNumber: function(newValue, oldValue){
-      if(newValue.length){
-        if(newValue.length > oldValue.length){
+    phoneNumber: function(newVal, oldVal){
+      if(newVal.length){
+        if(newVal.length > oldVal.length){
           if (this.phoneNumber.length === 1) {
             this.layout.firstElementChild.children[1].firstElementChild
             .firstElementChild.children[1].children[3]
@@ -253,8 +273,26 @@ export default {
             .firstElementChild.children[1].value = `${this.phoneNumber}-`
           }
         }
+        if(newVal.length < oldVal.length){
+          if(newVal.length === 10){
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = this.phoneNumber.slice(0,9)
+          }
+          if(newVal.length === 6){
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = this.phoneNumber.slice(0,4)
+          }
+          if(newVal.length === 1){
+            this.layout.firstElementChild.children[1].firstElementChild
+            .firstElementChild.children[1].children[3]
+            .firstElementChild.children[1].value = ''
+          }
+        }
       }
     },
+
   },
 }
 </script>
@@ -480,5 +518,16 @@ datalist{
 }
 .toggleLink:active{
   color: #98af58;
+}
+
+
+.error {
+    position: relative;
+    animation: shake .1s linear;
+    animation-iteration-count: 3;
+}
+@keyframes shake {
+    0% { top: -.3vw; }
+    100% { bottom: -.3vw; }
 }
 </style>

@@ -203,6 +203,8 @@ export const actions = {
           alert(
             `No Profile Found For ${user.user_name}. Please Register Profile.`
           )
+        } else if (err.response.status == 403) {
+          alert('Password Incorrect')
         }
         user = null
       }
@@ -682,7 +684,8 @@ export const mutations = {
   mCheckLength(state, event) {
     const cond1 =
       state.form[event.target.name].visited ||
-      state.form[event.target.name].class === 'valid'
+      state.form[event.target.name].class === 'valid' ||
+      event.target.name === 'phone_number'
     const cond2 =
       state.form[event.target.name].minLen &&
       event.target.value.length < state.form[event.target.name].minLen
@@ -694,7 +697,7 @@ export const mutations = {
         } Must Be Less Than 50 Characters Long`
       } else if (
         event.target.name === 'phone_number' &&
-        event.target.value.length !== 14
+        ((cond1 && event.target.value.length !== 14) || cond2)
       ) {
         state.form[event.target.name].class = 'invalid'
         state.form[event.target.name].msg = `${
