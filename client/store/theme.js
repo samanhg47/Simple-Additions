@@ -1,14 +1,30 @@
+import darkLogo from '../assets/saLogoDark.png'
+import lightLogo from '../assets/saLogo.png'
 //state
 export const state = () => ({
   mode: true,
   light: {
-    primaryDark: '#566332',
-    primary: '#606E38',
-    primaryMed: '#879b4f',
-    primaryLight: '#98af58',
-    secondary: 'wheat'
+    darkGreen: '#566332',
+    green: '#606E38',
+    medGreen: '#879b4f',
+    lightGreen: '#98af58',
+    secondary: 'wheat',
+    color: 'black',
+    input: '#96969657',
+    logoShadow: '0 0 2.5vw .1vw rgba(0, 0, 0, 0.753)',
+    formShadow: '0 0 3vw .1vw rgba(0, 0, 0, 0.808)'
   },
-  dark: {}
+  dark: {
+    darkGreen: '#171d08',
+    green: '#29350c',
+    medGreen: '#394712',
+    lightGreen: '#4d5f1d',
+    darkSecondary: 'rgb(41, 31, 10)',
+    lightSecondary: 'rgb(56, 43, 15)',
+    color: '#e0e0e0',
+    input: '#52525257',
+    logo: ''
+  }
 })
 
 //getter

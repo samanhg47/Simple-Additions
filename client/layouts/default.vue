@@ -1,13 +1,13 @@
 <template>
   <div id="contDiv">
     <Error />
-    <img class='liLogo left' src="../assets/saLogo.png"/>
+    <img class='liLogo left' src="../assets/saLogoDark.png"/>
     <section class="formCont">
       <section class="inputSec">
         <Nuxt />
       </section>
     </section>
-    <img class="liLogo right" src="../assets/saLogo.png"/>
+    <img class="liLogo right" src="../assets/saLogoDark.png"/>
   </div>
 </template>
 
@@ -19,7 +19,12 @@ html, body, #__nuxt, #__layout,#contDiv{
   height: 100%;
 }
 #contDiv{
-  background-color: wheat;
+  background-color: rgb(41, 31, 10);
+  background: linear-gradient(
+    to top right,
+    rgb(56, 43, 15),
+    rgb(29, 21, 5)
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,13 +36,13 @@ html, body, #__nuxt, #__layout,#contDiv{
   background-color: #606E38;
   background: linear-gradient(
     to bottom left,
-    #879b4f,
-    #566332
+    #394712,
+    #171d08
   );
   border-radius: 20px;
   margin: 0;
   padding: 4vw;
-  box-shadow: 0 0 3vw .1vw rgba(0, 0, 0, 0.808);
+  box-shadow: 0 0 4vw .1vw rgb(0, 0, 0);
 }
 .inputSec{
   display: flex;
@@ -45,16 +50,21 @@ html, body, #__nuxt, #__layout,#contDiv{
   justify-content: center;
   margin: 0;
   padding: 0;
-  background-color: wheat;
+  background-color: rgb(56, 43, 15);
+  background: linear-gradient(
+    to bottom left,
+    rgb(56, 43, 15),
+    rgb(29, 21, 5)
+  );
+  color: #e0e0e0;
 }
 .inputCont{
   flex-direction: column;
 }
 .liLogo{
   width: 15vw;
-  box-shadow: 0 0 2.5vw .1vw rgba(0, 0, 0, 0.753);
+  box-shadow: 0 0 4vw .1vw rgb(0, 0, 0);
   border-radius: 100%;
-  margin-top: .05vw;
 }
 .left{
   margin-right: 5vw;

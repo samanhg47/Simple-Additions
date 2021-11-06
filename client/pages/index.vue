@@ -113,7 +113,7 @@ export default {
     }
     if(!this.user_auth){
         this.phoneNumber = this.layout
-        .firstElementChild.children[1].firstElementChild.firstElementChild.children[1]
+        .firstElementChild.children[2].firstElementChild.firstElementChild.children[1]
         .children[3].firstElementChild.children[1].value
     }
   },
@@ -349,12 +349,13 @@ img{
   justify-content: space-between;
 }
 input{
-  background-color: #96969657;
+  background-color: #52525257;
   border: none;
   padding-left: .5vw;
   width: 22vw;
   height: 2.5vw;
   margin-left: .5vw;
+  color: #e0e0e0;
 }
 [name='password'],[name='confirm'] {
   padding-right: 2.5vw;
@@ -422,19 +423,17 @@ datalist{
 #cityInp{
   width: 17vw;
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #stateInp{
   width: 7vw;
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #zipInp{
   width: 9vw;
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
+  /* background-color: rgba(0, 0, 0, 0.137); */
   text-align: center;
 }
 .valid > .errDiv,.valid > .errDiv2{
@@ -474,22 +473,24 @@ datalist{
   margin: .5vw;
 }
 #sub{
-  background-color: #606E38;
+  background-color: #29350c;
   background: linear-gradient(
     to bottom left,
-    #606E38,
-    #98af58
+    #29350c,
+    #4d5f1d
   );
-  box-shadow: 0px .3vw 0 0 #606E38;
+  box-shadow: 0px .3vw 0 0 #394712;
   padding: .3vw .7vw;
   border-radius: 20px;
 }
 #sub:hover{
+  background-color: #4d5f1d;
   background: linear-gradient(
     to bottom left,
-    #98af58,
-    #606E38
+    #4d5f1d,
+    #29350c
   );
+  box-shadow: 0px .3vw 0 0 #29350c;
 }
 #sub:active{
   box-shadow: none;
@@ -531,14 +532,15 @@ datalist{
 
 
 .toggleLink{
-  color: #879b4f;
+  color: #394712;
   text-decoration: underline;
 }
 .toggleLink:hover{
-  color: #606E38;
+  color: #29350c;
+
 }
 .toggleLink:active{
-  color: #98af58;
+  color: #4d5f1d;
 }
 
 
