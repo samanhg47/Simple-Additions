@@ -1,6 +1,4 @@
-import axios from 'axios'
-import { BASE_URL } from './auth'
-
+import _, { pick, omit } from 'underscore'
 //state
 export const state = () => ({
   form: {
@@ -106,46 +104,19 @@ export const state = () => ({
 //getters
 export const getters = {
   userForm: state => {
-    const userForm = {}
-    if (state.registration) {
-      Object.keys(state.form).forEach(key => {
-        if (['email', 'password', 'confirm', 'user_name'].includes(key)) {
-          userForm[key] = state.form[key]
-        }
-      })
-    } else if (!state.registration) {
-      Object.keys(state.form).forEach(key => {
-        if (['password', 'confirm', 'user_name'].includes(key)) {
-          userForm[key] = state.form[key]
-        }
-      })
-    }
+    const userForm = state.registration
+      ? _.pick(state.form, ['user_name', 'email', 'password', 'confirm'])
+      : _.pick(state.form, ['email', 'password', 'confirm'])
     return userForm
   },
   userLocation: state => {
-    const userLoc = {}
-    Object.keys(state.form).forEach(key => {
-      if (['state', 'city', 'zipcode'].includes(key)) {
-        userLoc[key] = state.form[key]
-      }
-    })
+    const userLoc = _.pick(state.form, ['state', 'city', 'zipcode'])
     return userLoc
   },
   shelterForm: state => {
-    const shelterForm = {}
-    if (state.registration) {
-      Object.keys(state.form).forEach(key => {
-        if (!['user_name', 'city', 'state', 'zipcode'].includes(key)) {
-          shelterForm[key] = state.form[key]
-        }
-      })
-    } else if (!state.registration) {
-      Object.keys(state.form).forEach(key => {
-        if (['password', 'confirm', 'shelter_name', 'address'].includes(key)) {
-          shelterForm[key] = state.form[key]
-        }
-      })
-    }
+    const shelterForm = state.registration
+      ? _.omit(state.form, ['user_name', 'city', 'state', 'zipcode'])
+      : _.pick(state.form, ['shelter_name', 'address', 'password', 'confirm'])
     return shelterForm
   }
 }
@@ -164,25 +135,26 @@ export const actions = {
   async aHandleSubmit(store) {
     const userForm = store.state.user_auth
     const registration = store.state.registration
+    const Client = store.rootGetters['auth/client']
     let user = store.state.user
 
     if (userForm && registration) {
-      let res = await axios.get(
-        `${BASE_URL}/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
+      let res = await Client.get(
+        `/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
       )
       delete user['city']
       delete user['state']
       delete user['zipcode']
       user['city_id'] = res.data.id
-      res = await axios.post(`${BASE_URL}/register/users`, user)
+      res = await Client.post(`/register/users`, user)
       if (res.status < 200) {
-        const log = await axios.post(`${BASE_URL}/login/users`, user)
+        const log = await Client.post(`/login/users`, user)
         localStorage.setItem('token', res.data.token)
         user = res.data.user
       }
     } else if (userForm && !registration) {
       try {
-        const res = await axios.post(`${BASE_URL}/login/users`, user)
+        const res = await Client.post(`/login/users`, user)
         user = res.data.user
       } catch (err) {
         console.log(err.response)
@@ -197,7 +169,7 @@ export const actions = {
         user = null
       }
     } else if (!userForm && registration) {
-      const res = await axios.post(`${BASE_URL}/register/shelters`)
+      const res = await Client.post(`/register/shelters`)
     } else {
     }
     if (user) {
@@ -336,7 +308,6 @@ export const actions = {
     })
   },
   async aCheckIfValid(store, event) {
-    console.log(store.rootGetters['auth/Client'])
     const charCheck = field => {
       return store.dispatch('charCheck', field)
     }

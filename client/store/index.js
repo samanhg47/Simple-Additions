@@ -1,5 +1,4 @@
-import axios from 'axios'
-import { BASE_URL, Client } from './auth'
+import { _ } from 'core-js'
 
 // state
 export const state = () => ({
@@ -42,36 +41,31 @@ export const getters = {
 
 //actions
 export const actions = {
-  async checkToken() {
-    let auth = false
-    const token = localStorage.getItem('token')
-    if (token) {
-      auth = await Client.get('/login/users')
-    }
-    commit('assignAuth', auth)
-    return auth
-  },
   async userGetShelters(store, proximity, coordinates) {
     body = {
       coordinates: coordinates,
       proximity: proximity
     }
+    const Client = store.rootGetters['auth/client']
     const shelters = await Client.get('/shelters', body)
     store.commit('addShelters', shelters)
     return shelters
   },
   async adminGetShelters(store) {
+    const Client = store.rootGetters['auth/client']
     const shelters = await Client.get('/admin/shelters')
     store.commit('addShelters', shelters)
   },
   async getStates(store) {
-    const states = await axios.get(`${BASE_URL}/states`)
+    const Client = store.rootGetters['auth/client']
+    const states = await Client.get(`/states`)
     const state_list = []
     states.data.forEach(state => state_list.push(state.shorthand))
     store.commit('addStates', state_list)
   },
   async getCities(store, state) {
-    const cities = await axios.get(`${BASE_URL}/cities/${state}`)
+    const Client = store.rootGetters['auth/client']
+    const cities = await Client.get(`/cities/${state}`)
     store.commit('addCities', cities.data)
   }
 }
@@ -84,13 +78,13 @@ export const mutations = {
   addShelters(state, shelters) {
     state.shelters.push({ ...shelters })
   },
-  toggleNewAccount(state, bool) {
-    state.newAccount = bool
-  },
   addStates(state, states) {
     state.states = states
   },
   addCities(state, cities) {
     state.cities = cities
+  },
+  toggleNewAccount(state, bool) {
+    state.newAccount = bool
   }
 }

@@ -50,7 +50,7 @@
         </div>
         <div class="errDiv">
           <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" class="sheltErrMsg">{{field.msg}}</p>
+          <p v-if="field.msg" :class="registration?'sheltErrMsg':'errMsg'" >{{field.msg}}</p>
         </div>
       </section>
     </div >
@@ -98,6 +98,7 @@
 </template>
 <script>
 import {mapState, mapGetters, mapActions} from "vuex"
+import _,{ pick } from "underscore"
 export default {
   async created () {
     await this.getStates()
@@ -148,18 +149,32 @@ export default {
     validVals: function(){
       let validity = []
       if(this.user_auth){
-        Object.keys(this.userForm).forEach(key => {
-          validity.push(`${key} ${this.userForm[key].class}`)
-        })
+        if(this.registration){
+          Object.keys(this.userForm).forEach(key => {
+            validity.push(`${key} ${this.userForm[key].class}`)
+          })
+        } else {
+          Object.keys(this.userForm).forEach(key => {
+            validity.push(`${key} ${this.userForm[key].class}`)
+          })
+        }
       }
       if(!this.user_auth){
-        Object.keys(this.shelterForm).forEach(key => {
-          validity.push(`${key} ${this.shelterForm[key].class}`)
+        if(this.registration){
+          Object.keys(this.shelterForm).forEach(key => {
+            validity.push(`${key} ${this.shelterForm[key].class}`)
+        })
+        } else {
+          Object.keys(this.shelterForm).forEach(key => {
+            validity.push(`${key} ${this.shelterForm[key].class}`)
+          })
+        }
+      }
+      if (this.registration) {
+        Object.keys(this.userLocation).forEach(key => {
+          validity.push(`${key} ${this.userLocation[key].class}`)
         })
       }
-      Object.keys(this.userLocation).forEach(key => {
-        validity.push(`${key} ${this.userLocation[key].class}`)
-      })
       return validity
     }
   },
@@ -231,7 +246,7 @@ export default {
         (document.querySelector("#zipInp").disabled = true)
       }
     },
-    zipcode_list: function(oldVal, newVal){
+    zipcode_list: function(){
       if(this.registration && this.city_list.includes(this.userLocation.city.value)){
         document.querySelector("#zipInp").placeholder = "zipcode"
         document.querySelector("#zipInp").disabled = false
@@ -342,6 +357,7 @@ input{
   padding-left: .5vw;
   width: 22vw;
   height: 2.5vw;
+  margin-left: .5vw;
 }
 [name='password'],[name='confirm'] {
   padding-right: 2.5vw;
@@ -361,7 +377,7 @@ datalist{
   max-width: inherit;
   flex-direction: row-reverse;
   justify-content: space-between;
-  color: black
+  color: black;
 }
 .errDiv2{
   display: flex;
@@ -373,12 +389,12 @@ datalist{
   justify-self: center;
 }
 .errMsg{
-  margin-left: 14vw;
+  margin-left: 14.5vw;
   margin-bottom: 0;
   margin-top: 0;
 }
 .sheltErrMsg{
-  margin-left: 18.8vw;
+  margin-left: 19.5vw;
   margin-bottom: 0;
   margin-top: 0;
 }
@@ -408,19 +424,19 @@ datalist{
 }
 #cityInp{
   width: 17vw;
-  /* margin: 0 .5vw 0 .5vw; */
+  margin: 0;
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #stateInp{
   width: 7vw;
-  /* margin: 0 .5vw 0 .5vw; */
+  margin: 0;
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #zipInp{
   width: 9vw;
-  /* margin: 0 .5vw 0 .5vw; */
+  margin: 0;
   background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
@@ -497,7 +513,7 @@ datalist{
   align-items: center;
   justify-content: center;
   margin-top: .5vw;
-  margin-left: 33.5vw;
+  margin-left: 34vw;
 }
 .sheltShowPasswordBtn {
   position: absolute;
@@ -505,7 +521,7 @@ datalist{
   align-items: center;
   justify-content: center;
   margin-top: .5vw;
-  margin-left: 38.4vw;
+  margin-left: 38.9vw;
 }
 .showPassword{
   width: 2vw;

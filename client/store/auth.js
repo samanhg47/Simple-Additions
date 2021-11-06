@@ -1,4 +1,3 @@
-import axios from 'axios'
 import Axios from 'axios'
 // state
 export const state = () => ({
@@ -12,8 +11,11 @@ export const state = () => ({
 
 //getters
 export const getters = {
-  Client: state => {
-    return Axios.create({ baseURL: state.BASE_URL }).interceptors.request.use(
+  client: state => {
+    const Client = Axios.create({
+      baseURL: state.BASE_URL
+    })
+    Client.interceptors.request.use(
       config => {
         const token = localStorage.getItem('token')
         const admin = localStorage.getItem('admin')
@@ -25,14 +27,17 @@ export const getters = {
       },
       error => Promise.reject(error)
     )
+    return Client
   }
 }
 
 //actions
 export const actions = {
-  async checkToken() {
+  async checkToken(store) {
     const token = localStorage.getItem('token')
-    const res = token ? await Client.get('/login/users') : false
+    const res = token ? await Client.get('/login/users', token) : false
+    store.dispatch('aAssignAuth', res.data)
+    return store.state.authenticated
   },
   aAssignAuth({ commit }, bool) {
     commit('mAssignAuth', bool)
@@ -45,16 +50,3 @@ export const mutations = {
     state.authenticated = bool
   }
 }
-
-// export const Client = Axios.create({ baseURL: BASE_URL }).interceptors.request.use(
-//   config => {
-//     const adminAuth = localStorage.getItem('Admin')
-//     const token = localStorage.getItem('token')
-//     if (token) {
-//       config.headers['Authorization'] = `Bearer ${token}`
-//       config.headers['Admin'] = adminAuth
-//     }
-//     return config
-//   },
-//   error => Promise.reject(error)
-// )
