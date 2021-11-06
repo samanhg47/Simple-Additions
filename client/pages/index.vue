@@ -98,7 +98,6 @@
 </template>
 <script>
 import {mapState, mapGetters, mapActions} from "vuex"
-import _,{ pick } from "underscore"
 export default {
   async created () {
     await this.getStates()
