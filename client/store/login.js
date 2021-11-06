@@ -136,6 +136,7 @@ export const actions = {
     const userForm = store.state.user_auth
     const registration = store.state.registration
     const Client = store.rootGetters['auth/client']
+    let error = null
     let user = store.state.user
 
     if (userForm && registration) {
@@ -149,7 +150,8 @@ export const actions = {
       res = await Client.post(`/register/users`, user)
       if (res.status < 200) {
         const log = await Client.post(`/login/users`, user)
-        localStorage.setItem('token', res.data.token)
+        // localStorage.setItem('token', res.data.token)
+        console.log(localStorage)
         user = res.data.user
       }
     } else if (userForm && !registration) {
@@ -159,10 +161,8 @@ export const actions = {
       } catch (err) {
         console.log(err.response)
         if (err.response.status == 404) {
-          store.state.registration = true
-          alert(
-            `No Profile Found For ${user.user_name}. Please Register Profile.`
-          )
+          alert(`No Profile Found. Please Register.`)
+          return (error = 404)
         } else if (err.response.status == 403) {
           alert('Password Incorrect')
         }
@@ -174,8 +174,9 @@ export const actions = {
     }
     if (user) {
       const currentUser = store
-      $nuxt._router.push('/home')
-      store.commit('mHandleSubmit', { user, currentUser })
+      console.log(error)
+      // $nuxt._router.push('/home')
+      store.commit('mHandleSubmit', { user, currentUser, error })
     }
   },
   charCheck(store, field) {

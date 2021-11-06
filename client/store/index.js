@@ -2,7 +2,6 @@ import { _ } from 'core-js'
 
 // state
 export const state = () => ({
-  authenticated: false,
   newAccount: true,
   currentUser: {},
   location: [],
@@ -72,9 +71,6 @@ export const actions = {
 
 //mutations
 export const mutations = {
-  assignAuth(state, auth) {
-    state.authenticated = auth
-  },
   addShelters(state, shelters) {
     state.shelters.push({ ...shelters })
   },
