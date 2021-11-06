@@ -97,7 +97,7 @@
   </form>
 </template>
 <script>
-import {mapState, mapGetters, mapActions} from "vuex"
+import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
     await this.getStates()
@@ -127,10 +127,8 @@ export default {
     ...mapState(
       "login",[
         "user_auth",
-        "registration",
-        'form'
-        ]
-      ),
+        "registration"
+        ]),
     ...mapState([
       "states"
       ]),
@@ -476,7 +474,7 @@ datalist{
   margin: .5vw;
 }
 #sub{
-  background: #606E38;
+  background-color: #606E38;
   background: linear-gradient(
     to bottom left,
     #606E38,
@@ -533,7 +531,7 @@ datalist{
 
 
 .toggleLink{
-  color: #758842;
+  color: #879b4f;
   text-decoration: underline;
 }
 .toggleLink:hover{
