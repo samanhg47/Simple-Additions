@@ -1,5 +1,6 @@
 <template>
   <div id="contDiv">
+    <Error />
     <img class='liLogo left' src="../assets/saLogo.png"/>
     <section class="formCont">
       <section class="inputSec">
@@ -9,7 +10,6 @@
     <img class="liLogo right" src="../assets/saLogo.png"/>
   </div>
 </template>
-
 
 <style>
 html, body, #__nuxt, #__layout,#contDiv{
