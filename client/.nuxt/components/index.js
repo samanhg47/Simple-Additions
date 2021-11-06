@@ -1,3 +1,4 @@
+export { default as Error } from '../../components/Error.vue'
 export { default as Tutorial } from '../../components/Tutorial.vue'
 export { default as VuetifyLogo } from '../../components/VuetifyLogo.vue'
 export { default as ImagesSALogo } from '../../components/Images/SALogo.vue'

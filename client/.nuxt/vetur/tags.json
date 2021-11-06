@@ -1,4 +1,7 @@
 {
+  "Error": {
+    "description": "Auto imported from components/Error.vue"
+  },
   "Tutorial": {
     "description": "Auto imported from components/Tutorial.vue"
   },
