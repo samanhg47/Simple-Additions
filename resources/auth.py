@@ -1,8 +1,8 @@
+from middleware import create_token, gen_password, compare_password, read_token, strip_admin, strip_token
 from flask_restful import Resource
-from flask import request
 from models.shelter import Shelter
 from models.user import User
-from middleware import create_token, gen_password, compare_password, read_token, strip_admin, strip_token
+from flask import request
 
 
 class ShelterLogin(Resource):
@@ -23,10 +23,14 @@ class ShelterLogin(Resource):
 
 class UserLogin(Resource):
     def post(self):
-        data = request.get_json()
-        data.email = data.email.lower()
-        user = User.by_email(data.email)
-        if user:
+        try:
+            data = request.get_json()
+            data.email = data.email.lower()
+
+            user = User.by_email(data.email)
+        except:
+            return 'oobsies', 404
+        try:
             if compare_password(data.password, user.json().password_digest):
                 token = create_token(
                     {"id": str(user.id), "user_name": user.user_name})
@@ -40,8 +44,8 @@ class UserLogin(Resource):
                 return {"user": user, "token": token, 'admin': admin}
             else:
                 return "Password Incorrect", 401
-        else:
-            return "User Not Found", 404
+        except:
+            return "Error", 401
 
     def get(self):
         if read_token(strip_token(request)):

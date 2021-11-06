@@ -1,4 +1,3 @@
-import requests
 from middleware import read_token, strip_token, strip_admin, id_check
 from resources.admin import censor_language
 from flask_restful import Resource
@@ -8,7 +7,6 @@ from models.post import Post
 from flask import request
 from models.db import db
 from uuid import UUID
-import os
 
 
 class AllPosts(Resource):
