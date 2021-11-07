@@ -3,96 +3,213 @@
     <h1 v-if="registration">Register</h1>
     <h1 v-if="!registration">Login</h1>
 
-
+<!-- User Form(s) -->
     <div v-if='user_auth' class="inputCont">
       <section v-for="(field,index) in userForm" :key="index" :class="'inpSec ' + field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
+          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+            tabindex="-1"
+            v-if='index === "password"'
+            class='showPasswordBtn'
+            type='button'>
+              <img
+                v-if='index === "password" && hidePassword'
+                class="showPassword"
+                src='../assets/hiddenPassword.png'
+                alt='Show Password Icon'/>
+              <img
+                v-if='index === "password" && !hidePassword'
+                class="hidePassword"
+                src='../assets/shownPassword.png'
+                alt='Show Password Icon'/>
           </button>
-          <button tabindex="-1" v-if='index === "confirm"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
+          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+            tabindex="-1"
+            v-if='index === "confirm"'
+            class='showPasswordBtn'
+            type='button'>
+              <img
+                v-if='index === "confirm" && hideConfirm'
+                class="showPassword"
+                src='../assets/hiddenPassword.png'
+                alt='Show Password Icon'/>
+              <img
+                v-if='index === "confirm" && !hideConfirm'
+                class="hidePassword"
+                src='../assets/shownPassword.png'
+                alt='Show Password Icon'/>
           </button>
           <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-          :name="index"
-          :type="field.type"
-          :placeholder="field.placeholder"
-          />
+            :name="index"
+            :type="field.type"
+            :placeholder="field.placeholder"/>
         </div>
         <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" class="errMsg">{{field.msg}}</p>
+          <p v-if="field.minLen" class="charCount">
+            {{field.value.length}}/{{field.minLen}}
+          </p>
+          <p v-if="field.msg" class="errMsg">
+            {{field.msg}}
+          </p>
         </div>
       </section>
     </div >
 
-
+<!-- Shelter Form(s) -->
     <div v-if='!user_auth' class="inputCont">
       <section v-for="(field,index) in shelterForm" :key="index" :class="'inpSec ' + field.class">
         <div class="inpDiv">
           <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
+          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+            :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+            v-if='index === "password"'
+            tabindex="-1"
+            type='button'>
+              <img
+                v-if='index === "password" && hidePassword'
+                class="showPassword"
+                src='../assets/hiddenPassword.png'
+                alt='Show Password Icon'/>
+              <img
+                v-if='index === "password" && !hidePassword'
+                class="hidePassword"
+                src='../assets/shownPassword.png'
+                alt='Show Password Icon'/>
           </button>
-          <button tabindex="-1" v-if='index === "confirm"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
+          <button  @mousedown="showPass(index)" @mouseup="hidePass(index)"
+            tabindex="-1"
+            v-if='index === "confirm"'
+            :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+            type='button'>
+              <img
+                v-if='index === "confirm" && hideConfirm'
+                class="showPassword"
+                src='../assets/hiddenPassword.png'
+                alt='Show Password Icon'/>
+              <img
+                v-if='index === "confirm" && !hideConfirm'
+                class="hidePassword"
+                src='../assets/shownPassword.png'
+                alt='Show Password Icon'/>
           </button>
           <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-          :name="index"
-          :type="field.type"
-          :placeholder="field.placeholder"
-          />
+            :name="index"
+            :type="field.type"
+            :placeholder="field.placeholder"/>
         </div>
         <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" :class="registration?'sheltErrMsg':'errMsg'" >{{field.msg}}</p>
+          <p v-if="field.minLen" class="charCount">
+            {{field.value.length}}/{{field.minLen}}
+          </p>
+          <p v-if="field.msg" :class="registration?'sheltErrMsg':'errMsg'" >
+            {{field.msg}}
+          </p>
         </div>
       </section>
     </div >
 
-
+<!-- Location Selectors -->
     <div class="location" v-if="registration">
       <div v-for="(field,index) in userLocation" :key="index" class='inputCont'>
         <section :class="`preSec ${field.class}`">
           <label v-if="index === 'state'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'state'" list="state_list" :name='index' id="stateInp" placeholder="state" @blur="aHandleBlur($event)" @change="aHandleChange($event)"/>
-          <datalist v-if="index === 'state'" :name="index" id="state_list">
-            <option v-for="state in states" :key="state" :value="state" >{{state}}</option>
-          </datalist>
+          <input @blur="aHandleBlur($event)" @change="aHandleChange($event)"
+            v-if="index === 'state'"
+            list="state_list" :name='index'
+            id="stateInp" placeholder="state"/>
+              <datalist v-if="index === 'state'" :name="index" id="state_list">
+                <option v-for="state in states" :key="state" :value="state" >
+                  {{state}}
+                </option>
+              </datalist>
           <label v-if="index === 'city'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'city'" disabled list="city_list" :name='index' id="cityInp" placeholder="city" @blur="aHandleBlur($event)" @change="aHandleChange($event)"/>
-          <datalist v-if="index === 'city'" :name="index" id="city_list">
-            <option v-for="city in city_list" :key="city" :value="city" class="city">{{city}}</option>
-          </datalist>
+          <input @blur="aHandleBlur($event)" @change="aHandleChange($event)"
+            disabled
+            v-if="index === 'city'"
+            list="city_list"
+            :name='index'
+            id="cityInp"
+            placeholder="city"/>
+              <datalist v-if="index === 'city'" :name="index" id="city_list">
+                <option v-for="city in city_list" 
+                  :key="city"
+                  :value="city"
+                  class="city">
+                    {{city}}
+                </option>
+              </datalist>
           <label v-if="index === 'zipcode'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'zipcode'" disabled list="zipcode_list" :name="index" id="zipInp" placeholder="zipcode" @change="aHandleChange($event)" @blur="aHandleBlur($event)"/>
-          <datalist v-if="index === 'zipcode'" :name="index" id="zipcode_list">
-            <option v-for="zipcode in zipcode_list" :key="zipcode" :value="zipcode" class="zip">{{zipcode}}</option>
-          </datalist>
+          <input @change="aHandleChange($event)" @blur="aHandleBlur($event)"
+            disabled
+            v-if="index === 'zipcode'"
+            list="zipcode_list"
+            :name="index"
+            id="zipInp"
+            placeholder="zipcode"/>
+              <datalist v-if="index === 'zipcode'" :name="index" id="zipcode_list">
+                <option v-for="zipcode in zipcode_list"
+                  :key="zipcode"
+                  :value="zipcode"
+                  class="zip">
+                    {{zipcode}}
+                </option>
+              </datalist>
           <div class="errDiv2">
-            <p v-if="field.msg" :class="'errMsg2 ' + index">{{field.msg}}</p>
+            <p v-if="field.msg" :class="'errMsg2 '+index">
+              {{field.msg}}
+            </p>
           </div>
         </section>
       </div>
     </div>
 
-
+<!-- Buttons -->
     <div id='btmDiv'>
       <section id='btnDiv'>
-        <button type="submit" v-if="registration" disabled id="sub">Register</button>
-        <button type="submit" v-if="!registration" disabled id="sub">Login</button>
+        <button type="submit" v-if="registration" disabled id="sub" :style="submitStyles">
+          Register
+        </button>
+        <button type="submit" v-if="!registration" disabled id="sub">
+          Login
+        </button>
       </section>
-      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="user_auth">Shelter Login/Registration Here.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && registration">Returning user? Click Here To Login.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && !registration">New user? Click Here To Register.</button>
-      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="!user_auth">User Login/Registration Here</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && registration">Returning Shelter? Click Here To Login.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && !registration">New Shelter? Click Here To Register.</button>
+      <button @click.prevent="aToggleAuth"
+        v-if="user_auth"
+        class='toggleLink'
+        type='button'>
+          Shelter Login/Registration Here.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="user_auth && registration"
+        class='toggleLink'
+        type='button'>
+          Returning user? Click Here To Login.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="user_auth && !registration"
+        class='toggleLink'
+        type='button'>
+          New user? Click Here To Register.
+      </button>
+      <button @click.prevent="aToggleAuth"
+        v-if="!user_auth"
+        class='toggleLink'
+        type='button'>
+          User Login/Registration Here
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="!user_auth && registration"
+        class='toggleLink'
+        type='button'>
+          Returning Shelter? Click Here To Login.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="!user_auth && !registration"
+        class='toggleLink'
+        type='button'>
+          New Shelter? Click Here To Register.
+      </button>
     </div>
   </form>
 </template>
@@ -106,16 +223,28 @@ export default {
     window.addEventListener('beforeunload', this.clearForm)
   },
   updated(){
-    if (this.layout === null){
-      this.layout = document.firstElementChild.children[1].children[0].children[1]
-      ? document.firstElementChild.children[1].children[0].children[1]
-      : document.firstElementChild.children[1].children[0].firstElementChild
+    if(!this.user_auth && this.registration){
+        this.phoneNumber = document.querySelector('[name="phone_number"]').value
     }
-    if(!this.user_auth){
-        this.phoneNumber = this.layout
-        .firstElementChild.children[2].firstElementChild.firstElementChild.children[1]
-        .children[3].firstElementChild.children[1].value
-    }
+    // input styling
+    document.querySelectorAll('input').forEach(inp => {
+      inp.style = this.inpStyles
+    })
+    // toggle link styling
+    document.querySelectorAll('.toggleLink').forEach(link => {
+      link.style = this.linkStyles
+    })
+    // error div styling
+    const divList = ['.inpSec']
+    this.registration && divList.push('.preSec')
+    divList.forEach( secType => {
+      document.querySelectorAll(secType).forEach( sec => {
+        sec.classList.contains("inpSec") && sec.classList.contains("neutral") && (sec.children[1].style = this.errDivStyles)
+        sec.classList.contains("preSec") && sec.classList.contains("neutral") && (sec.children[3].style = this.errDivStyles)
+        sec.classList.contains("inpSec") && !sec.classList.contains("neutral") && (sec.children[1].style = '')
+        sec.classList.contains("preSec") && !sec.classList.contains("neutral") && (sec.children[3].style = '')
+      })
+    })
   },
   data: ()=>({
     hidePassword: true,
@@ -124,18 +253,27 @@ export default {
     layout: null
   }),
   computed: {
+    // login state
     ...mapState(
       "login",[
         "user_auth",
         "registration"
         ]),
+    // root state
     ...mapState([
       "states"
       ]),
+    // root getters
     ...mapGetters([
       "city_list",
       "zipcode_list"
       ]),
+    // theme getters
+    ...mapGetters(
+      "theme",[
+        "theme"
+        ]),
+    // login getters
     ...mapGetters(
       "login",[
         "userForm",
@@ -143,6 +281,12 @@ export default {
         "userLocation"
         ]
       ),
+    //theme getters
+    ...mapGetters(
+      'theme',[
+        'theme'
+      ]
+    ),
     validVals: function(){
       let validity = []
       if(this.user_auth){
@@ -173,13 +317,51 @@ export default {
         })
       }
       return validity
+    },
+    inpStyles: function(){
+      return `background-color:\ 
+                ${this.theme.input};\
+              color:\
+                ${this.theme.color};`
+    },
+    errDivStyles: function(){
+      return `color:\
+                ${this.theme.color};`
+    },
+    submitStyles: function(){
+      return `--subBckGrndClr:\
+                ${this.theme.green};\
+              --subShadow:\
+                0px .3vw 0 0 ${this.theme.medGreen};\
+              --subBckGrnd:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.lightGreen},\
+                  ${this.theme.green}\
+                );\
+              --subHovBckGrndClr:\
+              ${this.theme.lightGreen};\
+              --subHovShadow: 0px .3vw 0 0 ${this.theme.green};\
+              --subHovBckGrnd:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.green},\
+                  ${this.theme.lightGreen}\
+                );`
+    },
+    linkStyles: function(){
+      return `--tl: ${this.theme.medGreen};\
+              --tlh: ${this.theme.green};\
+              --tla: ${this.theme.lightGreen};`
     }
   },
   methods: {
+    // root actions
     ...mapActions([
       "getStates",
       "getCities"
       ]),
+    // login actions
     ...mapActions(
       "login", [
         "aHandleBlur",
@@ -188,7 +370,8 @@ export default {
         "aToggleRegistration",
         "aToggleAuth",
         "charCheck",
-        'aClearForm'
+        'aClearForm',
+        'aSetPhoneNumber'
         ]
       ),
     showPass(i){
@@ -273,49 +456,43 @@ export default {
         if(newVal.length > oldVal.length){
           if (this.phoneNumber.length === 1) {
             this.phoneNumber = `(${this.phoneNumber}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           } else if (this.phoneNumber.length === 5) {
             this.phoneNumber = `${this.phoneNumber.slice(0,4)})-${this.phoneNumber.slice(4)}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           } else if (this.phoneNumber.length === 10) {
             this.phoneNumber = `${this.phoneNumber.slice(0,9)}-${this.phoneNumber.slice(9)}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
         }
         if(newVal.length < oldVal.length){
           if(newVal.length === 10){
             this.phoneNumber = this.phoneNumber.slice(0,9)
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
           if(newVal.length === 6){
             this.phoneNumber = this.phoneNumber.slice(0,4)
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
           if(newVal.length === 1){
             this.phoneNumber = ''
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
         }
       }
     },
-
   },
 }
 </script>
 
 <style>
+/* html tags */
 form{
   display: flex;
   align-items: center;
@@ -325,6 +502,19 @@ form{
   padding: 0 2vw 0 2vw;
   align-content:space-between;
 }
+h1{
+  margin: 2vw;
+  padding: 0;
+  justify-self: start;
+}
+input{
+  border: none;
+  padding-left: .5vw;
+  width: 22vw;
+  height: 2.5vw;
+  margin-left: .5vw;
+}
+
 
 .inputCont{
   width: 100%;
@@ -336,9 +526,6 @@ form{
   display: inline-block;
   width: auto;
 }
-img{
-  width: 10vw;
-}
 .inpSec > div{
   display: flex;
   max-width: inherit;
@@ -348,27 +535,10 @@ img{
   flex-direction: row;
   justify-content: space-between;
 }
-input{
-  background-color: #52525257;
-  border: none;
-  padding-left: .5vw;
-  width: 22vw;
-  height: 2.5vw;
-  margin-left: .5vw;
-  color: #e0e0e0;
-}
 [name='password'],[name='confirm'] {
   padding-right: 2.5vw;
 }
-h1{
-  margin: 2vw;
-  padding: 0;
-  justify-self: start;
-}
-datalist{
-  max-width: 7vw;
-  text-align: center;
-}
+
 
 .errDiv{
   font-size: 1.2vw;
@@ -433,7 +603,6 @@ datalist{
 #zipInp{
   width: 9vw;
   margin: 0;
-  /* background-color: rgba(0, 0, 0, 0.137); */
   text-align: center;
 }
 .valid > .errDiv,.valid > .errDiv2{
@@ -473,31 +642,22 @@ datalist{
   margin: .5vw;
 }
 #sub{
-  background-color: #29350c;
-  background: linear-gradient(
-    to bottom left,
-    #29350c,
-    #4d5f1d
-  );
-  box-shadow: 0px .3vw 0 0 #394712;
+  background-color: var(--subBckGrndClr);
+  background: var(--subBckGrnd);
+  box-shadow: var(--subShadow);
   padding: .3vw .7vw;
   border-radius: 20px;
 }
 #sub:hover{
-  background-color: #4d5f1d;
-  background: linear-gradient(
-    to bottom left,
-    #4d5f1d,
-    #29350c
-  );
-  box-shadow: 0px .3vw 0 0 #29350c;
+  background-color: var(--subHovBckGrndClr);
+  background: var(--subHovBckGrnd);
+  box-shadow: var(--subHovShadow);
 }
 #sub:active{
   box-shadow: none;
   margin-top: .5vw;
 }
 #btnDiv{
-  /* width: 10vw; */
   height: 3vw;
   display: flex;
   align-items: center;
@@ -532,22 +692,34 @@ datalist{
 
 
 .toggleLink{
-  color: #394712;
+  color: var(--tl);
   text-decoration: underline;
 }
 .toggleLink:hover{
-  color: #29350c;
+  color: var(--tlh);
 
 }
 .toggleLink:active{
-  color: #4d5f1d;
+  color: var(--tla);
 }
 
 
 .error {
     position: relative;
     animation: shake .1s linear;
+    -webkit-animation: shake .1s linear;
+    -moz-animation: shake .1s linear;
     animation-iteration-count: 3;
+    -webkit-animation-iteration-count: 3;
+    -moz-animation-iteration-count: 3;
+}
+@-webkit-keyframes shake {
+    0% { top: -.2vw; }
+    100% { bottom: -.2vw; }
+}
+@-moz-keyframes shake {
+    0% { top: -.2vw; }
+    100% { bottom: -.2vw; }
 }
 @keyframes shake {
     0% { top: -.2vw; }

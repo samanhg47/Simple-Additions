@@ -1,15 +1,76 @@
 <template>
-  <div id="contDiv">
+  <div id="contDiv" :style="contDivStyles" >
     <Error />
-    <img class='liLogo left' src="../assets/saLogoDark.png"/>
-    <section class="formCont">
-      <section class="inputSec">
+    <div class='logoDiv left'>
+      <img class='liLogo' src="../assets/saLogoDark.png" :style="darkStyles" />
+      <img class='liLogo' src="../assets/saLogo.png" :style="lightStyles" />
+    </div>
+    <section class="formCont" :style="formContStyles" >
+      <section class="inputSec" :style="inpSecStyles">
         <Nuxt />
       </section>
+      <ToggleTheme />
     </section>
-    <img class="liLogo right" src="../assets/saLogoDark.png"/>
+    <div class="logoDiv right">
+      <img class="liLogo" src="../assets/saLogoDark.png" :style="darkStyles" />
+      <img class="liLogo" src="../assets/saLogo.png" :style="lightStyles" />
+    </div>
   </div>
 </template>
+
+<script>
+import { mapGetters } from "vuex"
+export default {
+  computed: {
+    ...mapGetters("theme",["theme"]),
+    darkStyles: function(){
+      return `boxShadow:${this.theme.shadow};\
+              opacity:${this.theme.darkOpacity};\
+              position: ${this.theme.darkPosition};\
+              zIndex:${this.theme.darkZindex};`
+    },
+    lightStyles: function(){
+      return `boxShadow:${this.theme.shadow};\
+              opacity:${this.theme.lightOpacity};\
+              position: ${this.theme.lightPosition};\
+              zIndex:${this.theme.lightZindex};`
+    },
+    contDivStyles: function(){
+      return `backgroundColor:\
+                ${this.theme.lightSecondary};\
+              background:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.lightSecondary},\
+                  ${this.theme.darkSecondary}\
+                );`
+    },
+    formContStyles: function(){
+      return `backgroundColor:\
+                ${this.theme.green};\
+              boxShadow:\
+                ${this.theme.shadow};\
+              background:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.darkGreen},\
+                  ${this.theme.medGreen});`
+    },
+    inpSecStyles: function(){
+      return `backgroundColor:\
+                ${this.theme.lightSecondary};\
+              color:\
+                ${this.theme.color};\
+              background:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.darkSecondary},\
+                  ${this.theme.lightSecondary}\
+                );`
+    }
+  }
+}
+</script>
 
 <style>
 html, body, #__nuxt, #__layout,#contDiv{
@@ -19,12 +80,6 @@ html, body, #__nuxt, #__layout,#contDiv{
   height: 100%;
 }
 #contDiv{
-  background-color: rgb(41, 31, 10);
-  background: linear-gradient(
-    to top right,
-    rgb(56, 43, 15),
-    rgb(29, 21, 5)
-  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,16 +88,10 @@ html, body, #__nuxt, #__layout,#contDiv{
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #606E38;
-  background: linear-gradient(
-    to bottom left,
-    #394712,
-    #171d08
-  );
+  flex-direction: column;
   border-radius: 20px;
   margin: 0;
   padding: 4vw;
-  box-shadow: 0 0 4vw .1vw rgb(0, 0, 0);
 }
 .inputSec{
   display: flex;
@@ -50,20 +99,16 @@ html, body, #__nuxt, #__layout,#contDiv{
   justify-content: center;
   margin: 0;
   padding: 0;
-  background-color: rgb(56, 43, 15);
-  background: linear-gradient(
-    to bottom left,
-    rgb(56, 43, 15),
-    rgb(29, 21, 5)
-  );
-  color: #e0e0e0;
 }
 .inputCont{
   flex-direction: column;
 }
-.liLogo{
+.logoDiv{
   width: 15vw;
-  box-shadow: 0 0 4vw .1vw rgb(0, 0, 0);
+  border-radius: 100%;
+}
+img{
+  width: inherit;
   border-radius: 100%;
 }
 .left{

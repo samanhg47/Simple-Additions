@@ -357,6 +357,9 @@ export const actions = {
     store.commit('mHandleBlur', event)
     store.dispatch('aCheckLength', event)
     store.dispatch('aCheckIfInvalid', event)
+  },
+  aSetPhoneNumber({ commit }, val) {
+    commit('mSetPhoneNumber', val)
   }
 }
 
@@ -667,5 +670,8 @@ export const mutations = {
         state.form[eTarget].msg = null
       }
     }
+  },
+  mSetPhoneNumber(state, val) {
+    state.form.phone_number.value = val
   }
 }

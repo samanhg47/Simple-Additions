@@ -1,5 +1,3 @@
-import darkLogo from '../assets/saLogoDark.png'
-import lightLogo from '../assets/saLogo.png'
 //state
 export const state = () => ({
   mode: true,
@@ -8,29 +6,42 @@ export const state = () => ({
     green: '#606E38',
     medGreen: '#879b4f',
     lightGreen: '#98af58',
-    secondary: 'wheat',
+    darkSecondary: 'rgb(235, 207, 155)',
+    lightSecondary: 'rgb(248, 228, 190)',
     color: 'black',
     input: '#96969657',
-    logoShadow: '0 0 2.5vw .1vw rgba(0, 0, 0, 0.753)',
-    formShadow: '0 0 3vw .1vw rgba(0, 0, 0, 0.808)'
+    shadow: '0 0 3vw .1vw rgba(0, 0, 0, 0.808)',
+    lightOpacity: 1,
+    lightZindex: 3,
+    lightPosition: 'relative',
+    darkOpacity: 0,
+    darkZindex: 2,
+    darkPosition: 'absolute'
   },
   dark: {
     darkGreen: '#171d08',
     green: '#29350c',
     medGreen: '#394712',
     lightGreen: '#4d5f1d',
-    darkSecondary: 'rgb(41, 31, 10)',
-    lightSecondary: 'rgb(56, 43, 15)',
+    darkSecondary: 'rgb(26, 19, 5)',
+    lightSecondary: 'rgb(41, 31, 10)',
     color: '#e0e0e0',
     input: '#52525257',
-    logo: ''
+    shadow: '0 0 4vw .1vw rgb(0, 0, 0);',
+    lightOpacity: 0,
+    lightZindex: 2,
+    lightPosition: 'relative',
+    darkOpacity: 1,
+    darkZindex: 3,
+    darkPosition: 'absolute'
   }
 })
 
 //getter
-export const getter = {
+export const getters = {
   theme: state => {
-    return state.mode ? state.light : state.dark
+    const theme = state.mode ? state.light : state.dark
+    return theme
   }
 }
 
