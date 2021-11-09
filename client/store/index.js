@@ -2,7 +2,7 @@ import { _ } from 'core-js'
 
 // state
 export const state = () => ({
-  newAccount: true,
+  newAccount: false,
   currentUser: {},
   location: [],
   shelters: [],
@@ -40,47 +40,59 @@ export const getters = {
 
 //actions
 export const actions = {
-  async userGetShelters(store, proximity, coordinates) {
+  wait(store, delay) {
+    return new Promise(resolve => setTimeout(resolve, delay))
+  },
+  aCurrentUser({ commit }, user) {
+    commit('mCurrentUser', user)
+  },
+  async aAddSheltersUser(store, proximity, coordinates) {
     body = {
       coordinates: coordinates,
       proximity: proximity
     }
     const Client = store.rootGetters['auth/client']
     const shelters = await Client.get('/shelters', body)
-    store.commit('addShelters', shelters)
+    store.commit('mUserAddShelters', shelters)
     return shelters
   },
-  async adminGetShelters(store) {
+  async aAddSheltersAdmin(store) {
     const Client = store.rootGetters['auth/client']
     const shelters = await Client.get('/admin/shelters')
-    store.commit('addShelters', shelters)
+    store.commit('mAddShelters', shelters)
   },
-  async getStates(store) {
+  async aAddStates(store) {
     const Client = store.rootGetters['auth/client']
     const states = await Client.get(`/states`)
     const state_list = []
     states.data.forEach(state => state_list.push(state.shorthand))
-    store.commit('addStates', state_list)
+    store.commit('mAddStates', state_list)
   },
-  async getCities(store, state) {
+  async aAddCities(store, state) {
     const Client = store.rootGetters['auth/client']
     const cities = await Client.get(`/cities/${state}`)
-    store.commit('addCities', cities.data)
+    store.commit('mAddCities', cities.data)
+  },
+  aNewAccount({ commit }, bool) {
+    commit('mNewAccount', bool)
   }
 }
 
 //mutations
 export const mutations = {
-  addShelters(state, shelters) {
+  mCurrentUser(state, user) {
+    state.currentUser = user
+  },
+  mAddShelters(state, shelters) {
     state.shelters.push({ ...shelters })
   },
-  addStates(state, states) {
+  mAddStates(state, states) {
     state.states = states
   },
-  addCities(state, cities) {
+  mAddCities(state, cities) {
     state.cities = cities
   },
-  toggleNewAccount(state, bool) {
+  mNewAccount(state, bool) {
     state.newAccount = bool
   }
 }

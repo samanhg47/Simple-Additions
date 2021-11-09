@@ -2,6 +2,9 @@
   "Error": {
     "description": "Auto imported from components/Error.vue"
   },
+  "ToggleTheme": {
+    "description": "Auto imported from components/ToggleTheme.vue"
+  },
   "Tutorial": {
     "description": "Auto imported from components/Tutorial.vue"
   },

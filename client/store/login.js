@@ -123,61 +123,104 @@ export const getters = {
 
 //actions
 export const actions = {
-  aToggleRegistration({ commit }) {
-    commit('mToggleRegistration')
+  async aUserRegister(store, user) {
+    const Client = store.rootGetters['auth/client']
+    console.log('register user', user.state)
+    try {
+      // Check/Set Location
+      let res
+      if (!user['city_id']) {
+        res = await Client.get(
+          `/city/${user['sta']}/${user['city']}/${parseInt(user['zipcode'])}`
+        )
+        user['city_id'] = res.data.id
+        delete user['city']
+        delete user['state']
+        delete user['zipcode']
+      }
+      // Register User
+      res = await Client.post(`/register/users`, user)
+      console.log('register res', res)
+      store.dispatch('aNewAccount', true, { root: true })
+    } catch (err) {
+      console.log(store)
+      if (err.response.status === 403) {
+        store.dispatch(
+          'error/aPassError',
+          {
+            status: 403,
+            msg:
+              'A User Has Already Registered With This Email <br/>\
+          Please Either Login Or Register With A Different Email'
+          },
+          { root: true }
+        )
+      } else if (err.response.status === 404) {
+        console.log(err)
+        store.dispatch(
+          'error/aPassError',
+          {
+            status: 404,
+            msg:
+              'Location Not Found In Our Database <br/>\
+          Either Enter Your Location Info Manually Or Be Sure To Select From Suggestions'
+          },
+          { root: true }
+        )
+      }
+    }
+    // if (res.status < 200) {
+    //   const log = await Client.post(`/login/users`, user)
+    //   // localStorage.setItem('token', res.data.token)
+    //   console.log(localStorage)
+    //   user = res.data.user
+    // }
   },
-  aToggleAuth({ commit }) {
-    commit('mToggleAuth')
+  async aUserLogin(store, user) {
+    const Client = store.rootGetters['auth/client']
+    try {
+      const res = await Client.post(`/login/users`, user)
+      console.log('login res', res)
+      store.dispatch('aCurrentUser', res.data.user, { root: true })
+      store.commit('mUserLogin')
+      return true
+    } catch (err) {
+      console.log('login error', err.response)
+      if (err.response.status == 404) {
+        store.dispatch(
+          'error/aPassError',
+          {
+            status: err.respons.status,
+            msg: `No Profile Found For ${user.user_name}. <br/> Please Register.`
+          },
+          { root: true }
+        )
+      } else if (err.response.status == 401) {
+        store.dispatch('mIncorrectPassword')
+      }
+      return false
+    }
   },
-  aClearForm(store) {
-    store.commit('mClearForm')
-  },
-  async aHandleSubmit(store) {
+  aHandleSubmit(store) {
     const userForm = store.state.user_auth
     const registration = store.state.registration
-    const Client = store.rootGetters['auth/client']
-    let error = null
     let user = store.state.user
 
     if (userForm && registration) {
-      let res = await Client.get(
-        `/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
-      )
-      delete user['city']
-      delete user['state']
-      delete user['zipcode']
-      user['city_id'] = res.data.id
-      res = await Client.post(`/register/users`, user)
-      if (res.status < 200) {
-        const log = await Client.post(`/login/users`, user)
-        // localStorage.setItem('token', res.data.token)
-        console.log(localStorage)
-        user = res.data.user
-      }
+      console.log('submit user', user)
+      store.dispatch('aUserRegister', user)
     } else if (userForm && !registration) {
-      try {
-        const res = await Client.post(`/login/users`, user)
-        user = res.data.user
-      } catch (err) {
-        console.log(err.response)
-        if (err.response.status == 404) {
-          alert(`No Profile Found. Please Register.`)
-          return (error = 404)
-        } else if (err.response.status == 403) {
-          alert('Password Incorrect')
-        }
-        user = null
-      }
+      store.dispatch('aUserLogin', user)
     } else if (!userForm && registration) {
-      const res = await Client.post(`/register/shelters`)
+      // const res = await Client.post(`/register/shelters`)
     } else {
     }
-    if (user) {
-      const currentUser = store
-      console.log(error)
-      // $nuxt._router.push('/home')
-      store.commit('mHandleSubmit', { user, currentUser, error })
-    }
+    // const currentUser = store
+    // $nuxt._router.push('/home')
+    // store.commit('mHandleSubmit', { user, currentUser, error })
+  },
+  aIncorrectPassword(store) {
+    store.commit('mIncorrectPassword')
   },
   charCheck(store, field) {
     const charBools = []
@@ -357,10 +400,22 @@ export const actions = {
     store.commit('mHandleBlur', event)
     store.dispatch('aCheckLength', event)
     store.dispatch('aCheckIfInvalid', event)
+  },
+  aSetPhoneNumber({ commit }, val) {
+    commit('mSetPhoneNumber', val)
+  },
+  aToggleRegistration({ commit }) {
+    commit('mToggleRegistration')
+  },
+  aToggleAuth({ commit }) {
+    commit('mToggleAuth')
+  },
+  aClearForm(store) {
+    store.commit('mClearForm')
   }
 }
 
-//mutations
+//autations
 export const mutations = {
   mClearForm(state) {
     Object.keys(state.form).forEach(key => {
@@ -372,6 +427,14 @@ export const mutations = {
   },
   mHandleSubmit(state, { user, currentUser }) {
     currentUser.rootState.currentUser = user
+  },
+  mIncorrectPassword(state) {
+    state.form.password.value = ''
+    state.form.confirm.value = ''
+    state.form.password.msg = 'Incorrect Password'
+    state.form.confirm.msg = 'Incorrect Password'
+    state.form.password.class = 'invalid'
+    state.form.confirm.class = 'invalid'
   },
   mToggleRegistration(state) {
     state.registration
@@ -667,5 +730,8 @@ export const mutations = {
         state.form[eTarget].msg = null
       }
     }
+  },
+  mSetPhoneNumber(state, val) {
+    state.form.phone_number.value = val
   }
 }

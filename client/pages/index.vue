@@ -3,141 +3,287 @@
     <h1 v-if="registration">Register</h1>
     <h1 v-if="!registration">Login</h1>
 
-
+<!-- User Form(s) -->
     <div v-if='user_auth' class="inputCont">
-      <section v-for="(field,index) in userForm" :key="index" :class="'inpSec ' + field.class">
-        <div class="inpDiv">
-          <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
-          </button>
-          <button tabindex="-1" v-if='index === "confirm"' class='showPasswordBtn' type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
-          </button>
-          <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-          :name="index"
-          :type="field.type"
-          :placeholder="field.placeholder"
-          />
-        </div>
-        <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" class="errMsg">{{field.msg}}</p>
-        </div>
+      <section v-for="(field,index) in userForm"
+        :key="index"
+        :class="index=='confirm'
+          ? 'btmInp inpSec ' + field.class
+          : 'inpSec ' + field.class">
+            <div class="inpDiv">
+              <label :for="index">{{field.for}}:</label>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "password"'
+                class='showPasswordBtn'
+                type='button'>
+                  <img
+                    v-if='index === "password" && hidePassword'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "password" && !hidePassword'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "confirm"'
+                class='showPasswordBtn'
+                type='button'>
+                  <img
+                    v-if='index === "confirm" && hideConfirm'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "confirm" && !hideConfirm'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"/>
+            </div>
+            <div class="errDiv">
+              <p v-if="field.minLen" class="charCount">
+                {{field.value.length}}/{{field.minLen}}
+              </p>
+              <p v-if="field.msg" class="errMsg">
+                {{field.msg}}
+              </p>
+            </div>
       </section>
     </div >
 
-
+<!-- Shelter Form(s) -->
     <div v-if='!user_auth' class="inputCont">
-      <section v-for="(field,index) in shelterForm" :key="index" :class="'inpSec ' + field.class">
-        <div class="inpDiv">
-          <label :for="index">{{field.for}}:</label>
-          <button tabindex="-1" v-if='index === "password"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "password" && hidePassword' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "password" && !hidePassword' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
-          </button>
-          <button tabindex="-1" v-if='index === "confirm"' :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'" type='button' @mousedown="showPass(index)" @mouseup="hidePass(index)">
-            <img v-if='index === "confirm" && hideConfirm' class="showPassword" src='../assets/hiddenPassword.png' alt='Show Password Icon'/>
-            <img v-if='index === "confirm" && !hideConfirm' class="hidePassword" src='../assets/shownPassword.png' alt='Show Password Icon'/>
-          </button>
-          <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-          :name="index"
-          :type="field.type"
-          :placeholder="field.placeholder"
-          />
-        </div>
-        <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">{{field.value.length}}/{{field.minLen}}</p>
-          <p v-if="field.msg" :class="registration?'sheltErrMsg':'errMsg'" >{{field.msg}}</p>
-        </div>
+      <section v-for="(field,index) in shelterForm"
+      :key="index"
+        :class="index=='confirm'
+          ? 'btmInp inpSec ' + field.class
+          : 'inpSec ' + field.class">
+            <div class="inpDiv">
+              <label :for="index">{{field.for}}:</label>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+                v-if='index === "password"'
+                tabindex="-1"
+                type='button'>
+                  <img
+                    v-if='index === "password" && hidePassword'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "password" && !hidePassword'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <button  @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "confirm"'
+                :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+                type='button'>
+                  <img
+                    v-if='index === "confirm" && hideConfirm'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "confirm" && !hideConfirm'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"/>
+            </div>
+            <div class="errDiv">
+              <p v-if="field.minLen" class="charCount">
+                {{field.value.length}}/{{field.minLen}}
+              </p>
+              <p v-if="field.msg" class='errMsg'>
+                {{field.msg}}
+              </p>
+            </div>
       </section>
     </div >
 
-
+<!-- Location Selectors -->
     <div class="location" v-if="registration">
       <div v-for="(field,index) in userLocation" :key="index" class='inputCont'>
         <section :class="`preSec ${field.class}`">
           <label v-if="index === 'state'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'state'" list="state_list" :name='index' id="stateInp" placeholder="state" @blur="aHandleBlur($event)" @change="aHandleChange($event)"/>
-          <datalist v-if="index === 'state'" :name="index" id="state_list">
-            <option v-for="state in states" :key="state" :value="state" >{{state}}</option>
-          </datalist>
+          <input @blur="aHandleBlur($event)" @change="aHandleChange($event)"
+            v-if="index === 'state'"
+            list="state_list" :name='index'
+            id="stateInp" placeholder="state"/>
+              <datalist v-if="index === 'state'" :name="index" id="state_list">
+                <option v-for="state in states" :key="state" :value="state" >
+                  {{state}}
+                </option>
+              </datalist>
           <label v-if="index === 'city'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'city'" disabled list="city_list" :name='index' id="cityInp" placeholder="city" @blur="aHandleBlur($event)" @change="aHandleChange($event)"/>
-          <datalist v-if="index === 'city'" :name="index" id="city_list">
-            <option v-for="city in city_list" :key="city" :value="city" class="city">{{city}}</option>
-          </datalist>
+          <input @blur="aHandleBlur($event)" @change="aHandleChange($event)"
+            disabled
+            v-if="index === 'city'"
+            list="city_list"
+            :name='index'
+            id="cityInp"
+            placeholder="city"/>
+              <datalist v-if="index === 'city'" :name="index" id="city_list">
+                <option v-for="city in city_list" 
+                  :key="city"
+                  :value="city"
+                  class="city">
+                    {{city}}
+                </option>
+              </datalist>
           <label v-if="index === 'zipcode'" :for="index">{{field.for}}</label>
-          <input v-if="index === 'zipcode'" disabled list="zipcode_list" :name="index" id="zipInp" placeholder="zipcode" @change="aHandleChange($event)" @blur="aHandleBlur($event)"/>
-          <datalist v-if="index === 'zipcode'" :name="index" id="zipcode_list">
-            <option v-for="zipcode in zipcode_list" :key="zipcode" :value="zipcode" class="zip">{{zipcode}}</option>
-          </datalist>
+          <input @change="aHandleChange($event)" @blur="aHandleBlur($event)"
+            disabled
+            v-if="index === 'zipcode'"
+            list="zipcode_list"
+            :name="index"
+            id="zipInp"
+            placeholder="zipcode"/>
+              <datalist v-if="index === 'zipcode'" :name="index" id="zipcode_list">
+                <option v-for="zipcode in zipcode_list"
+                  :key="zipcode"
+                  :value="zipcode"
+                  class="zip">
+                    {{zipcode}}
+                </option>
+              </datalist>
           <div class="errDiv2">
-            <p v-if="field.msg" :class="'errMsg2 ' + index">{{field.msg}}</p>
+            <p v-if="field.msg" :class="'errMsg2 '+index">
+              {{field.msg}}
+            </p>
           </div>
         </section>
       </div>
     </div>
 
-
+<!-- Buttons -->
     <div id='btmDiv'>
       <section id='btnDiv'>
-        <button type="submit" v-if="registration" disabled id="sub">Register</button>
-        <button type="submit" v-if="!registration" disabled id="sub">Login</button>
+        <button type="submit" v-if="registration" disabled id="sub" :style="submitStyles">
+          Register
+        </button>
+        <button type="submit" v-if="!registration" disabled id="sub" :style="submitStyles">
+          Login
+        </button>
       </section>
-      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="user_auth">Shelter Login/Registration Here.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && registration">Returning user? Click Here To Login.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="user_auth && !registration">New user? Click Here To Register.</button>
-      <button @click.prevent="aToggleAuth" class='toggleLink' type='button' v-if="!user_auth">User Login/Registration Here</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && registration">Returning Shelter? Click Here To Login.</button>
-      <button @click.prevent="aToggleRegistration" class='toggleLink' type='button' v-if="!user_auth && !registration">New Shelter? Click Here To Register.</button>
+      <button @click.prevent="aToggleAuth"
+        v-if="user_auth"
+        class='toggleLink'
+        type='button'>
+          Shelter Login/Registration Here.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="user_auth && registration"
+        class='toggleLink'
+        type='button'>
+          Returning user? Click Here To Login.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="user_auth && !registration"
+        class='toggleLink'
+        type='button'>
+          New user? Click Here To Register.
+      </button>
+      <button @click.prevent="aToggleAuth"
+        v-if="!user_auth"
+        class='toggleLink'
+        type='button'>
+          User Login/Registration Here
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="!user_auth && registration"
+        class='toggleLink'
+        type='button'>
+          Returning Shelter? Click Here To Login.
+      </button>
+      <button @click.prevent="aToggleRegistration"
+        v-if="!user_auth && !registration"
+        class='toggleLink'
+        type='button'>
+          New Shelter? Click Here To Register.
+      </button>
     </div>
   </form>
 </template>
 <script>
-import {mapState, mapGetters, mapActions} from "vuex"
+import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
-    await this.getStates()
+    await this.aAddStates()
   },
   mounted () {
     window.addEventListener('beforeunload', this.clearForm)
   },
   updated(){
-    if (this.layout === null){
-      this.layout = document.firstElementChild.children[1].children[0].children[1]
-      ? document.firstElementChild.children[1].children[0].children[1]
-      : document.firstElementChild.children[1].children[0].firstElementChild
+    if(!this.user_auth && this.registration){
+        this.phoneNumber = document.querySelector('[name="phone_number"]').value
     }
-    if(!this.user_auth){
-        this.phoneNumber = this.layout
-        .firstElementChild.children[1].firstElementChild.firstElementChild.children[1]
-        .children[3].firstElementChild.children[1].value
-    }
+    // input styling
+    document.querySelectorAll('input').forEach(inp => {
+      inp.style = this.inpStyles
+    })
+    // toggle link styling
+    document.querySelectorAll('.toggleLink').forEach(link => {
+      link.style = this.linkStyles
+    })
+    // error div styling
+    const divList = ['.inpSec']
+    this.registration && divList.push('.preSec')
+    divList.forEach( secType => {
+      document.querySelectorAll(secType).forEach( sec => {
+        sec.classList.contains("inpSec") && sec.classList.contains("neutral") && (sec.children[1].style = this.errDivStyles)
+        sec.classList.contains("preSec") && sec.classList.contains("neutral") && (sec.children[3].style = this.errDivStyles)
+        sec.classList.contains("inpSec") && !sec.classList.contains("neutral") && (sec.children[1].style = '')
+        sec.classList.contains("preSec") && !sec.classList.contains("neutral") && (sec.children[3].style = '')
+      })
+    })
   },
   data: ()=>({
+    props: ["w1"],
     hidePassword: true,
     hideConfirm: true,
     phoneNumber: null,
     layout: null
   }),
   computed: {
+    // login state
     ...mapState(
       "login",[
         "user_auth",
         "registration",
-        'form'
-        ]
-      ),
+        "user"
+        ]),
+    // root state
     ...mapState([
       "states"
       ]),
+    // root getters
     ...mapGetters([
       "city_list",
       "zipcode_list"
       ]),
+    // theme getters
+    ...mapGetters(
+      "theme",[
+        "theme"
+        ]),
+    // login getters
     ...mapGetters(
       "login",[
         "userForm",
@@ -145,6 +291,12 @@ export default {
         "userLocation"
         ]
       ),
+    //theme getters
+    ...mapGetters(
+      'theme',[
+        'theme'
+      ]
+    ),
     validVals: function(){
       let validity = []
       if(this.user_auth){
@@ -175,13 +327,51 @@ export default {
         })
       }
       return validity
+    },
+    inpStyles: function(){
+      return `background-color:\ 
+                ${this.theme.input};\
+              color:\
+                ${this.theme.color};`
+    },
+    errDivStyles: function(){
+      return `color:\
+                ${this.theme.color};`
+    },
+    submitStyles: function(){
+      return `--subBckGrndClr:\
+                ${this.theme.green};\
+              --subShadow:\
+                0px calc(var(--formWidth) * .00925) 0 0 ${this.theme.medGreen};\
+              --subBckGrnd:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.lightGreen},\
+                  ${this.theme.green}\
+                );\
+              --subHovBckGrndClr:\
+              ${this.theme.lightGreen};\
+              --subHovShadow: 0px calc(var(--formWidth) * .00925) 0 0 ${this.theme.green};\
+              --subHovBckGrnd:\
+                linear-gradient(\
+                  to top right,\
+                  ${this.theme.green},\
+                  ${this.theme.lightGreen}\
+                );`
+    },
+    linkStyles: function(){
+      return `--tl: ${this.theme.medGreen};\
+              --tlh: ${this.theme.green};\
+              --tla: ${this.theme.lightGreen};`
     }
   },
   methods: {
+    // root actions
     ...mapActions([
-      "getStates",
-      "getCities"
+      "aAddStates",
+      "aAddCities"
       ]),
+    // login actions
     ...mapActions(
       "login", [
         "aHandleBlur",
@@ -190,7 +380,8 @@ export default {
         "aToggleRegistration",
         "aToggleAuth",
         "charCheck",
-        'aClearForm'
+        'aClearForm',
+        'aSetPhoneNumber'
         ]
       ),
     showPass(i){
@@ -214,7 +405,7 @@ export default {
     'userLocation.state.value' : function(){
       if (this.registration){
         if(this.states.includes(this.userLocation.state.value)){
-        this.getCities(this.userLocation.state.value)
+        this.aAddCities(this.userLocation.state.value)
         }
         document.querySelector("#cityInp").value &&
         (document.querySelector("#cityInp").value = "")
@@ -275,58 +466,64 @@ export default {
         if(newVal.length > oldVal.length){
           if (this.phoneNumber.length === 1) {
             this.phoneNumber = `(${this.phoneNumber}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           } else if (this.phoneNumber.length === 5) {
             this.phoneNumber = `${this.phoneNumber.slice(0,4)})-${this.phoneNumber.slice(4)}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           } else if (this.phoneNumber.length === 10) {
             this.phoneNumber = `${this.phoneNumber.slice(0,9)}-${this.phoneNumber.slice(9)}`
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
         }
         if(newVal.length < oldVal.length){
           if(newVal.length === 10){
             this.phoneNumber = this.phoneNumber.slice(0,9)
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
           if(newVal.length === 6){
             this.phoneNumber = this.phoneNumber.slice(0,4)
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
           if(newVal.length === 1){
             this.phoneNumber = ''
-            this.layout.firstElementChild.children[1].firstElementChild
-            .firstElementChild.children[1].children[3]
-            .firstElementChild.children[1].value = this.phoneNumber
+            document.querySelector('[name="phone_number"]').value = this.phoneNumber
+            this.aSetPhoneNumber(this.phoneNumber)
           }
         }
       }
     },
-
   },
 }
 </script>
 
 <style>
+/* html tags */
 form{
   display: flex;
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
-  font-size: 1.8vw;
-  padding: 0 2vw 0 2vw;
-  align-content:space-between;
+  font-size: var(--fontSize);
+  padding: 0 calc(var(--formWidth) * .037) 0 calc(var(--formWidth) * .037);
+  align-content: space-between;
 }
+h1{
+  margin: calc(var(--formWidth) * .037);
+  padding: 0;
+  justify-self: start;
+}
+input{
+  border: none;
+  padding-left: calc(var(--formWidth) * .00925);
+  width: var(--inpWidth);
+  height: calc(var(--formWidth) * .04625);
+}
+
 
 .inputCont{
   width: 100%;
@@ -338,9 +535,6 @@ form{
   display: inline-block;
   width: auto;
 }
-img{
-  width: 10vw;
-}
 .inpSec > div{
   display: flex;
   max-width: inherit;
@@ -350,61 +544,44 @@ img{
   flex-direction: row;
   justify-content: space-between;
 }
-input{
-  background-color: #96969657;
-  border: none;
-  padding-left: .5vw;
-  width: 22vw;
-  height: 2.5vw;
-  margin-left: .5vw;
-}
 [name='password'],[name='confirm'] {
-  padding-right: 2.5vw;
+  padding-right: calc(var(--formWidthS) * .049);
 }
-h1{
-  margin: 2vw;
-  padding: 0;
-  justify-self: start;
-}
-datalist{
-  max-width: 7vw;
-  text-align: center;
+.btmInp{
+  margin-bottom: calc(var(--formWidth) * .01);
 }
 
 .errDiv{
-  font-size: 1.2vw;
+  font-size: calc(var(--fontSize) * .77);
   max-width: inherit;
   flex-direction: row-reverse;
-  justify-content: space-between;
+  justify-content: flex-start;
   color: black;
 }
 .errDiv2{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2vw;
+  font-size: calc(var(--fontSize) * .77);
   color: black;
   position: relative;
   justify-self: center;
 }
-.errMsg{
-  margin-left: 14.5vw;
-  margin-bottom: 0;
-  margin-top: 0;
+.charCount{
+  width: calc(var(--inpWidth) * .11);
+  text-align: right;
 }
-.sheltErrMsg{
-  margin-left: 19.5vw;
-  margin-bottom: 0;
-  margin-top: 0;
+.errMsg{
+  width: calc(var(--inpWidth) - calc(var(--inpWidth) * .115));
 }
 .errMsg2{
   text-align: center;
 }
 .errMsg2.state{
-  width: 7vw;
+  width: calc(var(--formWidth) * .1665);
 }
 .errMsg2.zipcode{
-  width: 9vw;
+  width: calc(var(--formWidth) * .1665);
 }
 
 
@@ -419,24 +596,21 @@ datalist{
   justify-content: space-between;
   align-content: flex-start;
   width: 100%;
-  height: 4vw;
+  height: calc(var(--formWidth) * .074);
 }
 #cityInp{
-  width: 17vw;
+  width: calc(var(--formWidth) * .3145);
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #stateInp{
-  width: 7vw;
+  width: calc(var(--formWidth) * .1665);
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 #zipInp{
-  width: 9vw;
+  width: calc(var(--formWidth) * .1665);
   margin: 0;
-  background-color: rgba(0, 0, 0, 0.137);
   text-align: center;
 }
 .valid > .errDiv,.valid > .errDiv2{
@@ -446,19 +620,19 @@ datalist{
   color:rgb(214, 16, 16)
 }
 .valid > * > input{
-  border: .2vw solid green;
+  border: calc(var(--formWidth) * .0037) solid green;
 }
 .invalid > * > input{
-  border: .2vw solid rgb(214, 16, 16);
+  border: calc(var(--formWidth) * .0037) solid rgb(214, 16, 16);
 }
 .neutral > * > input{
   border: none;
 }
 .valid > input{
-  border: .2vw solid green;
+  border: calc(var(--formWidth) * .0037) solid green;
 }
 .invalid > input{
-  border: .2vw solid rgb(214, 16, 16);
+  border: calc(var(--formWidth) * .0037) solid rgb(214, 16, 16);
 }
 .neutral > input,select{
   border: none;
@@ -473,34 +647,29 @@ datalist{
   margin-top: auto;
 }
 #btmDiv > * {
-  margin: .5vw;
+  margin: calc(var(--formWidth) * .00925);
 }
 #sub{
-  background: #606E38;
-  background: linear-gradient(
-    to bottom left,
-    #606E38,
-    #98af58
-  );
-  box-shadow: 0px .3vw 0 0 #606E38;
-  padding: .3vw .7vw;
+  background-color: var(--subBckGrndClr);
+  background: var(--subBckGrnd);
+  box-shadow: var(--subShadow);
+  text-align: center;
+  padding: calc(var(--formWidth) * .004) calc(var(--formWidth) * .01295);
   border-radius: 20px;
 }
 #sub:hover{
-  background: linear-gradient(
-    to bottom left,
-    #98af58,
-    #606E38
-  );
+  background-color: var(--subHovBckGrndClr);
+  background: var(--subHovBckGrnd);
+  box-shadow: var(--subHovShadow);
 }
 #sub:active{
   box-shadow: none;
-  margin-top: .5vw;
+  margin-top: calc(var(--formWidth) * .0185);
 }
 #btnDiv{
-  /* width: 10vw; */
-  height: 3vw;
+  height: calc(var(--formWidth) * .0555);
   display: flex;
+  margin-top: 0;
   align-items: center;
   justify-content: center;
 }
@@ -511,46 +680,62 @@ datalist{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: .5vw;
-  margin-left: 34vw;
+  margin-top: calc(var(--formWidth) * .00925);
+  margin-left: calc(var(--formWidth)* 0.735);
 }
 .sheltShowPasswordBtn {
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: .5vw;
-  margin-left: 38.9vw;
+  margin-top: calc(var(--formWidth) * .00925);
+  margin-left: calc(var(--formWidth)* 0.735);
 }
 .showPassword{
-  width: 2vw;
+  width: calc(var(--formWidth) * .037);
 }
 .hidePassword{
-  width: 1.6vw;
-  height: 1.2vw;
-  margin: .18vw .15vw .25vw .24vw;
+  width: calc(var(--formWidth) * .0296);
+  height: calc(var(--formWidth) * .0222)w;
+  margin: calc(var(--formWidth) * .00333)
+    calc(var(--formWidth) * .002775)
+    calc(var(--formWidth) * .004625)
+    calc(var(--formWidth) * .00444);
 }
 
 
 .toggleLink{
-  color: #758842;
+  color: var(--tl);
   text-decoration: underline;
 }
 .toggleLink:hover{
-  color: #606E38;
+  color: var(--tlh);
+
 }
 .toggleLink:active{
-  color: #98af58;
+  color: var(--tla);
 }
 
 
 .error {
     position: relative;
     animation: shake .1s linear;
+    -webkit-animation: shake .1s linear;
+    -moz-animation: shake .1s linear;
     animation-iteration-count: 3;
+    -webkit-animation-iteration-count: 3;
+    -moz-animation-iteration-count: 3;
+}
+@-webkit-keyframes shake {
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037)w; }
+}
+@-moz-keyframes shake {
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037); }
 }
 @keyframes shake {
-    0% { top: -.2vw; }
-    100% { bottom: -.2vw; }
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037); }
 }
 </style>
