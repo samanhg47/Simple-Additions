@@ -5,7 +5,6 @@ from datetime import datetime
 from flask import request
 from models.db import db
 from uuid import UUID
-import os
 
 
 class AllImages(Resource):

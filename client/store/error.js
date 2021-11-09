@@ -9,7 +9,7 @@ export const getters = {}
 
 //actions
 export const actions = {
-  aPassError({ commit }, status, msg) {
+  aPassError({ commit }, { status, msg }) {
     commit('mPassError', { status, msg })
   }
 }

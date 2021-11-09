@@ -1,9 +1,9 @@
 <template>
   <div id="contDiv" :style="contDivStyles" >
     <Error />
-    <div class='logoDiv left'>
-      <img class='liLogo' src="../assets/saLogoDark.png" :style="darkStyles" />
-      <img class='liLogo' src="../assets/saLogo.png" :style="lightStyles" />
+    <div class='logoDiv' :style="logoStyles">
+      <img src="../assets/saLogoDark.png" :style="darkStyles" />
+      <img src="../assets/saLogo.png" :style="lightStyles" />
     </div>
     <section class="formCont" :style="formContStyles" >
       <section class="inputSec" :style="inpSecStyles">
@@ -11,18 +11,59 @@
       </section>
       <ToggleTheme />
     </section>
-    <div class="logoDiv right">
-      <img class="liLogo" src="../assets/saLogoDark.png" :style="darkStyles" />
-      <img class="liLogo" src="../assets/saLogo.png" :style="lightStyles" />
+    <div class="logoDiv" :style="logoStyles">
+      <img src="../assets/saLogoDark.png" :style="darkStyles" />
+      <img src="../assets/saLogo.png" :style="lightStyles" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex"
+import { mapGetters, mapState } from "vuex"
 export default {
+  data: () => ({
+    display_class: null,
+    formWid1: '88.07vw',
+    formWid2: '95vw',
+    formUlh: "calc(var(--formWidth) * .67504)",
+    formUrh: "calc(var(--formWidth) * .82373)",
+    formSlh: "calc(var(--formWidth) * .74977)",
+    formSrh: "calc(var(--formWidth) * .95221)",
+    logoWid: "calc(var(--formWidth) * .15789)",
+    oldH: null,
+    oldW: null
+    // display_class: "small",
+    // formWid1: "50.2vw",
+    // formWid2: "54.15vw",
+    // formUlh: "auto",
+    // formUrh: "auto",
+    // formSlh: "auto",
+    // formSrh: "auto",
+    // logoWid: "15vw",
+    // oldH: null,
+    // oldW: null
+  }),
+  mounted(){
+    window.addEventListener('resize', this.onResize)
+    this.oldH = window.innerHeight
+    this.oldW = window.innerWidth
+    this.responsiveness()
+  },
+  beforeDestroy() { 
+    window.removeEventListener('resize', this.onResize); 
+    },
   computed: {
-    ...mapGetters("theme",["theme"]),
+    ...mapGetters(
+      "theme",[
+        "theme"
+      ]
+    ),
+    ...mapState(
+      'login',[
+        'user_auth',
+        'registration'
+      ]
+    ),
     darkStyles: function(){
       return `boxShadow:${this.theme.shadow};\
               opacity:${this.theme.darkOpacity};\
@@ -35,8 +76,25 @@ export default {
               position: ${this.theme.lightPosition};\
               zIndex:${this.theme.lightZindex};`
     },
+    logoStyles: function(){
+      return `--logoW:\
+              ${this.logoWid}`
+    },
     contDivStyles: function(){
-      return `backgroundColor:\
+      const inpWidth = (!this.user_auth && this.registration) 
+                        ? "calc(var(--formWidth) * 0.482)" 
+                        : "calc(var(--formWidth) * 0.533)"
+      return `--formWidth:\
+                ${this.formContWidth};\
+              --formWidthS:\
+                ${this.formWid1};\
+              --formHeight:\
+                ${this.formContHeight};\
+              --fontSize:\
+                calc(${this.formWid1} * 0.0259);\
+              --inpWidth:\
+                ${inpWidth};\
+              backgroundColor:\
                 ${this.theme.lightSecondary};\
               background:\
                 linear-gradient(\
@@ -44,6 +102,24 @@ export default {
                   ${this.theme.lightSecondary},\
                   ${this.theme.darkSecondary}\
                 );`
+    },
+    formContWidth: function(){
+      if(!this.user_auth && this.registration){
+        return this.formWid2
+      } else {
+        return this.formWid1
+      }
+    },
+    formContHeight: function(){
+      if(this.user_auth && this.registration){
+        return this.formUrh
+      } else if(this.user_auth && !this.registration){
+        return this.formUlh
+      } else if(!this.user_auth && this.registration){
+        return this.formSrh
+      } else if(!this.user_auth && !this.registration){
+        return this.formSlh
+      }
     },
     formContStyles: function(){
       return `backgroundColor:\
@@ -67,54 +143,155 @@ export default {
                   ${this.theme.darkSecondary},\
                   ${this.theme.lightSecondary}\
                 );`
+    },
+  },
+  methods: {
+    responsiveness(){
+      const windowH = window.innerHeight
+      const windowW = window.innerWidth
+      const smallW = windowW * .95
+      const smallH = smallW * .95221
+      const smallLogo = smallW * .15789
+      const highW = windowH / 1.15
+
+      if (windowW - highW < (windowW * .05)){
+        this.display_class = "small"
+      }
+      if(windowW - highW >= (windowW * .05) && windowW <= highW + (2 * (highW * .25789)) + (windowW * .15)){
+        this.display_class = "high"
+      }
+      if (windowW > highW + (2 * (highW * .25789)) + (windowW * .15)){
+        this.display_class = 'wide'
+      }
+
+    },
+    onResize() {
+      this.responsiveness()
+      this.oldW = windowW
+    },
+  },
+  watch: {
+    display_class: function () {
+      if(this.display_class == "small"){
+        document.querySelector('#contDiv').style.flexDirection !== 'column'
+        && (document.querySelector('#contDiv').style.flexDirection = 'column')
+
+        document.querySelector('#contDiv').style.justifyContent !== 'flex-start'
+        && (document.querySelector('#contDiv').style.justifyContent = 'flex-start')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginBottom !== '2vh'
+        && (document.querySelectorAll('.logoDiv')[0].style.marginBottom = '2vh')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginTop !== '2vh'
+        && (document.querySelectorAll('.logoDiv')[0].style.marginTop = '2vh')
+
+        document.querySelectorAll('.logoDiv')[1].style.display !== 'none'
+        && (document.querySelectorAll('.logoDiv')[1].style.display = 'none')
+
+        this.formWid2 = '95vw'
+        this.formWid1 = '88.07vw'
+        this.logoWid = 'calc(var(--formWidth) * .15789)'
+      }
+      if(this.display_class == "high"){
+        document.querySelector('#contDiv').style.flexDirection !== 'column'
+        && (document.querySelector('#contDiv').style.flexDirection = 'column')
+
+        document.querySelector('#contDiv').style.justifyContent !== 'flex-start'
+        && (document.querySelector('#contDiv').style.justifyContent = 'flex-start')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginBottom !== '2vh'
+        && (document.querySelectorAll('.logoDiv')[0].style.marginBottom = '2vh')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginTop !== '2vh'
+        && (document.querySelectorAll('.logoDiv')[0].style.marginTop = '2vh')
+
+        document.querySelectorAll('.logoDiv')[1].style.display !== 'none'
+        && (document.querySelectorAll('.logoDiv')[1].style.display = 'none')
+
+        this.formWid2 = `${window.innerHeight / 1.19}px`
+        this.formWid1 = `${(window.innerHeight / 1.19) * .92705}px`
+        this.logoWid = 'calc(var(--formWidth) * .15789)'
+      }
+      if(this.display_class == "wide"){
+        document.querySelector('#contDiv').style.flexDirection
+        && (document.querySelector('#contDiv').style.flexDirection = '')
+
+        document.querySelector('#contDiv').style.justifyContent
+        && (document.querySelector('#contDiv').style.justifyContent = '')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginBottom
+        && (document.querySelectorAll('.logoDiv')[0].style.marginBottom = '')
+
+        document.querySelectorAll('.logoDiv')[0].style.marginTop
+        && (document.querySelectorAll('.logoDiv')[0].style.marginTop = '')
+
+        document.querySelectorAll('.logoDiv')[1].style.display == 'none'
+        && (document.querySelectorAll('.logoDiv')[1].style.display = 'flex')
+
+        this.formWid2 = '54.15vw'
+        this.formWid1 = '50.2vw'
+        this.logoWid = 'calc(var(--formWidth) * .25789)'
+      }
+      // if( newVal == 'high' ){
+        // document.querySelector('#contDiv').style.flexDirection !== 'column'
+        // && (document.querySelector('#contDiv').style.flexDirection = 'column')
+        // document.querySelectorAll('.logoDiv')[1].style.display !== 'none'
+        // && (documentd.querySelectorAll('.logoDiv')[1].style.display = 'none')
+        // document.querySelector
+      //   this.formWid1  = '596.88px'
+      //   this.formWid2  = '643.83px'
+      //   this.formUlh = '402.92px'
+      //   this.formUrh = '491.67px'
+      //   this.formSlh = '447.52px'
+      //   this.formSrh = '613.06px'
+      //   this.logoWid = `180px`
+      //   console.log('display',document.querySelector('.logoDiv').clientWidth)
+      // }
+
     }
   }
 }
 </script>
 
 <style>
-html, body, #__nuxt, #__layout,#contDiv{
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+@font-face {
+  font-family: myFont;
+  src: url(../assets/ZenAntique-Regular.ttf);
+}
+html{
+  background: wheat;
+}
+html, body, #__nuxt, #__layout{
+  min-height: 100%;
+  font-family: myFont;
 }
 #contDiv{
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  min-height: 100vh;
 }
 .formCont{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+  display: inline-block;
   border-radius: 20px;
   margin: 0;
-  padding: 4vw;
+  padding: calc(var(--formWidth) * .074);
+  padding-bottom: 0;
+  width:var(--formWidth);
+  height:var(--formHeight)
 }
 .inputSec{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding: 0;
+  display: inherit;
 }
 .inputCont{
   flex-direction: column;
 }
 .logoDiv{
-  width: 15vw;
+  width: var(--logoW);
   border-radius: 100%;
 }
 img{
   width: inherit;
   border-radius: 100%;
-}
-.left{
-  margin-right: 5vw;
-}
-.right{
-  margin-left: 5vw;
 }
 </style>

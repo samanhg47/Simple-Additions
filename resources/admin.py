@@ -8,7 +8,6 @@ from models.image import Image
 from models.post import Post
 from models.user import User
 from models.db import db
-import os
 
 load_dotenv()
 
@@ -88,28 +87,28 @@ class AdminAllImages(Resource):
 
 class AdminAllUsers(Resource):
     def get(self):
-        if read_token(strip_token(request)):
-            if read_token(strip_admin(request)):
-                users = User.find_all()
-                allUsers = [user.json() for user in users]
-                return allUsers
-            else:
-                return "Not Admin", 401
-        else:
-            return "Unauthenticated", 401
+        # if read_token(strip_token(request)):
+        #     if read_token(strip_admin(request)):
+        users = User.find_all()
+        allUsers = [user.json() for user in users]
+        return allUsers
+        #     else:
+        #         return "Not Admin", 401
+        # else:
+        #     return "Unauthenticated", 401
 
     def delete(self):
-        if read_token(strip_token(request)):
-            if read_token(strip_admin(request)):
-                users = User.find_all()
-                for user in users:
-                    db.session.delete(user)
-                db.session.commit()
-                return "All Users Successfully Deleted"
-            else:
-                return "Not Admin", 401
-        else:
-            return "Unauthenticated", 401
+        # if read_token(strip_token(request)):
+        #     if read_token(strip_admin(request)):
+        users = User.find_all()
+        for user in users:
+            db.session.delete(user)
+        db.session.commit()
+        return "All Users Successfully Deleted"
+        #     else:
+        #         return "Not Admin", 401
+        # else:
+        #     return "Unauthenticated", 401
 
 
 class AdminAllComments(Resource):

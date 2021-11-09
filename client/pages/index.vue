@@ -5,107 +5,115 @@
 
 <!-- User Form(s) -->
     <div v-if='user_auth' class="inputCont">
-      <section v-for="(field,index) in userForm" :key="index" :class="'inpSec ' + field.class">
-        <div class="inpDiv">
-          <label :for="index">{{field.for}}:</label>
-          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
-            tabindex="-1"
-            v-if='index === "password"'
-            class='showPasswordBtn'
-            type='button'>
-              <img
-                v-if='index === "password" && hidePassword'
-                class="showPassword"
-                src='../assets/hiddenPassword.png'
-                alt='Show Password Icon'/>
-              <img
-                v-if='index === "password" && !hidePassword'
-                class="hidePassword"
-                src='../assets/shownPassword.png'
-                alt='Show Password Icon'/>
-          </button>
-          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
-            tabindex="-1"
-            v-if='index === "confirm"'
-            class='showPasswordBtn'
-            type='button'>
-              <img
-                v-if='index === "confirm" && hideConfirm'
-                class="showPassword"
-                src='../assets/hiddenPassword.png'
-                alt='Show Password Icon'/>
-              <img
-                v-if='index === "confirm" && !hideConfirm'
-                class="hidePassword"
-                src='../assets/shownPassword.png'
-                alt='Show Password Icon'/>
-          </button>
-          <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-            :name="index"
-            :type="field.type"
-            :placeholder="field.placeholder"/>
-        </div>
-        <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">
-            {{field.value.length}}/{{field.minLen}}
-          </p>
-          <p v-if="field.msg" class="errMsg">
-            {{field.msg}}
-          </p>
-        </div>
+      <section v-for="(field,index) in userForm"
+        :key="index"
+        :class="index=='confirm'
+          ? 'btmInp inpSec ' + field.class
+          : 'inpSec ' + field.class">
+            <div class="inpDiv">
+              <label :for="index">{{field.for}}:</label>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "password"'
+                class='showPasswordBtn'
+                type='button'>
+                  <img
+                    v-if='index === "password" && hidePassword'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "password" && !hidePassword'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "confirm"'
+                class='showPasswordBtn'
+                type='button'>
+                  <img
+                    v-if='index === "confirm" && hideConfirm'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "confirm" && !hideConfirm'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"/>
+            </div>
+            <div class="errDiv">
+              <p v-if="field.minLen" class="charCount">
+                {{field.value.length}}/{{field.minLen}}
+              </p>
+              <p v-if="field.msg" class="errMsg">
+                {{field.msg}}
+              </p>
+            </div>
       </section>
     </div >
 
 <!-- Shelter Form(s) -->
     <div v-if='!user_auth' class="inputCont">
-      <section v-for="(field,index) in shelterForm" :key="index" :class="'inpSec ' + field.class">
-        <div class="inpDiv">
-          <label :for="index">{{field.for}}:</label>
-          <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
-            :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
-            v-if='index === "password"'
-            tabindex="-1"
-            type='button'>
-              <img
-                v-if='index === "password" && hidePassword'
-                class="showPassword"
-                src='../assets/hiddenPassword.png'
-                alt='Show Password Icon'/>
-              <img
-                v-if='index === "password" && !hidePassword'
-                class="hidePassword"
-                src='../assets/shownPassword.png'
-                alt='Show Password Icon'/>
-          </button>
-          <button  @mousedown="showPass(index)" @mouseup="hidePass(index)"
-            tabindex="-1"
-            v-if='index === "confirm"'
-            :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
-            type='button'>
-              <img
-                v-if='index === "confirm" && hideConfirm'
-                class="showPassword"
-                src='../assets/hiddenPassword.png'
-                alt='Show Password Icon'/>
-              <img
-                v-if='index === "confirm" && !hideConfirm'
-                class="hidePassword"
-                src='../assets/shownPassword.png'
-                alt='Show Password Icon'/>
-          </button>
-          <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
-            :name="index"
-            :type="field.type"
-            :placeholder="field.placeholder"/>
-        </div>
-        <div class="errDiv">
-          <p v-if="field.minLen" class="charCount">
-            {{field.value.length}}/{{field.minLen}}
-          </p>
-          <p v-if="field.msg" :class="registration?'sheltErrMsg':'errMsg'" >
-            {{field.msg}}
-          </p>
-        </div>
+      <section v-for="(field,index) in shelterForm"
+      :key="index"
+        :class="index=='confirm'
+          ? 'btmInp inpSec ' + field.class
+          : 'inpSec ' + field.class">
+            <div class="inpDiv">
+              <label :for="index">{{field.for}}:</label>
+              <button @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+                v-if='index === "password"'
+                tabindex="-1"
+                type='button'>
+                  <img
+                    v-if='index === "password" && hidePassword'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "password" && !hidePassword'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <button  @mousedown="showPass(index)" @mouseup="hidePass(index)"
+                tabindex="-1"
+                v-if='index === "confirm"'
+                :class="registration?'sheltShowPasswordBtn':'showPasswordBtn'"
+                type='button'>
+                  <img
+                    v-if='index === "confirm" && hideConfirm'
+                    class="showPassword"
+                    src='../assets/hiddenPassword.png'
+                    alt='Show Password Icon'/>
+                  <img
+                    v-if='index === "confirm" && !hideConfirm'
+                    class="hidePassword"
+                    src='../assets/shownPassword.png'
+                    alt='Show Password Icon'/>
+              </button>
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"/>
+            </div>
+            <div class="errDiv">
+              <p v-if="field.minLen" class="charCount">
+                {{field.value.length}}/{{field.minLen}}
+              </p>
+              <p v-if="field.msg" class='errMsg'>
+                {{field.msg}}
+              </p>
+            </div>
       </section>
     </div >
 
@@ -170,7 +178,7 @@
         <button type="submit" v-if="registration" disabled id="sub" :style="submitStyles">
           Register
         </button>
-        <button type="submit" v-if="!registration" disabled id="sub">
+        <button type="submit" v-if="!registration" disabled id="sub" :style="submitStyles">
           Login
         </button>
       </section>
@@ -217,7 +225,7 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
-    await this.getStates()
+    await this.aAddStates()
   },
   mounted () {
     window.addEventListener('beforeunload', this.clearForm)
@@ -247,6 +255,7 @@ export default {
     })
   },
   data: ()=>({
+    props: ["w1"],
     hidePassword: true,
     hideConfirm: true,
     phoneNumber: null,
@@ -257,7 +266,8 @@ export default {
     ...mapState(
       "login",[
         "user_auth",
-        "registration"
+        "registration",
+        "user"
         ]),
     // root state
     ...mapState([
@@ -332,7 +342,7 @@ export default {
       return `--subBckGrndClr:\
                 ${this.theme.green};\
               --subShadow:\
-                0px .3vw 0 0 ${this.theme.medGreen};\
+                0px calc(var(--formWidth) * .00925) 0 0 ${this.theme.medGreen};\
               --subBckGrnd:\
                 linear-gradient(\
                   to top right,\
@@ -341,7 +351,7 @@ export default {
                 );\
               --subHovBckGrndClr:\
               ${this.theme.lightGreen};\
-              --subHovShadow: 0px .3vw 0 0 ${this.theme.green};\
+              --subHovShadow: 0px calc(var(--formWidth) * .00925) 0 0 ${this.theme.green};\
               --subHovBckGrnd:\
                 linear-gradient(\
                   to top right,\
@@ -358,8 +368,8 @@ export default {
   methods: {
     // root actions
     ...mapActions([
-      "getStates",
-      "getCities"
+      "aAddStates",
+      "aAddCities"
       ]),
     // login actions
     ...mapActions(
@@ -395,7 +405,7 @@ export default {
     'userLocation.state.value' : function(){
       if (this.registration){
         if(this.states.includes(this.userLocation.state.value)){
-        this.getCities(this.userLocation.state.value)
+        this.aAddCities(this.userLocation.state.value)
         }
         document.querySelector("#cityInp").value &&
         (document.querySelector("#cityInp").value = "")
@@ -498,21 +508,20 @@ form{
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
-  font-size: 1.8vw;
-  padding: 0 2vw 0 2vw;
-  align-content:space-between;
+  font-size: var(--fontSize);
+  padding: 0 calc(var(--formWidth) * .037) 0 calc(var(--formWidth) * .037);
+  align-content: space-between;
 }
 h1{
-  margin: 2vw;
+  margin: calc(var(--formWidth) * .037);
   padding: 0;
   justify-self: start;
 }
 input{
   border: none;
-  padding-left: .5vw;
-  width: 22vw;
-  height: 2.5vw;
-  margin-left: .5vw;
+  padding-left: calc(var(--formWidth) * .00925);
+  width: var(--inpWidth);
+  height: calc(var(--formWidth) * .04625);
 }
 
 
@@ -536,44 +545,43 @@ input{
   justify-content: space-between;
 }
 [name='password'],[name='confirm'] {
-  padding-right: 2.5vw;
+  padding-right: calc(var(--formWidthS) * .049);
+}
+.btmInp{
+  margin-bottom: calc(var(--formWidth) * .01);
 }
 
-
 .errDiv{
-  font-size: 1.2vw;
+  font-size: calc(var(--fontSize) * .77);
   max-width: inherit;
   flex-direction: row-reverse;
-  justify-content: space-between;
+  justify-content: flex-start;
   color: black;
 }
 .errDiv2{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2vw;
+  font-size: calc(var(--fontSize) * .77);
   color: black;
   position: relative;
   justify-self: center;
 }
-.errMsg{
-  margin-left: 14.5vw;
-  margin-bottom: 0;
-  margin-top: 0;
+.charCount{
+  width: calc(var(--inpWidth) * .11);
+  text-align: right;
 }
-.sheltErrMsg{
-  margin-left: 19.5vw;
-  margin-bottom: 0;
-  margin-top: 0;
+.errMsg{
+  width: calc(var(--inpWidth) - calc(var(--inpWidth) * .115));
 }
 .errMsg2{
   text-align: center;
 }
 .errMsg2.state{
-  width: 7vw;
+  width: calc(var(--formWidth) * .1665);
 }
 .errMsg2.zipcode{
-  width: 9vw;
+  width: calc(var(--formWidth) * .1665);
 }
 
 
@@ -588,20 +596,20 @@ input{
   justify-content: space-between;
   align-content: flex-start;
   width: 100%;
-  height: 4vw;
+  height: calc(var(--formWidth) * .074);
 }
 #cityInp{
-  width: 17vw;
+  width: calc(var(--formWidth) * .3145);
   margin: 0;
   text-align: center;
 }
 #stateInp{
-  width: 7vw;
+  width: calc(var(--formWidth) * .1665);
   margin: 0;
   text-align: center;
 }
 #zipInp{
-  width: 9vw;
+  width: calc(var(--formWidth) * .1665);
   margin: 0;
   text-align: center;
 }
@@ -612,19 +620,19 @@ input{
   color:rgb(214, 16, 16)
 }
 .valid > * > input{
-  border: .2vw solid green;
+  border: calc(var(--formWidth) * .0037) solid green;
 }
 .invalid > * > input{
-  border: .2vw solid rgb(214, 16, 16);
+  border: calc(var(--formWidth) * .0037) solid rgb(214, 16, 16);
 }
 .neutral > * > input{
   border: none;
 }
 .valid > input{
-  border: .2vw solid green;
+  border: calc(var(--formWidth) * .0037) solid green;
 }
 .invalid > input{
-  border: .2vw solid rgb(214, 16, 16);
+  border: calc(var(--formWidth) * .0037) solid rgb(214, 16, 16);
 }
 .neutral > input,select{
   border: none;
@@ -639,13 +647,14 @@ input{
   margin-top: auto;
 }
 #btmDiv > * {
-  margin: .5vw;
+  margin: calc(var(--formWidth) * .00925);
 }
 #sub{
   background-color: var(--subBckGrndClr);
   background: var(--subBckGrnd);
   box-shadow: var(--subShadow);
-  padding: .3vw .7vw;
+  text-align: center;
+  padding: calc(var(--formWidth) * .004) calc(var(--formWidth) * .01295);
   border-radius: 20px;
 }
 #sub:hover{
@@ -655,11 +664,12 @@ input{
 }
 #sub:active{
   box-shadow: none;
-  margin-top: .5vw;
+  margin-top: calc(var(--formWidth) * .0185);
 }
 #btnDiv{
-  height: 3vw;
+  height: calc(var(--formWidth) * .0555);
   display: flex;
+  margin-top: 0;
   align-items: center;
   justify-content: center;
 }
@@ -670,24 +680,27 @@ input{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: .5vw;
-  margin-left: 34vw;
+  margin-top: calc(var(--formWidth) * .00925);
+  margin-left: calc(var(--formWidth)* 0.735);
 }
 .sheltShowPasswordBtn {
   position: absolute;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: .5vw;
-  margin-left: 38.9vw;
+  margin-top: calc(var(--formWidth) * .00925);
+  margin-left: calc(var(--formWidth)* 0.735);
 }
 .showPassword{
-  width: 2vw;
+  width: calc(var(--formWidth) * .037);
 }
 .hidePassword{
-  width: 1.6vw;
-  height: 1.2vw;
-  margin: .18vw .15vw .25vw .24vw;
+  width: calc(var(--formWidth) * .0296);
+  height: calc(var(--formWidth) * .0222)w;
+  margin: calc(var(--formWidth) * .00333)
+    calc(var(--formWidth) * .002775)
+    calc(var(--formWidth) * .004625)
+    calc(var(--formWidth) * .00444);
 }
 
 
@@ -714,15 +727,15 @@ input{
     -moz-animation-iteration-count: 3;
 }
 @-webkit-keyframes shake {
-    0% { top: -.2vw; }
-    100% { bottom: -.2vw; }
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037)w; }
 }
 @-moz-keyframes shake {
-    0% { top: -.2vw; }
-    100% { bottom: -.2vw; }
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037); }
 }
 @keyframes shake {
-    0% { top: -.2vw; }
-    100% { bottom: -.2vw; }
+    0% { top: calc(var(--formWidth) * -.0037); }
+    100% { bottom: calc(var(--formWidth) * -.0037); }
 }
 </style>
