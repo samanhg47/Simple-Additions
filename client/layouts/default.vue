@@ -32,16 +32,6 @@ export default {
     logoWid: "calc(var(--formWidth) * .15789)",
     oldH: null,
     oldW: null
-    // display_class: "small",
-    // formWid1: "50.2vw",
-    // formWid2: "54.15vw",
-    // formUlh: "auto",
-    // formUrh: "auto",
-    // formSlh: "auto",
-    // formSrh: "auto",
-    // logoWid: "15vw",
-    // oldH: null,
-    // oldW: null
   }),
   mounted(){
     window.addEventListener('resize', this.onResize)
@@ -232,22 +222,6 @@ export default {
         this.formWid1 = '50.2vw'
         this.logoWid = 'calc(var(--formWidth) * .25789)'
       }
-      // if( newVal == 'high' ){
-        // document.querySelector('#contDiv').style.flexDirection !== 'column'
-        // && (document.querySelector('#contDiv').style.flexDirection = 'column')
-        // document.querySelectorAll('.logoDiv')[1].style.display !== 'none'
-        // && (documentd.querySelectorAll('.logoDiv')[1].style.display = 'none')
-        // document.querySelector
-      //   this.formWid1  = '596.88px'
-      //   this.formWid2  = '643.83px'
-      //   this.formUlh = '402.92px'
-      //   this.formUrh = '491.67px'
-      //   this.formSlh = '447.52px'
-      //   this.formSrh = '613.06px'
-      //   this.logoWid = `180px`
-      //   console.log('display',document.querySelector('.logoDiv').clientWidth)
-      // }
-
     }
   }
 }
