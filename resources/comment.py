@@ -11,7 +11,7 @@ from uuid import UUID
 
 class AllComments(Resource):
     def post(self):
-        if read_token(strip_token(request))['data']:
+        if read_token(strip_token(request)):
             data = request.get_json()
             data["body"] = censor_language(data)
             comment = Comment(**data)
@@ -23,7 +23,7 @@ class AllComments(Resource):
 
 class Comments(Resource):
     def patch(self, id):
-        if read_token(strip_token(request))['data']:
+        if read_token(strip_token(request)):
             if id_check(request, Comment, id) or read_token(strip_admin(request)):
                 data = request.get_json()
                 id = UUID(id)
@@ -41,7 +41,7 @@ class Comments(Resource):
             return "Unauthorized", 403
 
     def delete(self, id):
-        if read_token(strip_token(request))['data']:
+        if read_token(strip_token(request)):
             if id_check(request, Comment, id) or read_token(strip_admin(request)):
                 id = UUID(id)
                 comment = Comment.by_id(id)
@@ -62,7 +62,7 @@ class Comments(Resource):
 
 class UserComments(Resource):
     def get(self, user_id):
-        if read_token(strip_token(request))['data']:
+        if read_token(strip_token(request)):
             if id_check(request, User, user_id) or read_token(strip_admin(request)):
                 user_id = UUID(user_id)
                 comments = Comment.by_user(user_id)

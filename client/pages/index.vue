@@ -126,7 +126,7 @@
             v-if="index === 'state'"
             list="state_list" :name='index'
             id="stateInp" placeholder="state"/>
-              <datalist v-if="index === 'state'" :name="index" id="state_list">
+              <datalist v-if="index === 'state'" :name="`${index}List`" id="state_list">
                 <option v-for="state in states" :key="state" :value="state" >
                   {{state}}
                 </option>
@@ -139,7 +139,7 @@
             :name='index'
             id="cityInp"
             placeholder="city"/>
-              <datalist v-if="index === 'city'" :name="index" id="city_list">
+              <datalist v-if="index === 'city'" :name="`${index}List`" id="city_list">
                 <option v-for="city in city_list" 
                   :key="city"
                   :value="city"
@@ -155,7 +155,7 @@
             :name="index"
             id="zipInp"
             placeholder="zipcode"/>
-              <datalist v-if="index === 'zipcode'" :name="index" id="zipcode_list">
+              <datalist v-if="index === 'zipcode'" :name="`${index}List`" id="zipcode_list">
                 <option v-for="zipcode in zipcode_list"
                   :key="zipcode"
                   :value="zipcode"
@@ -225,37 +225,38 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
+    this.checkToken()
     await this.aAddStates()
   },
   mounted () {
-    window.addEventListener('beforeunload', this.clearForm)
+    if(Object.keys(this.location).length == 0){
+      try{
+        navigator.geolocation.getCurrentPosition(async(position)=>{
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        this.aSetLocation({longitude, latitude})
+        })
+      }catch(err){
+        console.log(err)
+      }
+    }
+    if(Object.keys(this.location).length != 0){
+      this.locationAutofill()
+    }
+
+    this.formUpdate()
+    this.styling()
   },
   updated(){
     if(!this.user_auth && this.registration){
         this.phoneNumber = document.querySelector('[name="phone_number"]').value
     }
-    // input styling
-    document.querySelectorAll('input').forEach(inp => {
-      inp.style = this.inpStyles
-    })
-    // toggle link styling
-    document.querySelectorAll('.toggleLink').forEach(link => {
-      link.style = this.linkStyles
-    })
-    // error div styling
-    const divList = ['.inpSec']
-    this.registration && divList.push('.preSec')
-    divList.forEach( secType => {
-      document.querySelectorAll(secType).forEach( sec => {
-        sec.classList.contains("inpSec") && sec.classList.contains("neutral") && (sec.children[1].style = this.errDivStyles)
-        sec.classList.contains("preSec") && sec.classList.contains("neutral") && (sec.children[3].style = this.errDivStyles)
-        sec.classList.contains("inpSec") && !sec.classList.contains("neutral") && (sec.children[1].style = '')
-        sec.classList.contains("preSec") && !sec.classList.contains("neutral") && (sec.children[3].style = '')
-      })
-    })
+    this.styling()
+  },
+  beforeDestroy(){
+    this.clearForm()
   },
   data: ()=>({
-    props: ["w1"],
     hidePassword: true,
     hideConfirm: true,
     phoneNumber: null,
@@ -271,7 +272,8 @@ export default {
         ]),
     // root state
     ...mapState([
-      "states"
+      'states',
+      'location'
       ]),
     // root getters
     ...mapGetters([
@@ -369,7 +371,9 @@ export default {
     // root actions
     ...mapActions([
       "aAddStates",
-      "aAddCities"
+      "aAddCities",
+      "aSetLocation",
+      'wait'
       ]),
     // login actions
     ...mapActions(
@@ -381,9 +385,16 @@ export default {
         "aToggleAuth",
         "charCheck",
         'aClearForm',
-        'aSetPhoneNumber'
+        'aSetPhoneNumber',
+        'aLocationAutofill'
         ]
       ),
+      // auth actions
+      ...mapActions(
+      "auth", [
+        "checkToken"
+      ]
+    ),
     showPass(i){
       i == "confirm" && (this.hideConfirm = false)
       i == "password" && (this.hidePassword = false)
@@ -399,7 +410,64 @@ export default {
         inp.value = ''
       })
       this.aClearForm()
-    }
+    },
+    async formUpdate(){
+      const wait = await this.wait(10)
+      if(this.user_auth){
+      wait
+      Object.keys(this.userForm).forEach(key =>
+      this.userForm[key].value !== '' && (document.querySelector(`[name="${key}"]`).value = this.userForm[key].value)
+      )
+      }else{
+        wait
+        Object.keys(this.shelterForm).forEach(key =>
+        this.shelterForm[key].value !== '' && (document.querySelector(`[name="${key}"]`).value = this.shelterForm[key].value)
+        )
+      }
+      if(this.registration){
+        wait
+        Object.keys(this.userLocation).forEach(key =>
+        this.userLocation[key].value !== '' && (document.querySelector(`[name="${key}"]`).value = this.userLocation[key].value)
+        )
+      }
+    },
+    styling(){
+      // input styling
+    document.querySelectorAll('input').forEach(inp => {
+      inp.style = this.inpStyles
+    })
+    // toggle link styling
+    document.querySelectorAll('.toggleLink').forEach(link => {
+      link.style = this.linkStyles
+    })
+    // error div styling
+    const divList = ['.inpSec']
+    this.registration && divList.push('.preSec')
+    divList.forEach( secType => {
+      document.querySelectorAll(secType).forEach( sec => {
+        sec.classList.contains("inpSec") && sec.classList.contains("neutral") && (sec.children[1].style = this.errDivStyles)
+        sec.classList.contains("preSec") && sec.classList.contains("neutral") && (sec.children[3].style = this.errDivStyles)
+        sec.classList.contains("inpSec") && !sec.classList.contains("neutral") && (sec.children[1].style = '')
+        sec.classList.contains("preSec") && !sec.classList.contains("neutral") && (sec.children[3].style = '')
+      })
+    })
+    },
+    async locationAutofill(){
+        const longitude = this.location.lng
+        const latitude = this.location.lat
+        const location = await this.aLocationAutofill({longitude, latitude})
+        if(location){
+          Object.keys(location).forEach(key => {
+            if(key !== "address"){
+            document.querySelector(`#${key}Inp`) 
+            && (document.querySelector(`#${key}Inp`).value = location[key])
+            }else{
+              document.querySelector(`input[name="${key}"]`)
+              && (document.querySelector(`input[name="${key}"]`).value = location[key])
+            }
+          })
+      }
+    },
   },
   watch:{
     'userLocation.state.value' : function(){
@@ -497,6 +565,15 @@ export default {
         }
       }
     },
+    registration: function(){
+      this.formUpdate('reg')
+    },
+    user_auth: function(){
+      this.formUpdate('auth')
+    },
+    location: function(){
+      this.locationAutofill()
+    }
   },
 }
 </script>

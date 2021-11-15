@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <Error/>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -114,5 +113,6 @@ export default {
       title: 'Vuetify.js'
     }
   },
+
 }
 </script>

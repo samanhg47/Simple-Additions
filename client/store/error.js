@@ -9,15 +9,15 @@ export const getters = {}
 
 //actions
 export const actions = {
-  aPassError({ commit }, { status, msg }) {
-    commit('mPassError', { status, msg })
+  aPassError({ commit }, err) {
+    commit('mPassError', err)
   }
 }
 
 //mutations
 export const mutations = {
-  mPassError(state, { status, msg }) {
-    state.msg = msg
-    state.status = status
+  mPassError(state, err) {
+    state.msg = err.response.data
+    state.status = err.response.status
   }
 }

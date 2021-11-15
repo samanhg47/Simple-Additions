@@ -5,7 +5,7 @@
       <div id='msgDiv' :style="msgDiv">
         <p v-html="msg" id="errorMsg"></p>
         <div id='btnDiv'>
-          <button :style="btnStyles" type="button" @click="aPassError({status:200, msg:''})">
+          <button :style="btnStyles" type="button" @click="aPassError({response:{status:200, msg:''}})">
             OK
           </button>
         </div>
@@ -101,9 +101,9 @@ export default {
   watch: {
     display: async function(){
       if(this.display==='flex'){
-        document.querySelector('#errorSec').classList.add('error')
+        document.querySelector('#errorDiv').classList.add('error')
         await this.wait(300)
-        document.querySelector('#errorSec').classList.remove('error')
+        document.querySelector('#errorDiv').classList.remove('error')
       }
     }
   }
@@ -115,8 +115,8 @@ export default {
   background: rgba(0, 0, 0, 0.719);
   justify-content: center;
   align-items: center;
-  height: inherit;
-  width: inherit;
+  height: 100vh;
+  width: 100vw;
   position: absolute;
   z-index: 5;
 }
@@ -126,7 +126,6 @@ export default {
   padding: 1vw;
 }
 #errorDiv{
-  width: 55vw;
   text-align: center;
   padding: 1vw 2vw 2vw 2vw;
   border-radius: 20px;

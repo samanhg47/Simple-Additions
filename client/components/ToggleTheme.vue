@@ -55,9 +55,9 @@ export default {
         'aDarkMode'
       ]
     ),
-    wait(delay){
-      return new Promise(resolve => setTimeout(resolve, delay))
-      },
+    ...mapActions([
+      'wait'
+    ]),
     async modeToggle(){
       const iconBtn = document.getElementById('iconBtn')
       const imgs = document.querySelectorAll('.modeIcon')
@@ -107,7 +107,7 @@ template{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: calc(var(--formWidth) * .0035);
+  margin-bottom: calc(var(--formWidth) * .0034);
 }
 #iconBtn{
   width: 10%;

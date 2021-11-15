@@ -138,24 +138,24 @@ class AdminAllComments(Resource):
 
 class AdminAllShelters(Resource):
     def get(self):
-        if read_token(strip_token(request)):
-            if read_token(strip_admin(request)):
-                shelters = Shelter.find_all()
-                return [shelter.json() for shelter in shelters]
-            else:
-                return "Not Admin", 401
-        else:
-            return "Unauthenticated", 401
+        # if read_token(strip_token(request)):
+        #     if read_token(strip_admin(request)):
+        shelters = Shelter.find_all()
+        return [shelter.json() for shelter in shelters]
+        #     else:
+        #         return "Not Admin", 401
+        # else:
+        #     return "Unauthenticated", 401
 
     def delete(self):
-        if read_token(strip_token(request)):
-            if read_token(strip_admin(request)):
-                shelters = Shelter.find_all()
-                for shelter in shelters:
-                    db.session.delete(shelter)
-                db.session.commit()
-                return "All Shelters Successfully Deleted"
-            else:
-                return "Not Admin", 401
-        else:
-            return "Unauthenticated", 401
+        # if read_token(strip_token(request)):
+        #     if read_token(strip_admin(request)):
+        shelters = Shelter.find_all()
+        for shelter in shelters:
+            db.session.delete(shelter)
+        db.session.commit()
+        return "All Shelters Successfully Deleted"
+        #     else:
+        #         return "Not Admin", 401
+        # else:
+        #     return "Unauthenticated", 401

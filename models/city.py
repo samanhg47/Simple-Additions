@@ -25,6 +25,9 @@ class City(db.Model):
     users = db.relationship(
         "User", cascade='all, delete', passive_deletes=True,
         backref=db.backref('user', lazy="joined", innerjoin=True))
+    shelters = db.relationship(
+        "Shelter", cascade='all, delete', passive_deletes=True,
+        backref=db.backref('shelter', lazy="joined", innerjoin=True))
 
 # Declarative Method(s)
     def __init__(self, city_name, state_id, zipcode, latitude, longitude, state_name):
@@ -77,9 +80,3 @@ class City(db.Model):
         city = City.query.filter_by(
             state_name=state, city_name=name, zipcode=zip).first()
         return city
-
-    @classmethod
-    def zipcodes(cls, state, name):
-        cities = City.query.filter_by(
-            state_name=state, city_name=name).all()
-        return cities

@@ -6,11 +6,7 @@ class By_State(Resource):
     def get(self, state):
         cities = City.by_state(state)
         if cities:
-            return [{
-                "zipcode": city.json()["zipcode"],
-                "city":city.json()["city"],
-                "state": city.json()["state_name"]}
-                for city in cities]
+            return [city.json()for city in cities]
         else:
             return "Cities Not Found", 404
 
@@ -21,7 +17,9 @@ class Detailed(Resource):
         if city:
             return city.json()
         else:
-            return "City Not Found", 404
+            return '''Location Not Found In Our Database <br/>
+                    Either Enter Your Location Info Manually Or
+                    Be Sure To Select From Suggestions''', 404
 
 
 class City_Id(Resource):

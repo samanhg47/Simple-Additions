@@ -7,16 +7,22 @@ import jwt
 import os
 
 load_dotenv()
-SECRET_KEY = os.getenv('APP_SECRET')
+APP_SECRET = os.getenv('APP_SECRET')
+SECRET_KEY = os.getenv('SECRET_KEY')
+SALT = int(os.getenv('SALT_ROUNDS'))
 
 
 def create_token(payload):
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    return jwt.encode(
+        payload,
+        APP_SECRET,
+        algorithm="HS256"
+    )
 
 
 def read_token(token):
     try:
-        jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        jwt.decode(token, APP_SECRET, algorithms=["HS256"])
         return True
     except jwt.InvalidSignatureError:
         return False
@@ -25,7 +31,7 @@ def read_token(token):
 
 
 def gen_password(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt(SALT)).decode()
 
 
 def compare_password(password, hash_password):
@@ -34,13 +40,26 @@ def compare_password(password, hash_password):
 
 def strip_token(request):
     try:
-        token = request.headers['Authorization'].split(' ')[1]
+        token = request.cookies.get('token')
         return token
     except:
         return None
 
 
-def strip_admin(request):
+def strip_secret(request):
+    secret = request.headers['Secret']
+    return compare_password(SECRET_KEY, secret)
+
+
+def strip_admin(token):
+    try:
+        admin = jwt.decode(token, APP_SECRET, algorithms=["HS256"])['admin']
+        return admin
+    except:
+        return False
+
+
+def check_admin(request):
     try:
         admin = request.headers['Admin']
         return admin

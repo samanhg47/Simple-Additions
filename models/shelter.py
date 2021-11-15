@@ -15,8 +15,8 @@ class Shelter(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     shelter_name = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(100))
-    city = db.Column(db.String(100), nullable=False)
-    state = db.Column(db.String(25), nullable=False)
+    city_id = db.Column(UUID(as_uuid=True), db.ForeignKey(
+        'city.id', ondelete='cascade'), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(14), nullable=False)
     latitude = db.Column(
@@ -36,12 +36,11 @@ class Shelter(db.Model):
 
 # Declarative Method(s)
     def __init__(
-            self, shelter_name, address, city, state, email, phone_number,
+            self, shelter_name, address, city_id, email, phone_number,
             latitude, longitude, password_digest):
         self.shelter_name = shelter_name
         self.address = address
-        self.city = city
-        self.state = state
+        self.city_id = city_id
         self.email = email
         self.phone_number = phone_number
         self.latitude = latitude
@@ -49,16 +48,13 @@ class Shelter(db.Model):
         self.password_digest = password_digest
 
     def json(self):
-        if self.address:
-            address = "{}, {}, {}".format(self.address, self.city, self.state)
-        else:
-            address = "{}, {}".format(self.city, self.state)
         return {
             "id": str(self.id),
             "shelter_name": self.shelter_name,
-            "address": address,
+            "address": self.address,
             "email": self.email,
             'phone_number': self.phone_number,
+            'city_id': str(self.city_id),
             "latitude": float(self.latitude),
             "longitude": float(self.longitude),
             "password_digest": self.password_digest,
@@ -92,11 +88,11 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
-        if proximity:
+        if proximity < 0:
             lat_r = proximity/68.93
             lon_r = proximity/54.58
-            lat = coordinates["latitude"]
-            lon = coordinates["longitude"]
+            lat = coordinates["lat"]
+            lon = coordinates["lng"]
             max_lat = lat + lat_r
             min_lat = lat - lat_r
             max_lon = lon + lon_r

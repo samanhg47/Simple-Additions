@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.23.0",
+    "bcryptjs": "^2.4.3",
     "core-js": "^3.15.1",
     "nodemon": "^2.0.13",
     "nuxt": "^2.15.7",
@@ -17,6 +18,7 @@
     "vuetify": "^2.5.5"
   },
   "devDependencies": {
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/vuetify": "^1.12.1",
     "@types/underscore": "^1.11.3"
   }

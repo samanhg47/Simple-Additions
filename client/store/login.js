@@ -1,4 +1,5 @@
-import _, { pick, omit } from 'underscore'
+import axios from 'axios'
+import { pick, omit } from 'underscore'
 //state
 export const state = () => ({
   form: {
@@ -94,9 +95,6 @@ export const state = () => ({
       msg: null
     }
   },
-  user: {},
-  zipcodes: [],
-  shelter: {},
   user_auth: true,
   registration: true
 })
@@ -105,119 +103,190 @@ export const state = () => ({
 export const getters = {
   userForm: state => {
     const userForm = state.registration
-      ? _.pick(state.form, ['user_name', 'email', 'password', 'confirm'])
-      : _.pick(state.form, ['email', 'password', 'confirm'])
+      ? pick(state.form, ['user_name', 'email', 'password', 'confirm'])
+      : pick(state.form, ['email', 'password', 'confirm'])
     return userForm
   },
   userLocation: state => {
-    const userLoc = _.pick(state.form, ['state', 'city', 'zipcode'])
+    const userLoc = pick(state.form, ['state', 'city', 'zipcode'])
     return userLoc
   },
   shelterForm: state => {
     const shelterForm = state.registration
-      ? _.omit(state.form, ['user_name', 'city', 'state', 'zipcode'])
-      : _.pick(state.form, ['shelter_name', 'address', 'password', 'confirm'])
+      ? omit(state.form, ['user_name', 'city', 'state', 'zipcode'])
+      : pick(state.form, ['shelter_name', 'address', 'password', 'confirm'])
     return shelterForm
   }
 }
 
 //actions
 export const actions = {
+  async aLocationAutofill(store, { longitude, latitude }) {
+    const Client = store.rootGetters['auth/client']
+    const res = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.API_KEY}`
+    )
+    const location = res.data.results[0].formatted_address
+    const address = location.split(',')[0]
+    const city = location.split(',')[1].replace(' ', '')
+    const state = location
+      .split(',')[2]
+      .replaceAll(' ', '')
+      .slice(0, 2)
+    const zip = location
+      .split(',')[2]
+      .replaceAll(' ', '')
+      .slice(2)
+    try {
+      const lookup = await Client.get(`/city/${state}/${city}/${parseInt(zip)}`)
+      store.commit('mLocationAutofill', { city, state, zip, address })
+      return { city, state, zip, address }
+    } catch (err) {
+      store.commit('mLocationAutofill', null)
+      return null
+    }
+  },
   async aUserRegister(store, user) {
     const Client = store.rootGetters['auth/client']
-    console.log('register user', user.state)
     try {
       // Check/Set Location
-      let res
-      if (!user['city_id']) {
-        res = await Client.get(
-          `/city/${user['sta']}/${user['city']}/${parseInt(user['zipcode'])}`
+      if (!user.city_id) {
+        const res = await Client.get(
+          `/city/${user.state}/${user.city}/${parseInt(user.zipcode)}`
         )
-        user['city_id'] = res.data.id
-        delete user['city']
-        delete user['state']
-        delete user['zipcode']
+        user.city_id = res.data.id
+        if (!store.rootState.location) {
+          const latitude = res.data.latitude
+          const longitude = res.data.longitude
+          store.dispatch(
+            'aSetLocation',
+            { longitude, latitude },
+            { root: true }
+          )
+        }
       }
+
+      user = omit(user, ['city', 'state', 'zipcode', 'confirm'])
       // Register User
-      res = await Client.post(`/register/users`, user)
-      console.log('register res', res)
+      await Client.post(`/register/users`, user)
       store.dispatch('aNewAccount', true, { root: true })
+      return false
     } catch (err) {
-      console.log(store)
-      if (err.response.status === 403) {
-        store.dispatch(
-          'error/aPassError',
-          {
-            status: 403,
-            msg:
-              'A User Has Already Registered With This Email <br/>\
-          Please Either Login Or Register With A Different Email'
-          },
-          { root: true }
-        )
-      } else if (err.response.status === 404) {
-        console.log(err)
-        store.dispatch(
-          'error/aPassError',
-          {
-            status: 404,
-            msg:
-              'Location Not Found In Our Database <br/>\
-          Either Enter Your Location Info Manually Or Be Sure To Select From Suggestions'
-          },
-          { root: true }
-        )
-      }
+      store.dispatch('error/aPassError', err, { root: true })
+      return false
     }
-    // if (res.status < 200) {
-    //   const log = await Client.post(`/login/users`, user)
-    //   // localStorage.setItem('token', res.data.token)
-    //   console.log(localStorage)
-    //   user = res.data.user
-    // }
+  },
+  async aShelterRegister(store, shelter) {
+    const Client = store.rootGetters['auth/client']
+    try {
+      // Check/Set Location
+      if (!shelter.city_id) {
+        const city = await Client.get(
+          `/city/${shelter.state}/${shelter.city}/${parseInt(shelter.zipcode)}`
+        )
+        shelter.city_id = city.data.id
+      }
+      if (!store.rootState.location.latitude) {
+        const address = shelter.address.replaceAll(' ', '+')
+        const city = shelter.city.replaceAll(' ', '+')
+        const call = await axios.get(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${address},
+        +${city},+${shelter.state}&key=${process.env.API_KEY}`
+        )
+        const latitude = call.data.results[0].geometry.location.lat
+        const longitude = call.data.results[0].geometry.location.lng
+        store.dispatch('aSetLocation', { longitude, latitude }, { root: true })
+      }
+      Object.keys(store.rootState.location).forEach(
+        key => (shelter[key] = store.rootState.location[key])
+      )
+      shelter = omit(shelter, ['city', 'state', 'zipcode', 'confirm'])
+
+      // Register Shelter
+      await Client.post(`/register/shelters`, shelter)
+      store.dispatch('aNewAccount', true, { root: true })
+      return false
+    } catch (err) {
+      store.dispatch('error/aPassError', err, { root: true })
+      return false
+    }
   },
   async aUserLogin(store, user) {
     const Client = store.rootGetters['auth/client']
     try {
       const res = await Client.post(`/login/users`, user)
-      console.log('login res', res)
-      store.dispatch('aCurrentUser', res.data.user, { root: true })
-      store.commit('mUserLogin')
+      console.log('res', res)
+      store.dispatch('aCurrentProfile', res.data, { root: true })
       return true
     } catch (err) {
-      console.log('login error', err.response)
-      if (err.response.status == 404) {
-        store.dispatch(
-          'error/aPassError',
-          {
-            status: err.respons.status,
-            msg: `No Profile Found For ${user.user_name}. <br/> Please Register.`
-          },
-          { root: true }
-        )
-      } else if (err.response.status == 401) {
-        store.dispatch('mIncorrectPassword')
+      if (err.response.status === 401) {
+        store.dispatch('aIncorrectPassword')
+      } else {
+        store.dispatch('error/aPassError', err, { root: true })
       }
       return false
     }
   },
-  aHandleSubmit(store) {
-    const userForm = store.state.user_auth
-    const registration = store.state.registration
-    let user = store.state.user
-
-    if (userForm && registration) {
-      console.log('submit user', user)
-      store.dispatch('aUserRegister', user)
-    } else if (userForm && !registration) {
-      store.dispatch('aUserLogin', user)
-    } else if (!userForm && registration) {
-      // const res = await Client.post(`/register/shelters`)
-    } else {
+  async aShelterLogin(store, user) {
+    const Client = store.rootGetters['auth/client']
+    try {
+      const res = await Client.post(`/login/shelters`, user)
+      store.dispatch('aCurrentProfile', res.data, { root: true })
+      return true
+    } catch (err) {
+      if (err.response.status === 401) {
+        store.dispatch('aIncorrectPassword')
+      } else {
+        store.dispatch('error/aPassError', err, { root: true })
+      }
+      return false
     }
-    // const currentUser = store
-    // $nuxt._router.push('/home')
-    // store.commit('mHandleSubmit', { user, currentUser, error })
+  },
+  async aHandleSubmit(store) {
+    const userAuth = store.state.user_auth
+    const registration = store.state.registration
+    const userForm = store.getters.userForm
+    const shelterForm = store.getters.shelterForm
+    const userLocation = store.getters.userLocation
+    let success
+
+    // User Registration
+    if (userAuth && registration) {
+      const user = {}
+      Object.keys(userForm).forEach(key => (user[key] = userForm[key].value))
+      Object.keys(userLocation).forEach(
+        key => (user[key] = userLocation[key].value)
+      )
+      await store.dispatch('aUserRegister', user)
+      success = await store.dispatch('aUserLogin', user)
+
+      // User Login
+    } else if (userAuth && !registration) {
+      let user = {}
+      Object.keys(userForm).forEach(key => (user[key] = userForm[key].value))
+      success = await store.dispatch('aUserLogin', user)
+
+      // Shelter Registration
+    } else if (!userAuth && registration) {
+      const shelter = {}
+      Object.keys(shelterForm).forEach(
+        key => (shelter[key] = shelterForm[key].value)
+      )
+      Object.keys(userLocation).forEach(
+        key => (shelter[key] = userLocation[key].value)
+      )
+      await store.dispatch('aShelterRegister', shelter)
+      success = await store.dispatch('aShelterLogin', shelter)
+
+      // Shelter Login
+    } else if (!userAuth && !registration) {
+      const shelter = {}
+      Object.keys(shelterForm).forEach(
+        key => (shelter[key] = shelterForm[key].value)
+      )
+      success = await store.dispatch('aShelterLogin', shelter)
+    }
+    success && store.dispatch('auth/checkToken', null, { root: true })
   },
   aIncorrectPassword(store) {
     store.commit('mIncorrectPassword')
@@ -247,7 +316,7 @@ export const actions = {
     }
     if (field === 'address') {
       charArr.forEach(char => {
-        if (acceptable.includes(char) || char === '.' || char === ',') {
+        if (acceptable.includes(char) || char === ',' || char === ' ') {
           charBools.push('t')
         } else {
           charBools.push('f')
@@ -415,8 +484,21 @@ export const actions = {
   }
 }
 
-//autations
+//mutations
 export const mutations = {
+  mLocationAutofill(state, location) {
+    if (location) {
+      state.form.state.value = location.state
+      state.form.city.value = location.city
+      state.form.zipcode.value = location.zip
+      state.form.address.value = location.address
+      state.form.state.class = 'valid'
+      state.form.city.class = 'valid'
+      state.form.zipcode.class = 'valid'
+      state.form.address.class = 'valid'
+      state.form.state.msg = ''
+    }
+  },
   mClearForm(state) {
     Object.keys(state.form).forEach(key => {
       state.form[key].class = 'neutral'
@@ -424,15 +506,11 @@ export const mutations = {
       state.form[key].visited = false
       state.form[key].msg = null
     })
-  },
-  mHandleSubmit(state, { user, currentUser }) {
-    currentUser.rootState.currentUser = user
+    state.user_auth = true
+    state.registration = true
   },
   mIncorrectPassword(state) {
-    state.form.password.value = ''
-    state.form.confirm.value = ''
-    state.form.password.msg = 'Incorrect Password'
-    state.form.confirm.msg = 'Incorrect Password'
+    state.form.password.msg = 'Password Incorrect. Try Again'
     state.form.password.class = 'invalid'
     state.form.confirm.class = 'invalid'
   },
@@ -467,16 +545,6 @@ export const mutations = {
       state.form.zipcode.class = 'neutral'
       state.form.zipcode.value = ''
       state.form.zipcode.msg = null
-    }
-
-    if (state.user_auth) {
-      if (event.target.name !== 'confirm') {
-        state.user[event.target.name] = eventValue
-      }
-    } else {
-      if (event.target.name !== 'confirm') {
-        state.shelter[event.target.name] = eventValue
-      }
     }
   },
   mHandleBlur(state, event) {
@@ -559,12 +627,12 @@ export const mutations = {
     if (eTarget === 'address') {
       if (addressCheck.includes('f')) {
         state.form.address.class = 'invalid'
-        state.form.address.msg = 'Address Must Be Alphanumeric Besides "."'
+        state.form.address.msg = 'Address Must Be Alphanumeric'
       }
     }
 
     if (eTarget === 'confirm') {
-      if (state.form.password.value.length < state.form.confirm.value.length) {
+      if (state.form.password.value !== state.form.confirm.value) {
         state.form.confirm.class = 'invalid'
         state.form.confirm.msg = 'Confirm Password Must Match Original'
       }
@@ -681,6 +749,15 @@ export const mutations = {
       state.form.password.class = 'valid'
       state.form.password.visited = true
       state.form.password.msg = null
+      if (state.form.confirm.visited) {
+        if (state.form.password.value === state.form.confirm.value) {
+          state.form.confirm.class = 'valid'
+          state.form.confirm.msg = null
+        } else {
+          state.form.confirm.class = 'invalid'
+          state.form.confirm.msg = 'Confirm Password Must Match Original'
+        }
+      }
     }
 
     if (
@@ -722,6 +799,10 @@ export const mutations = {
       } else if (cond2) {
         state.form[eTarget].class = 'invalid'
         state.form[eTarget].msg = `Must Be At Least ${minLen} Characters Long.`
+        if (eTarget === 'password') {
+          state.form.confirm.class = 'invalid'
+          state.form.confirm.msg = 'Password Invalid'
+        }
       } else if (
         !state.form[eTarget].visited &&
         state.form[eTarget].class !== 'valid'

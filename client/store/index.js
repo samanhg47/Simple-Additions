@@ -3,8 +3,11 @@ import { _ } from 'core-js'
 // state
 export const state = () => ({
   newAccount: false,
-  currentUser: {},
-  location: [],
+  currentProfile: {
+    user: {},
+    shelter: {}
+  },
+  location: {},
   shelters: [],
   users: [],
   comments: [],
@@ -43,8 +46,11 @@ export const actions = {
   wait(store, delay) {
     return new Promise(resolve => setTimeout(resolve, delay))
   },
-  aCurrentUser({ commit }, user) {
-    commit('mCurrentUser', user)
+  aSetLocation({ commit }, { longitude, latitude }) {
+    commit('mSetLocation', { longitude, latitude })
+  },
+  aCurrentProfile({ commit }, profile) {
+    commit('mCurrentProfile', profile)
   },
   async aAddSheltersUser(store, proximity, coordinates) {
     body = {
@@ -54,7 +60,6 @@ export const actions = {
     const Client = store.rootGetters['auth/client']
     const shelters = await Client.get('/shelters', body)
     store.commit('mUserAddShelters', shelters)
-    return shelters
   },
   async aAddSheltersAdmin(store) {
     const Client = store.rootGetters['auth/client']
@@ -80,8 +85,15 @@ export const actions = {
 
 //mutations
 export const mutations = {
-  mCurrentUser(state, user) {
-    state.currentUser = user
+  mSetLocation(state, { longitude, latitude }) {
+    state.location = {
+      lng: longitude,
+      lat: latitude
+    }
+  },
+  mCurrentProfile(state, profile) {
+    profile.user_name && (state.currentProfile.user = profile)
+    profile.shelter_name && (state.currentProfile.shelter = profile)
   },
   mAddShelters(state, shelters) {
     state.shelters.push({ ...shelters })

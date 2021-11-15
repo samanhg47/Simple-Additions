@@ -1,7 +1,8 @@
 import Axios from 'axios'
+import bcrypt from 'bcryptjs'
 // state
 export const state = () => ({
-  authenticated: null,
+  authenticated: false,
   BASE_URL:
     process.env.NODE_ENV === 'production'
       ? `${window.location.origin}`
@@ -17,16 +18,17 @@ export const getters = {
     })
     Client.interceptors.request.use(
       config => {
-        const token = localStorage.getItem('token')
-        const admin = localStorage.getItem('admin')
-        if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`
-          config.headers['Admin'] = admin
-        }
+        const secret = bcrypt.hashSync(
+          process.env.SECRET_KEY,
+          bcrypt.genSaltSync(30)
+        )
+        console.log(secret)
+        config.headers['Secret'] = secret
         return config
       },
       error => Promise.reject(error)
     )
+    Client.defaults.withCredentials = true
     return Client
   }
 }
@@ -34,10 +36,22 @@ export const getters = {
 //actions
 export const actions = {
   async checkToken(store) {
-    const token = localStorage.getItem('token')
-    const res = token ? await Client.get('/login/users', token) : false
-    store.dispatch('aAssignAuth', res.data)
-    return store.state.authenticated
+    const Client = store.getters.client
+    try {
+      if (!store.state.authenticated) {
+        const res = await Client.get('/token')
+        console.log('token res', res)
+        store.dispatch('aAssignAuth', res.data)
+      }
+      if ($nuxt._router.history.current.fullPath === '/') {
+        $nuxt._router.push('/home')
+      }
+    } catch (err) {
+      store.dispatch('error/aPassError', err, { root: true })
+      if ($nuxt._router.history.current.fullPath !== '/') {
+        $nuxt._router.push('/')
+      }
+    }
   },
   aAssignAuth({ commit }, bool) {
     commit('mAssignAuth', bool)

@@ -30,13 +30,9 @@ export default {
     formSlh: "calc(var(--formWidth) * .74977)",
     formSrh: "calc(var(--formWidth) * .95221)",
     logoWid: "calc(var(--formWidth) * .15789)",
-    oldH: null,
-    oldW: null
   }),
   mounted(){
     window.addEventListener('resize', this.onResize)
-    this.oldH = window.innerHeight
-    this.oldW = window.innerWidth
     this.responsiveness()
   },
   beforeDestroy() { 
@@ -144,10 +140,10 @@ export default {
       const smallLogo = smallW * .15789
       const highW = windowH / 1.15
 
-      if (windowW - highW < (windowW * .05)){
+      if (windowW - highW < (windowW * .02)){
         this.display_class = "small"
       }
-      if(windowW - highW >= (windowW * .05) && windowW <= highW + (2 * (highW * .25789)) + (windowW * .15)){
+      if(windowW - highW >= (windowW * .02) && windowW <= highW + (2 * (highW * .25789)) + (windowW * .15)){
         this.display_class = "high"
       }
       if (windowW > highW + (2 * (highW * .25789)) + (windowW * .15)){
@@ -157,7 +153,6 @@ export default {
     },
     onResize() {
       this.responsiveness()
-      this.oldW = windowW
     },
   },
   watch: {

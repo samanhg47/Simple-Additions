@@ -1,10 +1,13 @@
+import re
+import requests
+from werkzeug.wrappers import response
 from resources import fileport, shelter, image, post, state, user, auth, comment, admin, city
 from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
 from sheets.read.shelters import all_shelters
 from sheets.read.states import states_list
 from sheets.read.cities import cities_list
-from middleware import gen_password
+from middleware import gen_password, read_token, strip_admin, strip_secret, strip_token
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
@@ -16,13 +19,13 @@ from dotenv import load_dotenv
 from flask_restful import Api
 from models.user import User
 from models.post import Post
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
+from flask import request, Response
 from models.db import db
 from gevent import sleep
 from flask import Flask
 from faker import Faker
 from uuid import UUID
-import requests
 import click
 import boto3
 import os
@@ -32,6 +35,13 @@ UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 app = Flask(__name__)
 CORS(app)
+# resources={
+#     r"/*": {
+#         'origins': ["http://localhost:2000"],
+#         'allow_headers': ['SECRET', 'Admin', 'Authorization']
+#     }
+# }
+
 api = Api(app)
 seed_cli = AppGroup("seed")
 burn_cli = AppGroup("burn")
@@ -176,22 +186,20 @@ def shelter_seeder(state):
     count = 0
     shelter_list = []
     if state == "all":
-        for state_obj in State.find_all():
-            state = state_obj["shorthand"]
-            for shelter in all_shelters:
-                if not Shelter.by_contacts(shelter['phone_number'], shelter['email'], shelter['shelter_name'], shelter['address']) \
-                        and shelter["state"] == state:
+        for shelter in all_shelters:
+            if not Shelter.by_address(shelter['shelter_name'], shelter['address']):
+                if City.by_info(shelter['state'], shelter['city'], shelter['zipcode']):
+                    city_id = City.by_info(
+                        shelter['state'], shelter['city'], shelter['zipcode']).json()['id']
                     shelter_name = shelter['shelter_name']
                     password_digest = gen_password(shelter['password'])
                     email = shelter['email']
                     address = shelter['address']
-                    state = shelter['state']
-                    city = shelter['city']
                     phone_number = shelter['phone_number']
                     latitude = shelter['latitude']
                     longitude = shelter['longitude']
                     this_model = Shelter(
-                        shelter_name, address, city, state, email,
+                        shelter_name, address, city_id, email,
                         phone_number, latitude, longitude, password_digest
                     )
                     this_model.create()
@@ -199,24 +207,25 @@ def shelter_seeder(state):
                     count += 1
     else:
         for shelter in all_shelters:
-            if not Shelter.by_contacts(shelter['phone_number'], shelter['email'], shelter['shelter_name'], shelter['address']) \
+            if not Shelter.by_address(shelter['shelter_name'], shelter['address']) \
                     and shelter["state"] == state:
-                shelter_name = shelter['shelter_name']
-                password_digest = gen_password(shelter['password'])
-                email = shelter['email']
-                address = shelter['address']
-                state = shelter['state']
-                city = shelter['city']
-                phone_number = shelter['phone_number']
-                latitude = shelter['latitude']
-                longitude = shelter['longitude']
-                this_model = Shelter(
-                    shelter_name, address, city, state, email,
-                    phone_number, latitude, longitude, password_digest
-                )
-                this_model.create()
-                shelter_list.append(this_model)
-                count += 1
+                if City.by_info(shelter['state'], shelter['city'], shelter['zipcode']):
+                    city_id = City.by_info(
+                        shelter['state'], shelter['city'], shelter['zipcode']).json()['id']
+                    shelter_name = shelter['shelter_name']
+                    password_digest = gen_password(shelter['password'])
+                    email = shelter['email']
+                    address = shelter['address']
+                    phone_number = shelter['phone_number']
+                    latitude = shelter['latitude']
+                    longitude = shelter['longitude']
+                    this_model = Shelter(
+                        shelter_name, address, city_id, email,
+                        phone_number, latitude, longitude, password_digest
+                    )
+                    this_model.create()
+                    shelter_list.append(this_model)
+                    count += 1
 
     click.echo(
         '{} shelters were added to the database.'.format(count))
@@ -402,11 +411,47 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
+@app.before_request
+def acceptable_origins():
+    if request.origin == "http://localhost:3000":
+        if request.method != "OPTIONS":
+            if strip_secret(request):
+                if 'login' not in request.path and 'register' not in request.path\
+                        and 'cit' not in request.path and 'state' not in request.path:
+                    if not read_token(strip_token(request)):
+                        return Response("Please Login", status=401, mimetype='application/json')
+            else:
+                return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
+    else:
+        return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add(
+        'Access-Control-Allow-Origin',
+        'http://localhost:3000'
+    )
+    response.headers.add(
+        'Access-Control-Allow-Headers',
+        'Content-Type,Authorization,Secret'
+    )
+    response.headers.add(
+        'Access-Control-Allow-Methods',
+        '*'
+    )
+    response.headers.add(
+        'Access-Control-Allow-Credentials', 'true'
+    )
+    return response
+
+
 # Auth Resource(s)
 api.add_resource(auth.ShelterRegister, '/register/shelters')
 api.add_resource(auth.ShelterLogin, '/login/shelters')
 api.add_resource(auth.UserRegister, '/register/users')
 api.add_resource(auth.UserLogin, '/login/users')
+api.add_resource(auth.Token, '/token')
 
 # Admin Resource(s)
 api.add_resource(admin.AdminAllShelters, "/admin/shelters")
@@ -439,7 +484,7 @@ api.add_resource(fileport.S3Delete, "/s3/<string:key>")
 
 # Shelter Resource(s)
 api.add_resource(shelter.Shelters, '/shelter/<string:id>')
-api.add_resource(shelter.Allshelters, '/shelters')
+api.add_resource(shelter.By_Proximity, '/shelters')
 
 # City Resource(s)
 api.add_resource(city.By_State, "/cities/<string:state>")

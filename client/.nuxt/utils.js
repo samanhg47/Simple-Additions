@@ -200,7 +200,7 @@ export async function setContext (app, context) {
       payload: context.payload,
       error: context.error,
       base: app.router.options.base,
-      env: {}
+      env: {"API_KEY":"AIzaSyA4-L3U13zf5DpFMQjoXQ-yvdc1IK_ejKY","SECRET_KEY":"$2b$12$qYvR.2Hgo8.7mR.JP/19qubCN1ofqJkDDwMAW1bsp0LTqn66y57.q"}
     }
     // Only set once
 

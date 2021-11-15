@@ -22,7 +22,7 @@ service = build('sheets', 'v4', credentials=creds)
 # Call the Sheets API K10137
 sheet = service.spreadsheets()
 result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                            range="shelters!A1:K10137").execute()
+                            range="shelters!A1:L10137").execute()
 values = result.get('values', [])
 
 
@@ -42,8 +42,8 @@ def nested_list_to_json(nested_list):
     for title in headers:
         titles.append(title.replace(' ', '_').lower())
     for shelter in shelters:
-        if "CA" not in shelter and len(shelter) == 11 and "@" in shelter[4] and "" not in shelter[2:5]\
-                and "" not in shelter[6:10] and len(shelter) == 11 and letter_check(shelter[9]):
+        if "CA" not in shelter and len(shelter) == 12 and "@" in shelter[4] and "" not in shelter[2:5]\
+                and "" not in shelter[6:11] and letter_check(shelter[9]):
             shelt = {}
             for i, data in enumerate(shelter):
                 if i != 1 and i != 5 and i != 3:

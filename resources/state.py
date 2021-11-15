@@ -1,5 +1,6 @@
 from models.state import State
 from flask_restful import Resource
+from flask import make_response
 
 
 class By_Short(Resource):
@@ -17,7 +18,7 @@ class States(Resource):
         if states:
             return [state.json() for state in states]
         else:
-            return "State Not Found", 404
+            return "States Not Found", 404
 
 
 class State_Id(Resource):
