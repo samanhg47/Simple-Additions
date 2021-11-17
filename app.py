@@ -37,7 +37,6 @@ seed_cli = AppGroup("seed")
 burn_cli = AppGroup("burn")
 
 load_dotenv()
-UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 S3_BUCKET = os.getenv("S3_BUCKET")
 S3_USER_ID = os.getenv("S3_USER_ID")
 S3_USER_SECRET = os.getenv("S3_USER_SECRET")
@@ -53,7 +52,7 @@ if DATABASE_URL:
 else:
     app.debug = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost:5432/<Your Database Name>'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost:5432/simple_additions_db'
     app.config['SQLALCHEMY_ECHO'] = True
 
 
@@ -406,11 +405,6 @@ def comment_destroyer(amount):
 
 app.cli.add_command(burn_cli)
 app.cli.add_command(seed_cli)
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost:5432/simple_additions_db"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000
-app.config['UPLOAD_DIRECTORY'] = UPLOAD_DIRECTORY
-app.config['SQLALCHEMY_ECHO'] = True
 
 db.init_app(app)
 migrate = Migrate(app, db)
