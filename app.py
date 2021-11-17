@@ -28,8 +28,6 @@ import click
 import boto3
 import os
 
-load_dotenv()
-UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 app = Flask(__name__)
 CORS(app)
@@ -38,10 +36,25 @@ api = Api(app)
 seed_cli = AppGroup("seed")
 burn_cli = AppGroup("burn")
 
+load_dotenv()
+UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 S3_BUCKET = os.getenv("S3_BUCKET")
 S3_USER_ID = os.getenv("S3_USER_ID")
 S3_USER_SECRET = os.getenv("S3_USER_SECRET")
 S3_REGION = os.getenv("S3_REGION")
+
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL.replace(
+        "://", "ql://", 1)
+    app.config['SQLALCHEMY_ECHO'] = False
+    app.env = 'production'
+else:
+    app.debug = True
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost:5432/<Your Database Name>'
+    app.config['SQLALCHEMY_ECHO'] = True
 
 
 # seed states
@@ -408,11 +421,10 @@ def acceptable_origins():
     if request.origin == "http://localhost:3000":
         if request.method != "OPTIONS":
             if strip_secret(request):
-                "ok"
-                # if 'login' not in request.path and 'register' not in request.path\
-                #         and 'cit' not in request.path and 'state' not in request.path:
-                #     if not check_token(request):
-                #         return Response("Please Login", status=401, mimetype='application/json')
+                if 'login' not in request.path and 'register' not in request.path\
+                        and 'cit' not in request.path and 'state' not in request.path:
+                    if not check_token(request):
+                        return Response("Please Login", status=401, mimetype='application/json')
             else:
                 return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
     else:
@@ -492,4 +504,4 @@ api.add_resource(state.State_Id, "/state/<string:id>")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
