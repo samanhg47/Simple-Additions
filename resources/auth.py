@@ -1,4 +1,4 @@
-from middleware import create_token, gen_password, compare_password, read_token, strip_admin, strip_token
+from middleware import create_token, gen_password, compare_password, token_user
 from flask_restful import Resource
 from models.shelter import Shelter
 from models.user import User
@@ -40,6 +40,11 @@ class ShelterLogin(Resource):
 
 class UserLogin(Resource):
     def post(self):
+        print()
+        print()
+        print('user', request.json)
+        print()
+        print()
         data = request.get_json()
         data['email'] = data['email'].lower()
         user = User.by_email(data['email'])
@@ -83,7 +88,7 @@ class UserLogin(Resource):
 
 class Token(Resource):
     def get(self):
-        return True
+        return token_user(request)
 
 
 class UserRegister(Resource):

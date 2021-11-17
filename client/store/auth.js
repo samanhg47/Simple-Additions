@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import bcrypt from 'bcryptjs'
+import bcrypt, { genSaltSync } from 'bcryptjs'
 // state
 export const state = () => ({
   authenticated: false,
@@ -7,7 +7,8 @@ export const state = () => ({
     process.env.NODE_ENV === 'production'
       ? `${window.location.origin}`
       : 'http://localhost:5000',
-  userType: true
+  userType: true,
+  id: ''
 })
 
 //getters
@@ -17,13 +18,10 @@ export const getters = {
       baseURL: state.BASE_URL
     })
     Client.interceptors.request.use(
-      config => {
-        const secret = bcrypt.hashSync(
-          process.env.SECRET_KEY,
-          bcrypt.genSaltSync(30)
-        )
-        console.log(secret)
+      async function(config) {
+        const secret = bcrypt.hashSync(process.env.SECRET_KEY, genSaltSync())
         config.headers['Secret'] = secret
+        config.headers['Id'] = state.id
         return config
       },
       error => Promise.reject(error)
@@ -35,20 +33,21 @@ export const getters = {
 
 //actions
 export const actions = {
-  async checkToken(store) {
+  async checkToken(store, bool = true) {
     const Client = store.getters.client
     try {
       if (!store.state.authenticated) {
         const res = await Client.get('/token')
-        console.log('token res', res)
-        store.dispatch('aAssignAuth', res.data)
+        const user = await Client.get(`/user/${res.data}`)
+        store.dispatch('aCurrentProfile', user.data, { root: true })
+        store.dispatch('aAssignAuth', true)
       }
       if ($nuxt._router.history.current.fullPath === '/') {
         $nuxt._router.push('/home')
       }
     } catch (err) {
-      store.dispatch('error/aPassError', err, { root: true })
-      if ($nuxt._router.history.current.fullPath !== '/') {
+      if (bool) {
+        store.dispatch('error/aPassError', err, { root: true })
         $nuxt._router.push('/')
       }
     }

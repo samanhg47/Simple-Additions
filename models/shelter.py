@@ -88,11 +88,12 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
-        if proximity < 0:
+        if proximity > 0:
             lat_r = proximity/68.93
             lon_r = proximity/54.58
             lat = coordinates["lat"]
             lon = coordinates["lng"]
+
             max_lat = lat + lat_r
             min_lat = lat - lat_r
             max_lon = lon + lon_r

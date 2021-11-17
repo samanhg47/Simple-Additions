@@ -225,7 +225,7 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
-    this.checkToken()
+    this.checkToken(false)
     await this.aAddStates()
   },
   mounted () {
@@ -237,7 +237,6 @@ export default {
         this.aSetLocation({longitude, latitude})
         })
       }catch(err){
-        console.log(err)
       }
     }
     if(Object.keys(this.location).length != 0){

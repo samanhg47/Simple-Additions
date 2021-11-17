@@ -9,7 +9,6 @@ import os
 load_dotenv()
 APP_SECRET = os.getenv('APP_SECRET')
 SECRET_KEY = os.getenv('SECRET_KEY')
-SALT = int(os.getenv('SALT_ROUNDS'))
 
 
 def create_token(payload):
@@ -20,7 +19,11 @@ def create_token(payload):
     )
 
 
-def read_token(token):
+def check_token(request):
+    try:
+        token = request.cookies.get('token')
+    except:
+        return False
     try:
         jwt.decode(token, APP_SECRET, algorithms=["HS256"])
         return True
@@ -30,20 +33,26 @@ def read_token(token):
         return False
 
 
+def token_user(request):
+    try:
+        token = request.cookies.get('token')
+    except:
+        return None
+    try:
+        user = jwt.decode(token, APP_SECRET, algorithms=["HS256"])
+        return user['id']
+    except jwt.InvalidSignatureError:
+        return None
+    except jwt.InvalidTokenError:
+        return None
+
+
 def gen_password(password):
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt(SALT)).decode()
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 def compare_password(password, hash_password):
     return bcrypt.checkpw(password.encode(), hash_password.encode())
-
-
-def strip_token(request):
-    try:
-        token = request.cookies.get('token')
-        return token
-    except:
-        return None
 
 
 def strip_secret(request):
@@ -51,32 +60,36 @@ def strip_secret(request):
     return compare_password(SECRET_KEY, secret)
 
 
-def strip_admin(token):
+def check_admin(request):
+    try:
+        token = request.cookies.get('token')
+    except:
+        return False
     try:
         admin = jwt.decode(token, APP_SECRET, algorithms=["HS256"])['admin']
         return admin
-    except:
+    except jwt.InvalidSignatureError:
         return False
-
-
-def check_admin(request):
-    try:
-        admin = request.headers['Admin']
-        return admin
-    except:
-        return None
+    except jwt.InvalidTokenError:
+        return False
 
 
 def id_check(request, model, model_id):
     try:
-        id = request.headers['Id']
-        if model == User and UUID(model_id) == UUID(id) or model == Shelter and UUID(model_id) == UUID(id):
-            return True
-        else:
-            subject = model.by_id(model_id)
-            if UUID(subject.json()['user_id']) == UUID(id):
+        id = token_user(request)
+        if id:
+            if model == User and UUID(model_id) == UUID(id) or model == Shelter and UUID(model_id) == UUID(id):
                 return True
             else:
-                return False
+                subject = model.by_id(model_id)
+                if subject:
+                    if UUID(subject.json()['user_id']) == UUID(id):
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
+        else:
+            return False
     except:
         return None

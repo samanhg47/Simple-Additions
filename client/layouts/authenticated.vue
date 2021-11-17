@@ -90,7 +90,26 @@
 </template>
 
 <script>
+import { mapGetters, mapState, mapActions } from "vuex"
 export default {
+  created(){
+    this.checkToken()
+  },
+  async mounted(){
+    if(Object.keys(this.location).length == 0){
+      try{
+        navigator.geolocation.getCurrentPosition((position)=>{
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+        this.aSetLocation({longitude, latitude})
+        console.log("1",this.location)
+        this.grabShelters()
+        })
+      }catch(err){
+        console.log(this.cityById(this.currentProfile.user.city_id))
+      }
+    }
+  },
   data () {
     return {
       clipped: false,
@@ -114,5 +133,32 @@ export default {
       title: 'Vuetify.js'
     }
   },
+  computed: {
+    ...mapState([
+      'location',
+      'shelters',
+      'currentProfile'
+      ])
+  },
+  methods: {
+    ...mapActions(
+      "auth", [
+        "checkToken"
+      ]
+    ),
+    ...mapActions([
+      'aAddSheltersUser',
+      'aSetLocation',
+      'cityById'
+      ]),
+    async grabShelters(){
+      const body = {
+        coordinates: this.location,
+        proximity: 0
+      }
+      await this.aAddSheltersUser(body)
+      console.log('body length',this.shelters.length)
+    }
+  }
 }
 </script>

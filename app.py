@@ -1,13 +1,11 @@
-import re
 import requests
-from werkzeug.wrappers import response
 from resources import fileport, shelter, image, post, state, user, auth, comment, admin, city
 from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
 from sheets.read.shelters import all_shelters
 from sheets.read.states import states_list
 from sheets.read.cities import cities_list
-from middleware import gen_password, read_token, strip_admin, strip_secret, strip_token
+from middleware import check_token, gen_password, strip_secret
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
@@ -19,7 +17,7 @@ from dotenv import load_dotenv
 from flask_restful import Api
 from models.user import User
 from models.post import Post
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask import request, Response
 from models.db import db
 from gevent import sleep
@@ -35,12 +33,6 @@ UPLOAD_DIRECTORY = os.getenv("UPLOAD_DIRECTORY")
 
 app = Flask(__name__)
 CORS(app)
-# resources={
-#     r"/*": {
-#         'origins': ["http://localhost:2000"],
-#         'allow_headers': ['SECRET', 'Admin', 'Authorization']
-#     }
-# }
 
 api = Api(app)
 seed_cli = AppGroup("seed")
@@ -416,10 +408,11 @@ def acceptable_origins():
     if request.origin == "http://localhost:3000":
         if request.method != "OPTIONS":
             if strip_secret(request):
-                if 'login' not in request.path and 'register' not in request.path\
-                        and 'cit' not in request.path and 'state' not in request.path:
-                    if not read_token(strip_token(request)):
-                        return Response("Please Login", status=401, mimetype='application/json')
+                "ok"
+                # if 'login' not in request.path and 'register' not in request.path\
+                #         and 'cit' not in request.path and 'state' not in request.path:
+                #     if not check_token(request):
+                #         return Response("Please Login", status=401, mimetype='application/json')
             else:
                 return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
     else:
@@ -434,7 +427,7 @@ def after_request(response):
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
-        'Content-Type,Authorization,Secret'
+        'Content-Type,Authorization,Secret,Id'
     )
     response.headers.add(
         'Access-Control-Allow-Methods',

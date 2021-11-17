@@ -78,15 +78,8 @@
 import { mapGetters, mapState, mapActions } from "vuex"
 export default {
   layout: "authenticated",
-  created(){
-    this.checkToken()
-  },
   methods: {
-    ...mapActions(
-      "auth", [
-        "checkToken"
-      ]
-    ),
+    
   }
 }
 </script>

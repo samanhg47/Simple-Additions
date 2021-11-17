@@ -46,20 +46,26 @@ export const actions = {
   wait(store, delay) {
     return new Promise(resolve => setTimeout(resolve, delay))
   },
+  async cityById(id) {
+    const Client = store.rootGetters['auth/client']
+    const res = await Client.get(`/city/${id}`)
+    return res.data
+  },
   aSetLocation({ commit }, { longitude, latitude }) {
     commit('mSetLocation', { longitude, latitude })
   },
   aCurrentProfile({ commit }, profile) {
     commit('mCurrentProfile', profile)
   },
-  async aAddSheltersUser(store, proximity, coordinates) {
-    body = {
-      coordinates: coordinates,
-      proximity: proximity
-    }
+  async aAddSheltersUser(store, body) {
     const Client = store.rootGetters['auth/client']
-    const shelters = await Client.get('/shelters', body)
-    store.commit('mUserAddShelters', shelters)
+    try {
+      console.log('body', body)
+      const shelters = await Client.post('/shelters', body)
+      store.commit('mAddShelters', shelters.data)
+    } catch (err) {
+      store.dispatch('error/aPassError', err, { root: true })
+    }
   },
   async aAddSheltersAdmin(store) {
     const Client = store.rootGetters['auth/client']
@@ -96,7 +102,7 @@ export const mutations = {
     profile.shelter_name && (state.currentProfile.shelter = profile)
   },
   mAddShelters(state, shelters) {
-    state.shelters.push({ ...shelters })
+    state.shelters = shelters
   },
   mAddStates(state, states) {
     state.states = states

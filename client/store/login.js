@@ -215,8 +215,6 @@ export const actions = {
     const Client = store.rootGetters['auth/client']
     try {
       const res = await Client.post(`/login/users`, user)
-      console.log('res', res)
-      store.dispatch('aCurrentProfile', res.data, { root: true })
       return true
     } catch (err) {
       if (err.response.status === 401) {
