@@ -412,7 +412,7 @@ migrate = Migrate(app, db)
 
 @app.before_request
 def acceptable_origins():
-    if request.origin == "http://localhost:3000":
+    if request.origin == "http://localhost:3000" or request.origin == "https://simple-additions.vercel.app/":
         if request.method != "OPTIONS":
             if strip_secret(request):
                 if 'login' not in request.path and 'register' not in request.path\
@@ -428,12 +428,12 @@ def acceptable_origins():
 @app.after_request
 def after_request(response):
     response.headers.add(
-        'Access-Control-Allow-Origin',
-        'http://localhost:3000'
+        'Access-Control-Allow-Origins',
+        ['https://simple-additions.vercel.app/', 'http://localhost:3000']
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
-        'Content-Type,Authorization,Secret,Id'
+        'Content-Type,Authorization,Secret'
     )
     response.headers.add(
         'Access-Control-Allow-Methods',
@@ -446,55 +446,55 @@ def after_request(response):
 
 
 # Auth Resource(s)
-api.add_resource(auth.ShelterRegister, '/register/shelters')
-api.add_resource(auth.ShelterLogin, '/login/shelters')
-api.add_resource(auth.UserRegister, '/register/users')
-api.add_resource(auth.UserLogin, '/login/users')
-api.add_resource(auth.Token, '/token')
+api.add_resource(auth.ShelterRegister, '/api/register/shelters')
+api.add_resource(auth.ShelterLogin, '/api/login/shelters')
+api.add_resource(auth.UserRegister, '/api/register/users')
+api.add_resource(auth.UserLogin, '/api/login/users')
+api.add_resource(auth.Token, '/api/token')
 
 # Admin Resource(s)
-api.add_resource(admin.AdminAllShelters, "/admin/shelters")
-api.add_resource(admin.AdminAllComments, "/admin/comments")
-api.add_resource(admin.AdminAllImages, "/admin/images")
-api.add_resource(admin.AdminAllUsers, "/admin/users")
-api.add_resource(admin.AdminAllPosts, "/admin/posts")
+api.add_resource(admin.AdminAllShelters, '/api/admin/shelters')
+api.add_resource(admin.AdminAllComments, '/api/admin/comments')
+api.add_resource(admin.AdminAllImages, '/api/admin/images')
+api.add_resource(admin.AdminAllUsers, '/api/admin/users')
+api.add_resource(admin.AdminAllPosts, '/api/admin/posts')
 
 # User Resource(s)
-api.add_resource(user.Users, '/user/<string:id>')
-api.add_resource(user.AllUsers, '/users')
+api.add_resource(user.Users, '/api/user/<string:id>')
+api.add_resource(user.AllUsers, '/api/users')
 
 # Comment Resource(s)
-api.add_resource(comment.UserComments, '/user/comments/<string:id>')
-api.add_resource(comment.Comments, '/comment/<string:id>')
-api.add_resource(comment.AllComments, '/comments')
+api.add_resource(comment.UserComments, '/api/user/comments/<string:id>')
+api.add_resource(comment.Comments, '/api/comment/<string:id>')
+api.add_resource(comment.AllComments, '/api/comments')
 
 # Post Resource(s)
-api.add_resource(post.UserPosts, '/user/posts/<string:id>')
-api.add_resource(post.Posts, '/post/<string:id>')
-api.add_resource(post.AllPosts, '/posts')
+api.add_resource(post.UserPosts, '/api/user/posts/<string:id>')
+api.add_resource(post.Posts, '/api/post/<string:id>')
+api.add_resource(post.AllPosts, '/api/posts')
 
 # Image Resource(s)
-api.add_resource(image.Images, '/image/<string:id>')
-api.add_resource(image.AllImages, '/images')
+api.add_resource(image.Images, '/api/image/<string:id>')
+api.add_resource(image.AllImages, '/api/images')
 
 # File Resource(s)
-api.add_resource(fileport.S3Upload, "/s3")
-api.add_resource(fileport.S3Delete, "/s3/<string:key>")
+api.add_resource(fileport.S3Upload, '/api/s3')
+api.add_resource(fileport.S3Delete, '/api/s3/<string:key>')
 
 # Shelter Resource(s)
-api.add_resource(shelter.Shelters, '/shelter/<string:id>')
-api.add_resource(shelter.By_Proximity, '/shelters')
+api.add_resource(shelter.Shelters, '/api/shelter/<string:id>')
+api.add_resource(shelter.By_Proximity, '/api/shelters')
 
 # City Resource(s)
-api.add_resource(city.By_State, "/cities/<string:state>")
-api.add_resource(city.City_Id, "/city/<string:id>")
+api.add_resource(city.By_State, '/api/cities/<string:state>')
+api.add_resource(city.City_Id, '/api/city/<string:id>')
 api.add_resource(
-    city.Detailed, "/city/<string:state>/<string:name>/<int:zipcode>")
+    city.Detailed, '/api/city/<string:state>/<string:name>/<int:zipcode>')
 
 # State Resource(s)
-api.add_resource(state.States, "/states")
-api.add_resource(state.By_Short, "/state/<string:state>")
-api.add_resource(state.State_Id, "/state/<string:id>")
+api.add_resource(state.States, '/api/states')
+api.add_resource(state.By_Short, '/api/state/<string:state>')
+api.add_resource(state.State_Id, '/api/state/<string:id>')
 
 
 if __name__ == '__main__':

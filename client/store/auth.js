@@ -5,10 +5,9 @@ export const state = () => ({
   authenticated: false,
   BASE_URL:
     process.env.NODE_ENV === 'production'
-      ? `${window.location.origin}`
-      : 'http://localhost:5000',
-  userType: true,
-  id: ''
+      ? `${process.env.API_ADDRESS}`
+      : 'http://localhost:5000/api',
+  userType: true
 })
 
 //getters
@@ -21,7 +20,6 @@ export const getters = {
       async function(config) {
         const secret = bcrypt.hashSync(process.env.SECRET_KEY, genSaltSync())
         config.headers['Secret'] = secret
-        config.headers['Id'] = state.id
         return config
       },
       error => Promise.reject(error)

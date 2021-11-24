@@ -1,8 +1,8 @@
-export { default as Error } from '../../components/Error.vue'
-export { default as ToggleTheme } from '../../components/ToggleTheme.vue'
-export { default as Tutorial } from '../../components/Tutorial.vue'
-export { default as VuetifyLogo } from '../../components/VuetifyLogo.vue'
-export { default as ImagesSALogo } from '../../components/Images/SALogo.vue'
+export const Error = () => import('../../components/Error.vue' /* webpackChunkName: "components/error" */).then(c => wrapFunctional(c.default || c))
+export const ToggleTheme = () => import('../../components/ToggleTheme.vue' /* webpackChunkName: "components/toggle-theme" */).then(c => wrapFunctional(c.default || c))
+export const Tutorial = () => import('../../components/Tutorial.vue' /* webpackChunkName: "components/tutorial" */).then(c => wrapFunctional(c.default || c))
+export const VuetifyLogo = () => import('../../components/VuetifyLogo.vue' /* webpackChunkName: "components/vuetify-logo" */).then(c => wrapFunctional(c.default || c))
+export const ImagesSALogo = () => import('../../components/Images/SALogo.vue' /* webpackChunkName: "components/images-s-a-logo" */).then(c => wrapFunctional(c.default || c))
 
 // nuxt/nuxt.js#8607
 function wrapFunctional(options) {

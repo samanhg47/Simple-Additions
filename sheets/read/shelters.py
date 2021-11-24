@@ -8,7 +8,7 @@ load_dotenv()
 SHELTER_PASSWORD = os.getenv("SHELTER_PASSWORD")
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-SERVICE_ACCOUNT_FILE = '.keys.json'
+SERVICE_ACCOUNT_FILE = 'google-credentials.json'
 
 creds = None
 creds = service_account.Credentials.from_service_account_file(
