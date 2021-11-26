@@ -76,7 +76,7 @@ class UserLogin(Resource):
                     value=token,
                     httponly=False,
                     samesite='strict',
-                    # secure=True,
+                    secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return res
