@@ -216,7 +216,6 @@ export const actions = {
     const Client = store.rootGetters['auth/client']
     try {
       const res = await Client.post(`/login/users`, user)
-      console.log(res)
       return true
     } catch (err) {
       if (err.response.status === 401) {
