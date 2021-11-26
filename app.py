@@ -412,8 +412,8 @@ migrate = Migrate(app, db)
 
 @app.before_request
 def acceptable_origins():
-    if (not DATABASE_URL and request.origin == "http://localhost:3000") or\
-            (DATABASE_URL and request.origin == "https://simple-additions.vercel.app"):
+    if (request.origin == "http://localhost:3000") or\
+            (request.origin == "https://simple-additions.vercel.app"):
         if request.method != "OPTIONS":
             if strip_secret(request):
                 if 'login' not in request.path and 'register' not in request.path\

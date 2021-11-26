@@ -13,7 +13,7 @@ export const getters = {
     const BASE_URL =
       process.env.NODE_ENV === 'production'
         ? rootstate.config.apiAddress
-        : 'http://localhost:5000/api'
+        : rootstate.config.apiAddress
     const Client = Axios.create({
       baseURL: BASE_URL
     })
