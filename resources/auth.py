@@ -26,7 +26,7 @@ class ShelterLogin(Resource):
                 res.set_cookie(
                     'token',
                     value=token,
-                    httponly=True,
+                    httponly=False,
                     samesite='strict',
                     # secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
