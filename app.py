@@ -412,8 +412,7 @@ migrate = Migrate(app, db)
 
 @app.before_request
 def acceptable_origins():
-    if request.origin == "http://localhost:3000" or request.origin == "https://simple-additions.vercel.app"\
-            or request.origin == "https://simple-additions-8n50uiybw-samangriffiths47.vercel.app/":
+    if request.origin == "http://localhost:3000" or request.origin == "https://simple-additions.vercel.app":
         if request.method != "OPTIONS":
             if strip_secret(request):
                 if 'login' not in request.path and 'register' not in request.path\
@@ -430,8 +429,7 @@ def acceptable_origins():
 def after_request(response):
     response.headers.add(
         'Access-Control-Allow-Origins',
-        ['https://simple-additions.vercel.app', 'http://localhost:3000',
-            "https://simple-additions-8n50uiybw-samangriffiths47.vercel.app/"]
+        ['https://simple-additions.vercel.app', 'http://localhost:3000']
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
