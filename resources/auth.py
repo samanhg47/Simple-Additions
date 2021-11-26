@@ -74,7 +74,9 @@ class UserLogin(Resource):
                 res.set_cookie(
                     'token',
                     token,
-                    # secure=True,
+                    httponly=True,
+                    samesite='lax',
+                    secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return res
