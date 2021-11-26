@@ -26,7 +26,7 @@ class ShelterLogin(Resource):
                 res.set_cookie(
                     'token',
                     value=token,
-                    httponly=False,
+                    httponly=True,
                     samesite='strict',
                     # secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
@@ -74,9 +74,9 @@ class UserLogin(Resource):
                 res.set_cookie(
                     'token',
                     token,
-                    # httponly=True,
-                    # samesite='lax',
-                    # secure=True,
+                    httponly=False,
+                    samesite='lax',
+                    secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return res
