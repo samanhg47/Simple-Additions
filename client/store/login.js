@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { pick, omit } from 'underscore'
+
 //state
 export const state = () => ({
   form: {
@@ -124,7 +125,7 @@ export const actions = {
   async aLocationAutofill(store, { longitude, latitude }) {
     const Client = store.rootGetters['auth/client']
     const res = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.API_KEY}`
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${store.rootState.config.apiKey}`
     )
     const location = res.data.results[0].formatted_address
     const address = location.split(',')[0]
@@ -191,7 +192,7 @@ export const actions = {
         const city = shelter.city.replaceAll(' ', '+')
         const call = await axios.get(
           `https://maps.googleapis.com/maps/api/geocode/json?address=${address},
-        +${city},+${shelter.state}&key=${process.env.API_KEY}`
+        +${city},+${shelter.state}&key=${store.rootState.config.apiKey}`
         )
         const latitude = call.data.results[0].geometry.location.lat
         const longitude = call.data.results[0].geometry.location.lng

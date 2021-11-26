@@ -2,6 +2,7 @@ import { _ } from 'core-js'
 
 // state
 export const state = () => ({
+  config: null,
   newAccount: false,
   currentProfile: {
     user: {},
@@ -43,6 +44,10 @@ export const getters = {
 
 //actions
 export const actions = {
+  nuxtServerInit(store, context) {
+    const config = context.$config
+    store.commit('passConfig', config)
+  },
   wait(store, delay) {
     return new Promise(resolve => setTimeout(resolve, delay))
   },
@@ -60,7 +65,6 @@ export const actions = {
   async aAddSheltersUser(store, body) {
     const Client = store.rootGetters['auth/client']
     try {
-      console.log('body', body)
       const shelters = await Client.post('/shelters', body)
       store.commit('mAddShelters', shelters.data)
     } catch (err) {
@@ -91,6 +95,9 @@ export const actions = {
 
 //mutations
 export const mutations = {
+  passConfig(state, config) {
+    state.config = config
+  },
   mSetLocation(state, { longitude, latitude }) {
     state.location = {
       lng: longitude,

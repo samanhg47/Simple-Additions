@@ -102,11 +102,9 @@ export default {
         const latitude = position.coords.latitude
         const longitude = position.coords.longitude
         this.aSetLocation({longitude, latitude})
-        console.log("1",this.location)
         this.grabShelters()
         })
       }catch(err){
-        console.log(this.cityById(this.currentProfile.user.city_id))
       }
     }
   },
@@ -157,7 +155,6 @@ export default {
         proximity: 0
       }
       await this.aAddSheltersUser(body)
-      console.log('body length',this.shelters.length)
     }
   }
 }

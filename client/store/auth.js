@@ -1,24 +1,28 @@
 import Axios from 'axios'
 import bcrypt, { genSaltSync } from 'bcryptjs'
+
 // state
 export const state = () => ({
   authenticated: false,
-  BASE_URL:
-    process.env.NODE_ENV === 'production'
-      ? `${process.env.API_ADDRESS}`
-      : 'http://localhost:5000/api',
   userType: true
 })
 
 //getters
 export const getters = {
-  client: state => {
+  client: ({}, {}, rootstate) => {
+    const BASE_URL =
+      process.env.NODE_ENV === 'production'
+        ? rootstate.config.apiAddress
+        : rootstate.config.apiAddress
     const Client = Axios.create({
-      baseURL: state.BASE_URL
+      baseURL: BASE_URL
     })
     Client.interceptors.request.use(
       async function(config) {
-        const secret = bcrypt.hashSync(process.env.SECRET_KEY, genSaltSync())
+        const secret = bcrypt.hashSync(
+          rootstate.config.secretKey,
+          genSaltSync()
+        )
         config.headers['Secret'] = secret
         return config
       },
