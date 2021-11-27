@@ -70,8 +70,8 @@ class UserLogin(Resource):
                         }
                     )
                 del user['password_digest']
-                res = make_response({'user': user}, 200)
-                res.set_cookie(
+                resp = make_response({'user': user}, 200)
+                resp.set_cookie(
                     'token',
                     token,
                     # httponly=True,
@@ -79,7 +79,7 @@ class UserLogin(Resource):
                     # secure=True,
                     # expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
-                return res
+                return resp
             else:
                 return '', 401
         else:
