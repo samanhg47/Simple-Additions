@@ -419,7 +419,7 @@ def acceptable_origins():
                 if 'login' not in request.path and 'register' not in request.path\
                         and 'cit' not in request.path and 'state' not in request.path:
                     if not check_token(request):
-                        return Response("Please Login", status=401, mimetype='application/json')
+                        return Response("Please Login", status=400, mimetype='application/json')
             else:
                 return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
     else:
