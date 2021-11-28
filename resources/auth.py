@@ -69,11 +69,10 @@ class UserLogin(Resource):
                 resp.set_cookie(
                     'token',
                     value=token,
-                    # domain="simple-additions.vercel.app"
-                    # httponly=True,
-                    # samesite='strict',
-                    # secure=True,
-                    # expires=(datetime.utcnow() + timedelta(weeks=1))
+                    httponly=True,
+                    samesite='strict',
+                    secure=True,
+                    expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return resp
             else:

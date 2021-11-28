@@ -434,7 +434,7 @@ def after_request(response):
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
-        'Content-Type,Authorization,Secret'
+        'Content-Type,Authorization,Secret,Set-Cookie'
     )
     response.headers.add(
         'Access-Control-Allow-Methods',
