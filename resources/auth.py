@@ -70,7 +70,7 @@ class UserLogin(Resource):
                         }
                     )
                 del user['password_digest']
-                resp = make_response({'user': user}, 200)
+                resp = make_response({'user': "user"})
                 resp.set_cookie(
                     'token',
                     value="token",
