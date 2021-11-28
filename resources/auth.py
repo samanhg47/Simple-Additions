@@ -40,11 +40,6 @@ class ShelterLogin(Resource):
 
 class UserLogin(Resource):
     def post(self):
-        print()
-        print()
-        print('user', request.json)
-        print()
-        print()
         data = request.get_json()
         data['email'] = data['email'].lower()
         user = User.by_email(data['email'])
@@ -72,9 +67,9 @@ class UserLogin(Resource):
                 del user['password_digest']
                 resp = make_response({'user': user}, 200)
                 resp.set_cookie(
-                    'secret',
+                    'token',
                     value=token,
-                    domain="simple-additions.vercel.app"
+                    # domain="simple-additions.vercel.app"
                     # httponly=True,
                     # samesite='strict',
                     # secure=True,
