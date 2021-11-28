@@ -70,10 +70,11 @@ class UserLogin(Resource):
                         }
                     )
                 del user['password_digest']
-                resp = make_response({'user': "user"})
+                resp = make_response({'user': user}, 200)
                 resp.set_cookie(
-                    'token',
-                    value="token",
+                    'secret',
+                    value=token,
+                    domain="simple-additions.vercel.app"
                     # httponly=True,
                     # samesite='strict',
                     # secure=True,
