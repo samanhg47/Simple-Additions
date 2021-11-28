@@ -73,7 +73,7 @@ class UserLogin(Resource):
                 resp = make_response({'user': user}, 200)
                 resp.set_cookie(
                     'token',
-                    value=token,
+                    value="token",
                     # httponly=True,
                     # samesite='strict',
                     # secure=True,
