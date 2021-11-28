@@ -428,6 +428,14 @@ def acceptable_origins():
 
 @app.after_request
 def after_request(response):
+    print()
+    print()
+    print()
+    print(response.headers)
+    print()
+    print()
+    print()
+    click.echo(response.headers)
     response.headers.add(
         'Access-Control-Allow-Origins',
         ['https://simple-additions.vercel.app', 'http://localhost:3000']
