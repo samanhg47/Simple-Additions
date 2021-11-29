@@ -229,11 +229,11 @@ export default {
     await this.aAddStates()
     if(this.shelters.length === 0){
       await this.grabShelters()
-        const shelters = []
-        this.shelters.forEach( shelter => {
-          shelters.push(shelter.id)
-        })
-        console.log(shelters)
+      const shelters = []
+      this.shelters.forEach( shelter => {
+        shelters.push(shelter.id)
+      })
+      console.log(shelters)
     }
   },
   mounted () {
