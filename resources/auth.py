@@ -70,10 +70,10 @@ class UserLogin(Resource):
                     'token',
                     token,
                     httponly=True,
-                    samesite='none',
+                    samesite='strict',
                     secure=True,
-                    max_age=3600000*5
-                    # exp=(datetime.utcnow() + timedelta(weeks=1))
+                    exp=(datetime.utcnow() + timedelta(weeks=1))
+                    # max_age=3600000*5
                 )
                 return resp
             else:
