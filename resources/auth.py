@@ -72,7 +72,7 @@ class UserLogin(Resource):
                     httponly=True,
                     samesite='strict',
                     secure=True,
-                    expires=(datetime.now() + timedelta(weeks=1))
+                    max_age=60*60*24*7
                 )
                 return resp
             else:
