@@ -35,8 +35,9 @@ export const getters = {
 
 //actions
 export const actions = {
-  async checkToken(store, bool = true) {
+  async checkToken(store) {
     const Client = store.getters.client
+    const bool = $nuxt._router.history.current.fullPath === '/' ? false : true
     try {
       if (!store.state.authenticated) {
         const res = await Client.get('/token')
