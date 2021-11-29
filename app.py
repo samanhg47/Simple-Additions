@@ -415,8 +415,7 @@ def acceptable_origins():
     if request.origin == "https://simple-additions.netlify.app":
         if request.method != "OPTIONS":
             if strip_secret(request):
-                if 'login' not in request.path and 'register' not in request.path\
-                        and 'cit' not in request.path and 'state' not in request.path:
+                if True not in [path in request.path for path in ['login', 'state', 'register','cit','/api/shelters']]:
                     if not check_token(request):
                         return Response("Please Login", status=401, mimetype='application/json')
             else:
@@ -427,14 +426,6 @@ def acceptable_origins():
 
 @app.after_request
 def after_request(response):
-    print()
-    print()
-    print()
-    print(response.headers)
-    print()
-    print()
-    print()
-    click.echo(response.headers)
     response.headers.add(
         'Access-Control-Allow-Origin',
         'https://simple-additions.netlify.app'

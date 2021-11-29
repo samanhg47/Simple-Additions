@@ -102,7 +102,7 @@ export default {
         const latitude = position.coords.latitude
         const longitude = position.coords.longitude
         this.aSetLocation({longitude, latitude})
-        this.grabShelters()
+        // this.grabShelters()
         })
       }catch(err){
       }
