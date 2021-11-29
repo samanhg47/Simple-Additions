@@ -225,7 +225,7 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
-    this.checkToken(false)
+    this.checkToken()
     await this.aAddStates()
   },
   mounted () {
