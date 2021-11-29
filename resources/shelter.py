@@ -70,6 +70,13 @@ class By_Proximity(Resource):
 
         if len(shelters) == 0:
             return "No Shelters Within Proximity Limit", 404
+        print()
+        print()
+        print()
+        print([shelter["id"] for shelter in shelters])
+        print()
+        print()
+        print()
         if check_admin(request):
             return shelters
         for shelter in shelters:
