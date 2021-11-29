@@ -37,6 +37,7 @@ export const getters = {
 export const actions = {
   async checkToken(store) {
     const Client = store.getters.client
+    console.log($nuxt._router)
     const bool = $nuxt._router.history.current.fullPath === '/' ? false : true
     try {
       if (!store.state.authenticated) {
