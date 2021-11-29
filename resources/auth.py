@@ -72,7 +72,6 @@ class UserLogin(Resource):
                     httponly=True,
                     samesite='strict',
                     secure=True,
-                    domain='https://simple-additions.netlify.app/',
                     max_age=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return resp
