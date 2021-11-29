@@ -70,9 +70,9 @@ class UserLogin(Resource):
                     'token',
                     token,
                     httponly=True,
-                    samesite='strict',
+                    samesite='none',
                     secure=True,
-                    max_age=60*60*24*7
+                    expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return resp
             else:
