@@ -227,6 +227,14 @@ export default {
   async created () {
     this.checkToken()
     await this.aAddStates()
+    if(this.shelters.length === 0){
+      await this.grabShelters()
+        const shelters = []
+        this.shelters.forEach( shelter => {
+          shelters.push(shelter.id)
+        })
+        console.log(shelters)
+    }
   },
   mounted () {
     if(Object.keys(this.location).length == 0){
@@ -272,7 +280,8 @@ export default {
     // root state
     ...mapState([
       'states',
-      'location'
+      'location',
+      'shelters'
       ]),
     // root getters
     ...mapGetters([

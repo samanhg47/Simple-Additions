@@ -94,6 +94,14 @@ import { mapGetters, mapState, mapActions } from "vuex"
 export default {
   created(){
     this.checkToken()
+    if(this.shelters.length === 0){
+          await this.grabShelters()
+        const shelters = []
+        this.shelters.forEach( shelter => {
+          shelters.push(shelter.id)
+        })
+        console.log(shelters)
+        }
   },
   async mounted(){
     if(Object.keys(this.location).length == 0){
@@ -103,12 +111,6 @@ export default {
         const longitude = position.coords.longitude
         this.aSetLocation({longitude, latitude})
         })
-        await this.grabShelters()
-        const shelters = []
-        this.shelters.forEach( shelter => {
-          shelters.push(shelter.id)
-        })
-        console.log(shelters)
       }catch(err){
       }
     }
