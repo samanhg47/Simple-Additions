@@ -68,11 +68,11 @@ class UserLogin(Resource):
                 resp = make_response({'user': user}, 200)
                 resp.set_cookie(
                     'token',
-                    value=token,
-                    httponly=True,
-                    samesite='strict',
-                    secure=True,
-                    expires=(datetime.utcnow() + timedelta(weeks=1))
+                    value="token",
+                    # httponly=True,
+                    # samesite='strict',
+                    # secure=True,
+                    # expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return resp
             else:
