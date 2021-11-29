@@ -437,7 +437,7 @@ def after_request(response):
     click.echo(response.headers)
     response.headers.add(
         'Access-Control-Allow-Origin',
-        'https://simple-additions.netlify.app/'
+        'https://simple-additions.netlify.app'
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
