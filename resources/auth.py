@@ -72,7 +72,7 @@ class UserLogin(Resource):
                     httponly=True,
                     samesite='strict',
                     secure=True,
-                    expires=(datetime.utcnow() + timedelta(weeks=1))
+                    expires=(datetime.now() + timedelta(weeks=1))
                 )
                 return resp
             else:
