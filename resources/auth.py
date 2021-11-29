@@ -27,8 +27,8 @@ class ShelterLogin(Resource):
                     'token',
                     value=token,
                     httponly=True,
-                    samesite='strict',
-                    # secure=True,
+                    samesite='none',
+                    secure=True,
                     expires=(datetime.utcnow() + timedelta(weeks=1))
                 )
                 return res
