@@ -96,6 +96,7 @@ export default {
     this.checkToken()
     if(this.shelters.length === 0){
       await this.grabShelters()
+      console.log("YES")
       const shelters = []
       this.shelters.forEach( shelter => {
         shelters.push(shelter.id)
