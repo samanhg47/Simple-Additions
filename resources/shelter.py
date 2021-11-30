@@ -63,13 +63,6 @@ class Shelters(Resource):
 
 class By_Proximity(Resource):
     def post(self):
-        print()
-        print()
-        print()
-        print("hi")
-        print()
-        print()
-        print()
         data = request.get_json()
         shelters = Shelter.by_proximity(
             data["coordinates"], data["proximity"]
@@ -77,13 +70,6 @@ class By_Proximity(Resource):
 
         if len(shelters) == 0:
             return "No Shelters Within Proximity Limit", 404
-        print()
-        print()
-        print()
-        print([shelter["id"] for shelter in shelters])
-        print()
-        print()
-        print()
         if check_admin(request):
             return shelters
         for shelter in shelters:
