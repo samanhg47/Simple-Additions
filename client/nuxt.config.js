@@ -65,7 +65,7 @@ export default {
     apiKey: process.env.API_KEY,
     secretKey: process.env.SECRET_KEY,
     apiAddress: process.env.API_ADDRESS
-  }
+  },
 
-  // target: 'static'
+  target: 'static'
 }
