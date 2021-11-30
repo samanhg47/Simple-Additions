@@ -64,6 +64,7 @@ export const actions = {
   },
   async aAddSheltersUser(store, body) {
     const Client = store.rootGetters['auth/client']
+    store.commit('mAddShelters', '...requesting')
     try {
       const shelters = await Client.post('/shelters', body)
       store.commit('mAddShelters', shelters.data)

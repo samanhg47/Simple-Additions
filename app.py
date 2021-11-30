@@ -412,12 +412,13 @@ migrate = Migrate(app, db)
 
 @app.before_request
 def acceptable_origins():
-    if request.origin == "https://simple-additions.netlify.app":
+    if request.origin == "https://simple-additions.netlify.app" or request.origin == "http://localhost:3000":
         if request.method != "OPTIONS":
             if strip_secret(request):
-                if True not in [path in request.path for path in ['login', 'state', 'register','cit','/api/shelters']]:
-                    if not check_token(request):
-                        return Response("Please Login", status=401, mimetype='application/json')
+                if True not in [path in request.path for path in ['login', 'state', 'register', 'cit', '/api/shelters']]:
+                    if not (request.method == "GET" and "/api/shelter/" in request.path):
+                        if not check_token(request):
+                            return Response("Please Login", status=401, mimetype='application/json')
             else:
                 return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
     else:
@@ -427,8 +428,8 @@ def acceptable_origins():
 @app.after_request
 def after_request(response):
     response.headers.add(
-        'Access-Control-Allow-Origin',
-        'https://simple-additions.netlify.app'
+        'Access-Control-Allow-Origins',
+        ['https://simple-additions.netlify.app', 'http://localhost:3000']
     )
     response.headers.add(
         'Access-Control-Allow-Headers',

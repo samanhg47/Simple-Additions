@@ -9,7 +9,7 @@ export const state = () => ({
 
 //getters
 export const getters = {
-  client: ({}, {}, rootstate) => {
+  client: (state, getters, rootstate) => {
     const BASE_URL =
       process.env.NODE_ENV === 'production'
         ? rootstate.config.apiAddress

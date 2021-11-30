@@ -27,9 +27,7 @@ def check_token(request):
     try:
         jwt.decode(token, APP_SECRET, algorithms=["HS256"])
         return True
-    except jwt.InvalidSignatureError:
-        return False
-    except jwt.InvalidTokenError:
+    except:
         return False
 
 

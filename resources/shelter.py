@@ -14,8 +14,6 @@ class Shelters(Resource):
         shelter = Shelter.by_id(id)
         if shelter:
             shelter = shelter.json()
-            if check_admin(request):
-                return shelter
             del shelter["password_digest"]
             return shelter
         else:
@@ -70,8 +68,6 @@ class By_Proximity(Resource):
 
         if len(shelters) == 0:
             return "No Shelters Within Proximity Limit", 404
-        if check_admin(request):
-            return shelters
         for shelter in shelters:
             del shelter["password_digest"]
         return shelters

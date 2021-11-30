@@ -93,15 +93,9 @@
 import { mapGetters, mapState, mapActions } from "vuex"
 export default {
   async created(){
-    this.checkToken()
+    await this.checkToken()
     if(this.shelters.length === 0){
-      await this.grabShelters()
-      console.log("YES")
-      const shelters = []
-      this.shelters.forEach( shelter => {
-        shelters.push(shelter.id)
-      })
-      console.log(shelters)
+      this.grabShelters()
     }
   },
   mounted(){

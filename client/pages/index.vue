@@ -225,15 +225,10 @@
 import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   async created () {
-    this.checkToken()
-    await this.aAddStates()
+    await this.checkToken()
+    this.aAddStates()
     if(this.shelters.length === 0){
-      await this.grabShelters()
-      const shelters = []
-      this.shelters.forEach( shelter => {
-        shelters.push(shelter.id)
-      })
-      console.log(shelters)
+      this.grabShelters()
     }
   },
   mounted () {
@@ -376,12 +371,20 @@ export default {
     }
   },
   methods: {
+    async grabShelters(){
+      const body = {
+        coordinates: this.location,
+        proximity: 0
+      }
+      await this.aAddSheltersUser(body)
+    },
     // root actions
     ...mapActions([
       "aAddStates",
       "aAddCities",
       "aSetLocation",
-      'wait'
+      'wait',
+      'aAddSheltersUser'
       ]),
     // login actions
     ...mapActions(
