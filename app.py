@@ -37,11 +37,6 @@ seed_cli = AppGroup("seed")
 burn_cli = AppGroup("burn")
 
 load_dotenv()
-S3_BUCKET = os.getenv("S3_BUCKET")
-S3_USER_ID = os.getenv("S3_USER_ID")
-S3_USER_SECRET = os.getenv("S3_USER_SECRET")
-S3_REGION = os.getenv("S3_REGION")
-
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -54,6 +49,12 @@ else:
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost:5432/simple_additions_db'
     app.config['SQLALCHEMY_ECHO'] = True
+
+S3_BUCKET = os.getenv("S3_BUCKET")
+S3_USER_ID = os.getenv("S3_USER_ID")
+S3_USER_SECRET = os.getenv("S3_USER_SECRET")
+S3_REGION = os.getenv("S3_REGION")
+HOST = 'https://simple-additions.netlify.app' if DATABASE_URL else 'http://localhost:3000'
 
 
 # seed states
@@ -412,7 +413,7 @@ migrate = Migrate(app, db)
 
 @app.before_request
 def acceptable_origins():
-    if request.origin == "https://simple-additions.netlify.app" or request.origin == "http://localhost:3000":
+    if request.origin == HOST:
         if request.method != "OPTIONS":
             if strip_secret(request):
                 if True not in [path in request.path for path in ['login', 'state', 'register', 'cit', '/api/shelters']]:
@@ -428,8 +429,8 @@ def acceptable_origins():
 @app.after_request
 def after_request(response):
     response.headers.add(
-        'Access-Control-Allow-Origins',
-        ['https://simple-additions.netlify.app', 'http://localhost:3000']
+        'Access-Control-Allow-Origin',
+        HOST
     )
     response.headers.add(
         'Access-Control-Allow-Headers',
