@@ -31,7 +31,6 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify'
-    // ['@nuxtjs/dotenv', { only: [''] }]
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
