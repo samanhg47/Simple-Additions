@@ -118,18 +118,12 @@ class Shelter(db.Model):
                     del shelters[index]
             return shelters
         states = {state.json()['shorthand']: [] for state in State.find_all()}
-        print()
-        print()
-        print(states)
-        print()
-        print()
         for shelter in Shelter.find_all():
             states[shelter.json()['state']].append(shelter.json())
-
         print()
         print()
-        print(states['AK'])
+        print("states")
+        print(states['WY'])
         print()
         print()
-
         return states
