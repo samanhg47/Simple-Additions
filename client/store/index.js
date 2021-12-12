@@ -19,20 +19,20 @@ export const state = () => ({
 
 //getters
 export const getters = {
-  city_list: state => {
+  city_list: (state) => {
     const city_list = []
-    state.cities.forEach(city => {
+    state.cities.forEach((city) => {
       if (!city_list.includes(city.city)) {
         city_list.push(city.city)
       }
     })
     return city_list
   },
-  zipcode_list: state => {
+  zipcode_list: (state) => {
     if (state.login.form.city.class === 'valid') {
       const zipcode_list = []
       const city = state.login.form.city.value
-      state.cities.forEach(obj => {
+      state.cities.forEach((obj) => {
         if (obj.city === city) {
           zipcode_list.push(obj.zipcode)
         }
@@ -49,15 +49,15 @@ export const actions = {
     store.commit('passConfig', config)
   },
   wait(store, delay) {
-    return new Promise(resolve => setTimeout(resolve, delay))
+    return new Promise((resolve) => setTimeout(resolve, delay))
   },
   async cityById(id) {
     const Client = store.rootGetters['auth/client']
     const res = await Client.get(`/city/${id}`)
     return res.data
   },
-  aSetLocation({ commit }, { longitude, latitude }) {
-    commit('mSetLocation', { longitude, latitude })
+  aSetLocation({ commit }, { lng, lat }) {
+    commit('mSetLocation', { lng, lat })
   },
   aCurrentProfile({ commit }, profile) {
     commit('mCurrentProfile', profile)
@@ -81,13 +81,13 @@ export const actions = {
     const Client = store.rootGetters['auth/client']
     const states = await Client.get(`/states`)
     const state_list = []
-    states.data.forEach(state => state_list.push(state.shorthand))
+    states.data.forEach((state) => state_list.push(state.shorthand))
     store.commit('mAddStates', state_list)
   },
-  async aAddCities(store, state) {
+  async aCitiesByState(store, state) {
     const Client = store.rootGetters['auth/client']
     const cities = await Client.get(`/cities/${state}`)
-    store.commit('mAddCities', cities.data)
+    store.commit('mCitiesByState', cities.data)
   },
   aNewAccount({ commit }, bool) {
     commit('mNewAccount', bool)
@@ -99,10 +99,10 @@ export const mutations = {
   passConfig(state, config) {
     state.config = config
   },
-  mSetLocation(state, { longitude, latitude }) {
+  mSetLocation(state, { lng, lat }) {
     state.location = {
-      lng: longitude,
-      lat: latitude
+      lng: lng,
+      lat: lat
     }
   },
   mCurrentProfile(state, profile) {
@@ -115,7 +115,7 @@ export const mutations = {
   mAddStates(state, states) {
     state.states = states
   },
-  mAddCities(state, cities) {
+  mCitiesByState(state, cities) {
     state.cities = cities
   },
   mNewAccount(state, bool) {

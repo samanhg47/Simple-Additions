@@ -20,10 +20,7 @@ class Users(Resource):
         if not user:
             return 'User Not found', 404
         user = user.json()
-        if check_admin(request):
-            return user
-        del user["password_digest"]
-        if id_check(request, User, id):
+        if id_check(request, User, id) or check_admin(request):
             return user
         del user["email"]
         return user
@@ -39,9 +36,6 @@ class Users(Resource):
                 setattr(user, key, data[key])
             db.session.commit()
             user = user.json()
-            if check_admin(request):
-                return user
-            del user["password_digest"]
             return user
         else:
             return "Unauthorized", 403
@@ -58,9 +52,6 @@ class Users(Resource):
                 copy['updated_at'] = str(datetime.utcnow())
             db.session.delete(user)
             db.session.commit()
-            if check_admin(request):
-                return 'Deletion Successful', copy
-            del copy["password_digest"]
             return 'Deletion Successful', copy
         else:
             return "Unauthorized", 403

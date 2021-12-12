@@ -17,9 +17,7 @@ class Detailed(Resource):
         if city:
             return city.json()
         else:
-            return '''Location Not Found In Our Database <br/>
-                    Either Enter Your Location Info Manually Or
-                    Be Sure To Select From Suggestions''', 404
+            return False, 404
 
 
 class City_Id(Resource):

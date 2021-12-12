@@ -23,7 +23,7 @@ class States(Resource):
 
 class State_Id(Resource):
     def get(self, id):
-        state = State.by_id()
+        state = State.by_id(id)
         if state:
             return state.json()
         else:

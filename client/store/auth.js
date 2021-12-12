@@ -18,7 +18,7 @@ export const getters = {
       baseURL: BASE_URL
     })
     Client.interceptors.request.use(
-      async function(config) {
+      async function (config) {
         const secret = bcrypt.hashSync(
           rootstate.config.secretKey,
           genSaltSync()
@@ -26,7 +26,7 @@ export const getters = {
         config.headers['Secret'] = secret
         return config
       },
-      error => Promise.reject(error)
+      (error) => Promise.reject(error)
     )
     Client.defaults.withCredentials = true
     return Client
@@ -41,8 +41,10 @@ export const actions = {
     try {
       if (!store.state.authenticated) {
         const res = await Client.get('/token')
-        const user = await Client.get(`/user/${res.data}`)
-        store.dispatch('aCurrentProfile', user.data, { root: true })
+        const profile = store.rootState.login.user_auth
+          ? await Client.get(`/user/${res.data}`)
+          : await Client.get(`/shelter/${res.data}`)
+        store.dispatch('aCurrentProfile', profile.data, { root: true })
         store.dispatch('aAssignAuth', true)
       }
       if ($nuxt._router.history.current.fullPath === '/') {

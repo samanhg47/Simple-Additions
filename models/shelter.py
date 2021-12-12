@@ -1,8 +1,10 @@
-import sqlalchemy
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
+from models.city import City
 from models.db import db
 import uuid
+
+from models.state import State
 
 
 class Shelter(db.Model):
@@ -48,20 +50,26 @@ class Shelter(db.Model):
         self.password_digest = password_digest
 
     def json(self):
+        city = City.by_id(str(self.city_id)).json()
         return {
             "id": str(self.id),
             "shelter_name": self.shelter_name,
             "address": self.address,
             "email": self.email,
             'phone_number': self.phone_number,
+            'state': city['state_name'],
+            'city': city['city'],
+            'zipcode': city['zipcode'],
             'city_id': str(self.city_id),
             "latitude": float(self.latitude),
             "longitude": float(self.longitude),
-            "password_digest": self.password_digest,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at),
             "posts": [post.json()["id"] for post in self.posts]
         }
+
+    def password(self):
+        return self.password_digest
 
     def create(self):
         db.session.add(self)
@@ -71,6 +79,7 @@ class Shelter(db.Model):
 # Class Method(s)
     @classmethod
     def by_id(cls, id):
+        id = uuid.UUID(id)
         return Shelter.query.filter_by(id=id).first()
 
     @classmethod
@@ -83,12 +92,11 @@ class Shelter(db.Model):
 
     @classmethod
     def by_proximity(cls, coordinates, proximity):
-        shelters = Shelter.find_all()
-        all_shelters = [shelter.json() for shelter in shelters]
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
         if proximity > 0:
+            shelters = [shelter.json() for shelter in Shelter.find_all()]
             lat_r = proximity/68.93
             lon_r = proximity/54.58
             lat = coordinates["lat"]
@@ -98,9 +106,13 @@ class Shelter(db.Model):
             min_lat = lat - lat_r
             max_lon = lon + lon_r
             min_lon = lon - lon_r
-            for index, shelter in enumerate(all_shelters):
+            for index, shelter in enumerate(shelters):
                 lat = shelter["latitude"]
                 lon = shelter["longitude"]
                 if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
-                    del all_shelters[index]
-        return all_shelters
+                    del shelters[index]
+            return shelters
+        states = {state.json()['shorthand']: [] for state in State.find_all()}
+        for shelter in Shelter.find_all():
+            states[shelter.json()['state']].append(shelter.json())
+        return states

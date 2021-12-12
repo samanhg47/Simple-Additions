@@ -1,4 +1,3 @@
-from enum import unique
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 from models.db import db
@@ -52,6 +51,7 @@ class State(db.Model):
         return state
 
     @classmethod
-    def by_id(cls, state_id):
-        state = State.query.filter_by(id=state_id).first()
+    def by_id(cls, id):
+        id = uuid.UUID(id)
+        state = State.query.filter_by(id=id).first()
         return state

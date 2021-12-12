@@ -1,20 +1,16 @@
-import re
 from middleware import check_admin, id_check
 from flask_restful import Resource
 from models.shelter import Shelter
 from datetime import datetime
 from flask import request
 from models.db import db
-from uuid import UUID
 
 
 class Shelters(Resource):
     def get(self, id):
-        id = UUID(id)
         shelter = Shelter.by_id(id)
         if shelter:
             shelter = shelter.json()
-            del shelter["password_digest"]
             return shelter
         else:
             return 'Shelter Not found', 404
@@ -22,7 +18,6 @@ class Shelters(Resource):
     def patch(self, id):
         if id_check(request, Shelter, id) or check_admin(request):
             data = request.get_json()
-            id = UUID(id)
             shelter = Shelter.by_id(id)
             if shelter:
                 for key in data.keys():
@@ -31,7 +26,6 @@ class Shelters(Resource):
                 shelter = shelter.json()
                 if check_admin(request):
                     return shelter
-                del shelter["password_digest"]
                 return shelter
             else:
                 return 'Shelter Not found', 404
@@ -40,7 +34,6 @@ class Shelters(Resource):
 
     def delete(self, id):
         if id_check(request, Shelter, id) or check_admin(request):
-            id = UUID(id)
             shelter = Shelter.by_id(id)
             if shelter:
                 copy = {}
@@ -51,7 +44,6 @@ class Shelters(Resource):
                 db.session.commit()
                 if check_admin(request):
                     return {'Deletion Successful': copy}
-                del copy["password_digest"]
                 return {'Deletion Successful': copy}
             else:
                 return 'Shelter Not found', 404
@@ -66,8 +58,6 @@ class By_Proximity(Resource):
             data["coordinates"], data["proximity"]
         )
 
-        if len(shelters) == 0:
+        if type(shelters) is list and len(shelters) == 0:
             return "No Shelters Within Proximity Limit", 404
-        for shelter in shelters:
-            del shelter["password_digest"]
         return shelters

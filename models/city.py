@@ -38,11 +38,12 @@ class City(db.Model):
         self.longitude = longitude
         self.state_name = state_name
 
+    def create(self):
+        db.session.add(self)
+        db.session.commit()
+        return self
+
     def json(self):
-        users = []
-        for user in self.users:
-            user = user.json()["id"]
-            users.append(user)
         return {
             "id": str(self.id),
             "city": self.city_name,
@@ -50,15 +51,9 @@ class City(db.Model):
             "latitude": float(self.latitude),
             "longitude": float(self.longitude),
             "state_name": self.state_name,
-            "users": users,
             "created_at": str(self.created_at),
             "updated_at": str(self.updated_at)
         }
-
-    def create(self):
-        db.session.add(self)
-        db.session.commit()
-        return self
 
     @classmethod
     def find_all(cls):
@@ -71,8 +66,9 @@ class City(db.Model):
         return cities
 
     @classmethod
-    def by_id(cls, city_id):
-        city = City.query.filter_by(id=city_id).first()
+    def by_id(cls, id):
+        id = uuid.UUID(id)
+        city = City.query.filter_by(id=id).first()
         return city
 
     @classmethod

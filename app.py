@@ -1,32 +1,33 @@
-import requests
 from resources import fileport, shelter, image, post, state, user, auth, comment, admin, city
+from middleware import check_token, gen_password, strip_secret
 from random import shuffle, seed, choices, choice
 from faker.providers.person.en import Provider
 from sheets.read.shelters import all_shelters
 from sheets.read.states import states_list
 from sheets.read.cities import cities_list
-from middleware import check_token, gen_password, strip_secret
+from flask import request, Response
 from models.shelter import Shelter
 from models.comment import Comment
 from flask_migrate import Migrate
 from models.state import State
-from models.city import City
 from models.image import Image
 from flask.cli import AppGroup
 from dotenv import load_dotenv
 from flask_restful import Api
 from models.user import User
 from models.post import Post
+from models.city import City
 from flask_cors import CORS
-from flask import request, Response
 from models.db import db
 from gevent import sleep
 from flask import Flask
 from faker import Faker
 from uuid import UUID
-import click
+import requests
 import boto3
+import click
 import os
+import re
 
 
 app = Flask(__name__)
@@ -416,10 +417,29 @@ def acceptable_origins():
     if request.origin == HOST:
         if request.method != "OPTIONS":
             if strip_secret(request):
-                if True not in [path in request.path for path in ['login', 'state', 'register', 'cit', '/api/shelters']]:
-                    if not (request.method == "GET" and "/api/shelter/" in request.path):
-                        if not check_token(request):
-                            return Response("Please Login", status=401, mimetype='application/json')
+                # matches all routes starting with api
+                if not re.search(r'^/api/('
+                                 # matches all login and register routes
+                                 r'(login|register)/(shelters|users)|'
+                                 # matches requests to state.States resource
+                                 r'states|'
+                                 # matches requests to shelter finding resource
+                                 r'shelters|'
+                                 # matches requests to cities by state resource
+                                 r'cit(ies/[A-Z]{2}|'
+                                 # matches requests to city by id resource
+                                 r'y/([0-9A-Fa-f-]{36}|'
+                                 # matches requests to city by state, name, zipcode resource
+                                 r'[A-Z]{2}/[\w,\. -]+/\d{4,6}))|'
+                                 # matches requests to reverse geocodeing resource
+                                 r'google/(-{0,1}\d{1,3}\.\d{7}/-{0,1}\d{1,3}\.\d{7}|'
+                                 # matches requests to geocoding resource
+                                 r'(?![^_]*_)[\w -\.]+/[\w -\.]+/[A-Z]{2})'
+                                 # ends match, leaving no room for other characters
+                                 r')$',
+                                 request.path, flags=re.A | re.M):
+                    if not check_token(request):
+                        return Response("Please Login", status=401, mimetype='application/json')
             else:
                 return Response('Oops, Try Again 😊', status=401, mimetype='application/json')
     else:
@@ -452,6 +472,12 @@ api.add_resource(auth.ShelterLogin, '/api/login/shelters')
 api.add_resource(auth.UserRegister, '/api/register/users')
 api.add_resource(auth.UserLogin, '/api/login/users')
 api.add_resource(auth.Token, '/api/token')
+api.add_resource(
+    auth.RevGeocode, '/api/google/<float:lat>/<float(signed=True):lng>'
+)
+api.add_resource(
+    auth.Geocode, '/api/google/<string:address>/<string:city>/<string:state>'
+)
 
 # Admin Resource(s)
 api.add_resource(admin.AdminAllShelters, '/api/admin/shelters')
@@ -490,7 +516,8 @@ api.add_resource(shelter.By_Proximity, '/api/shelters')
 api.add_resource(city.By_State, '/api/cities/<string:state>')
 api.add_resource(city.City_Id, '/api/city/<string:id>')
 api.add_resource(
-    city.Detailed, '/api/city/<string:state>/<string:name>/<int:zipcode>')
+    city.Detailed, '/api/city/<string:state>/<string:name>/<int:zipcode>'
+)
 
 # State Resource(s)
 api.add_resource(state.States, '/api/states')

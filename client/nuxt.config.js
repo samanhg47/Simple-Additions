@@ -4,8 +4,8 @@ const env = require('dotenv').config()
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - sa',
-    title: 'sa',
+    titleTemplate: '%s',
+    title: 'Simple Additions (Find Animal Shelters Near You)',
     htmlAttrs: {
       lang: 'en'
     },
@@ -61,7 +61,6 @@ export default {
   build: {},
 
   privateRuntimeConfig: {
-    apiKey: process.env.API_KEY,
     secretKey: process.env.SECRET_KEY,
     apiAddress: process.env.API_ADDRESS
   },

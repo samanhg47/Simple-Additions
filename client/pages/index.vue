@@ -47,7 +47,16 @@
               <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
                 :name="index"
                 :type="field.type"
-                :placeholder="field.placeholder"/>
+                :placeholder="field.placeholder"
+                disabled
+                v-if="index === 'confirm'"
+              />
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"
+                v-if="index !== 'confirm'"
+              />
             </div>
             <div class="errDiv">
               <p v-if="field.minLen" class="charCount">
@@ -104,7 +113,16 @@
               <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
                 :name="index"
                 :type="field.type"
-                :placeholder="field.placeholder"/>
+                :placeholder="field.placeholder"
+                disabled
+                v-if="index === 'confirm'"
+              />
+              <input @input="aHandleChange($event)" @blur="aHandleBlur($event)"
+                :name="index"
+                :type="field.type"
+                :placeholder="field.placeholder"
+                v-if="index !== 'confirm'"
+              />
             </div>
             <div class="errDiv">
               <p v-if="field.minLen" class="charCount">
@@ -233,17 +251,16 @@ export default {
   },
   mounted () {
     if(Object.keys(this.location).length == 0){
-      try{
         navigator.geolocation.getCurrentPosition(async(position)=>{
-        const latitude = position.coords.latitude
-        const longitude = position.coords.longitude
-        this.aSetLocation({longitude, latitude})
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+        this.aSetLocation({lng, lat})
         })
-      }catch(err){
-      }
     }
-    if(Object.keys(this.location).length != 0){
-      this.locationAutofill()
+    const locationVals = []
+    Object.values(this.userLocation).forEach(obj => locationVals.push(obj.value))
+    if(Object.keys(this.location).length !== 0 && locationVals.includes('')){
+      this.aLocationAutofill(this.location)
     }
 
     this.formUpdate()
@@ -381,7 +398,7 @@ export default {
     // root actions
     ...mapActions([
       "aAddStates",
-      "aAddCities",
+      "aCitiesByState",
       "aSetLocation",
       'wait',
       'aAddSheltersUser'
@@ -399,12 +416,12 @@ export default {
         'aSetPhoneNumber',
         'aLocationAutofill'
         ]
-      ),
+    ),
       // auth actions
-      ...mapActions(
-      "auth", [
-        "checkToken"
-      ]
+    ...mapActions(
+    "auth", [
+      "checkToken"
+    ]
     ),
     showPass(i){
       i == "confirm" && (this.hideConfirm = false)
@@ -464,18 +481,11 @@ export default {
     })
     },
     async locationAutofill(){
-        const longitude = this.location.lng
-        const latitude = this.location.lat
-        const location = await this.aLocationAutofill({longitude, latitude})
+        const location = await this.aLocationAutofill(this.location)
         if(location){
           Object.keys(location).forEach(key => {
-            if(key !== "address"){
-            document.querySelector(`#${key}Inp`) 
-            && (document.querySelector(`#${key}Inp`).value = location[key])
-            }else{
-              document.querySelector(`input[name="${key}"]`)
-              && (document.querySelector(`input[name="${key}"]`).value = location[key])
-            }
+            document.querySelector(`input[name="${key}"]`) &&
+            (document.querySelector(`input[name="${key}"]`).value = location[key])
           })
       }
     },
@@ -484,7 +494,7 @@ export default {
     'userLocation.state.value' : function(){
       if (this.registration){
         if(this.states.includes(this.userLocation.state.value)){
-        this.aAddCities(this.userLocation.state.value)
+        this.aCitiesByState(this.userLocation.state.value)
         }
         document.querySelector("#cityInp").value &&
         (document.querySelector("#cityInp").value = "")
@@ -522,6 +532,13 @@ export default {
       }
     },
     validVals: function(newVal, oldVal){
+      if(newVal.includes("password valid")){
+        document.querySelector(`[name="confirm"]`).disabled = false
+      } else {
+        document.querySelector(`[name="confirm"]`).disabled = true
+      }
+
+
       if(!this.validVals.every( val => val.split(' ')[1] === "valid")){
         document.getElementById("sub").disabled = true
       }else{
