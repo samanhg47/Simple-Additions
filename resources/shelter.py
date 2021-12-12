@@ -53,6 +53,11 @@ class Shelters(Resource):
 
 class By_Proximity(Resource):
     def post(self):
+        print()
+        print()
+        print("4")
+        print()
+        print()
         data = request.get_json()
         print()
         print()

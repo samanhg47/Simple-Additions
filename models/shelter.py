@@ -128,7 +128,7 @@ class Shelter(db.Model):
 
         print()
         print()
-        print(states.values()[0])
+        print(states['AK'])
         print()
         print()
 
