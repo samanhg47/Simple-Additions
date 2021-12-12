@@ -1,10 +1,9 @@
 from sqlalchemy.dialects.postgresql import UUID
+from models.state import State
 from datetime import datetime
 from models.city import City
 from models.db import db
 import uuid
-
-from models.state import State
 
 
 class Shelter(db.Model):
@@ -95,6 +94,12 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
+        print()
+        print()
+        print(coordinates)
+        print(proximity)
+        print()
+        print()
         if proximity > 0:
             shelters = [shelter.json() for shelter in Shelter.find_all()]
             lat_r = proximity/68.93
@@ -113,6 +118,18 @@ class Shelter(db.Model):
                     del shelters[index]
             return shelters
         states = {state.json()['shorthand']: [] for state in State.find_all()}
+        print()
+        print()
+        print(states)
+        print()
+        print()
         for shelter in Shelter.find_all():
             states[shelter.json()['state']].append(shelter.json())
+
+        print()
+        print()
+        print(states.values()[0])
+        print()
+        print()
+
         return states
