@@ -94,14 +94,8 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
-        print()
-        print()
-        print(coordinates)
-        print(proximity)
-        print()
-        print()
+        shelters = [shelter.json() for shelter in Shelter.find_all()]
         if proximity > 0:
-            shelters = [shelter.json() for shelter in Shelter.find_all()]
             lat_r = proximity/68.93
             lon_r = proximity/54.58
             lat = coordinates["lat"]
@@ -116,14 +110,4 @@ class Shelter(db.Model):
                 lon = shelter["longitude"]
                 if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
                     del shelters[index]
-            return shelters
-        states = {state.json()['shorthand']: [] for state in State.find_all()}
-        for shelter in Shelter.find_all():
-            states[shelter.json()['state']].append(shelter.json())
-        print()
-        print()
-        print("states")
-        print(states['WY'])
-        print()
-        print()
-        return states
+        return shelters
