@@ -125,7 +125,6 @@ export const actions = {
   async aLocationAutofill(store, { lng, lat }) {
     const Client = store.rootGetters['auth/client']
     const res = await Client.get(`/google/${lat}/${lng}`)
-    console.log(res)
     const location = res.data.results[0].formatted_address
     const address = location.split(',')[0]
     const city = location.split(',')[1].replace(' ', '')
