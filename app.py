@@ -41,6 +41,11 @@ burn_cli = AppGroup("burn")
 load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL:
+    print()
+    print()
+    print(DATABASE_URL)
+    print()
+    print()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL.replace(
         "://", "ql://", 1)
