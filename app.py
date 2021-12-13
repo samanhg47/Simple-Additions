@@ -1,3 +1,4 @@
+from flask import cli
 from resources import fileport, shelter, image, post, state, user, auth, comment, admin, city
 from middleware import check_token, gen_password, strip_secret
 from random import shuffle, seed, choices, choice
@@ -62,6 +63,7 @@ HOST = 'https://simple-additions.netlify.app' if DATABASE_URL else 'http://local
 @seed_cli.command("states")
 def state_seeder():
     if len(State.find_all()) == 0:
+        click.echo('...seeding')
         count = 0
         for state in states_list:
             state = State(**state)
@@ -74,6 +76,7 @@ def state_seeder():
 @burn_cli.command("states")
 def state_destroyer():
     if len(State.find_all()) > 0:
+        click.echo('...burning')
         count = 0
         for state in State.find_all():
             db.session.delete(state)
@@ -86,6 +89,7 @@ def state_destroyer():
 @seed_cli.command("cities")
 def city_seeder():
     if len(City.find_all()) == 0:
+        click.echo('...seeding')
         count = 0
         states = [state.json() for state in State.find_all()]
         for city in cities_list:
@@ -104,6 +108,7 @@ def city_seeder():
 @burn_cli.command("cities")
 def city_destroyer():
     if len(City.find_all()) > 0:
+        click.echo('...burning')
         count = 0
         for city in City.find_all():
             db.session.delete(city)
@@ -116,6 +121,7 @@ def city_destroyer():
 @seed_cli.command("users")
 @click.option('--amount', default=47, help='number of users to be generated')
 def user_seeder(amount):
+
     if amount > 0:
         if amount == 47:
             amount = len(Shelter.find_all())/4
@@ -177,6 +183,7 @@ def user_destroyer(amount):
         amount = int(amount)
     count = 0
     if amount > 0:
+        click.echo('...burning')
         for _ in range(0, amount):
             db.session.delete(users[count])
             db.session.commit()
@@ -248,6 +255,7 @@ def shelter_destroyer(amount):
         amount = int(amount)
     count = 0
     if amount > 0:
+        click.echo('...burning')
         for _ in range(0, amount):
             db.session.delete(shelters[count])
             db.session.commit()
@@ -349,6 +357,7 @@ def post_destroyer(amount):
         amount = int(amount)
     count = 0
     if amount > 0:
+        click.echo('...burning')
         for _ in range(0, amount):
             db.session.delete(posts[count])
             db.session.commit()
@@ -398,6 +407,7 @@ def comment_destroyer(amount):
         amount = int(amount)
     count = 0
     if amount > 0:
+        click.echo('...burning')
         for _ in range(0, amount):
             db.session.delete(comments[count])
             db.session.commit()

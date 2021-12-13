@@ -1,3 +1,4 @@
+from gevent import sleep
 from sqlalchemy.dialects.postgresql import UUID
 from models.state import State
 from datetime import datetime
@@ -94,8 +95,8 @@ class Shelter(db.Model):
         # 68.93 miles/1 degree of latitude
         # 54.58 miles/1 degree of longitude
         # (latitude, longitude) ~ (x,y)
-        shelters = [shelter.json() for shelter in Shelter.find_all()]
         if proximity > 0:
+            shelters = [shelter.json() for shelter in Shelter.find_all()]
             lat_r = proximity/68.93
             lon_r = proximity/54.58
             lat = coordinates["lat"]
@@ -110,4 +111,9 @@ class Shelter(db.Model):
                 lon = shelter["longitude"]
                 if lon > max_lon or lon < min_lon or lat > max_lat or lat < min_lat:
                     del shelters[index]
-        return shelters
+            return shelters
+        states = {state.json()['shorthand']: [] for state in State.find_all()}
+        sleep(3)
+        for shelter in Shelter.find_all():
+            states[shelter.json()['state']]
+        return states

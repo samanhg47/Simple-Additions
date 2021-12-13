@@ -49,9 +49,6 @@ class User(db.Model):
             "comments": [comment.json()["id"] for comment in self.comments]
         }
 
-    def password(self):
-        return self.password_digest
-
     def create(self):
         db.session.add(self)
         db.session.commit()

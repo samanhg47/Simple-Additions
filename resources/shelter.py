@@ -57,6 +57,6 @@ class By_Proximity(Resource):
         shelters = Shelter.by_proximity(
             data["coordinates"], data["proximity"]
         )
-        if len(shelters) == 0:
+        if type(shelters) is list and len(shelters) == 0:
             return "No Shelters Within Proximity Limit", 404
         return shelters
