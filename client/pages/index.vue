@@ -245,9 +245,9 @@ export default {
   async created () {
     await this.checkToken()
     this.aAddStates()
-    // if(this.shelters.length === 0){
-    //   this.grabShelters()
-    // }
+    if(this.shelters.length === 0){
+      this.grabShelters()
+    }
   },
   mounted () {
     if(Object.keys(this.location).length == 0){
