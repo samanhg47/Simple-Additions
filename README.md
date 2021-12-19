@@ -1,50 +1,48 @@
-<div align="center"><img src="./z_img/simple_additions_logo.png" alt="Simple Additions Logo" height="200vw" width="200vw"></div>
-<h1 align='center'>Simple Additions</h1>
+<div align="center"><img src="./z_img/saLogo.png" alt="Simple Additions Logo" height="250vw" width="250vw"></div>
+<h1 align='center'>:dog2: Simple Additions :dog:</h1>
 
 ## Founded By: Sam'an Griffiths
 
-Description
-We are a simple and easy way to find a new family member. We utilize the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number.
+We are a simple and easy way to find a new family member. We utilize the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number. Right now, the only thing available to the public is our comprehensive sign in and registration form.
 
 
-### Tech Stack
+
+
+<h2 align="center">:black_heart: My Favorite Section Of Code :computer:</h2>
+This Was My first venture into Python. Although we did go over the MOST basic functionalities of this language in during the General Assembly Bootcamp, most of the skills I've implemented were self taught through internet research. My favorite section of code is no differentm I tought mhyself regex a couple of weeks ago and decided to implement it in my route security section. I'm sure that I've, by no standard,created the most secure API. That being said, I'm still proud of what I've done here as it's my first attempt, self-taught, it protects against some simple attacks I launched against it, and I use multiple methods of security (namely, cors and simple if else statements).
+
+![Api before and after request sections](./z_img/Code_Screenshot.png)
+
+<h2 align="center">:pancakes: Tech Stack :pancakes:</h2>
 <div align="center">
-<img src="./z_img/psql.jpeg" alt="Simple Additions Logo" height="150vh" width="275vw">
-<img src="./z_img/flask-1.png" alt="Simple Additions Logo" height="150vh" width="275vw">
-<img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="150vh" width="275vw">
+<img src="./z_img/psql.jpeg" alt="Simple Additions Logo" height="125vh" width="275vw">
+<img src="./z_img/flask-1.png" alt="Simple Additions Logo" height="125vh" width="275vw">
+<img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="125vh" width="275vw">
 </div>
 
-### A Huge Thank You To all Of Our Sources!
+### A Huge Thank You To all Of My Sources!	 :partying_face::tada:
 - [Kaggle Shelter Database](https://www.kaggle.com/aaronschlegel/petfinder-animal-shelters-database/version/4)
-- [Colors.co](https://coolors.co/606c38-283618-fefae0-dda15e-bc6c25)
-- [Pretty Printed](https://www.youtube.com/watch?v=TLgVEBuQURA)
 - [Google Sheets API](https://developers.google.com/sheets/api/quickstart/python)
-- [Learn Google Spreadsheets](https://www.youtube.com/watch?v=4ssigWmExak)
-- [Mapbox API](https://docs.mapbox.com/)
-- [Open Street Map](https://www.openstreetmap.org/#map=7/39.602/-7.839)
-- [Towards Data Science](https://towardsdatascience.com/keeping-things-secret-d9060c73089b)
-- [Brian Cappello](https://github.com/briancappello/flask-react-spa/blob/master/backend/commands/db.py#L11-L61)
-- [Book Stack](https://www.bookstack.cn/read/sqlalchemy-1.3/f301b95c63216ba3.md)
 - [Pallets Projects](https://flask.palletsprojects.com/en/)
 - [PyCon UK](https://www.youtube.com/watch?v=gJ7CnUX_7YQ)
 - [Random-Dog](https://pypi.org/project/random-dog/)
 - [Far In Space](https://www.farinspace.com/tag/sql-dump/)
 
 
-### Personal Links:
-- [Trello Board](https://trello.com/b/YhTDQTY6/simple-additions)
+### :bust_in_silhouette:Personal Links:
 - [LinkedIn](https://www.linkedin.com/in/saman-griffiths/)
-- [Company Website]()
+- [Company Website](https://simple-additions.netlify.app/)
 - [Portfolio]()
 
 
-### Future Additions:
+### 	:bricks:Future Additions:
 
-- [ ] Dark Mode
+- [x] Dark Mode
+- [x] Animal Listings From Shelters
+- [x] User Profiles
+- [ ] Map Shelters By Proximity
 - [ ] Email Verification
-- [ ] Animal Listings From Shelters
-- [ ] User Profiles
 - [ ] Route Mapping
-- [ ] Post and Comment Report Functionality
+- [ ] Report Posts and Comments
 - [ ] Star Reviews
 
