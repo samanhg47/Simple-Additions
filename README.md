@@ -1,7 +1,7 @@
 <div align="center"><img src="./z_img/saLogo.png" alt="Simple Additions Logo" height="250vw" width="250vw"></div>
 <h1 align='center'>:dog2: Simple Additions :dog:</h1>
 
-## Founded By: Sam'an Griffiths
+## Created By: Sam'an Griffiths :triangular_ruler: :memo: :computer: :hourglass_flowing_sand:
 
 <p align='justify'>We are a simple and easy way to find a new family member. We utilize the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number. Right now, the only thing available to the public is our comprehensive sign in and registration form.</p>
 
