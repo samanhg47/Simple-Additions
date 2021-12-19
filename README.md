@@ -15,9 +15,9 @@ This Was My first venture into Python. Although we did go over the MOST basic fu
 
 <h2 align="center">:pancakes: Tech Stack :pancakes:</h2>
 <div align="center">
-<img src="./z_img/psql.jpeg" alt="Simple Additions Logo" height="100px" width="200px">
-<img src="./z_img/flask-1.png" alt="Simple Additions Logo" height="100px" width="200px">
-<img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="100px" width="200px">
+<img src="./z_img/psql.jpeg" alt="Simple Additions Logo" height="100px" width="220px">
+<img src="./z_img/flask-1.png" alt="Simple Additions Logo" height="100px" width="220px">
+<img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="100px" width="220px">
 </div>
 
 ### A Huge Thank You To all Of My Sources!	 :partying_face::tada:
