@@ -11,8 +11,9 @@ We are a simple and easy way to find a new family member. We utilize the kaggle 
 <h2 align="center">:black_heart: My Favorite Section Of Code :computer:</h2>
 This Was My first venture into Python. Although we did go over the MOST basic functionalities of this language in during the General Assembly Bootcamp, most of the skills I've implemented were self taught through internet research. My favorite section of code is no differentm I tought mhyself regex a couple of weeks ago and decided to implement it in my route security section. I'm sure that I've, by no standard,created the most secure API. That being said, I'm still proud of what I've done here as it's my first attempt, self-taught, it protects against some simple attacks I launched against it, and I use multiple methods of security (namely, cors and simple if else statements).
 
-![Api before and after request sections](./z_img/Code_Screenshot.png)
-
+<div align="center">
+<img src="./z_img/Code_Screenshot.png" alt="Before and after request sections">
+</div>
 <h2 align="center">:pancakes: Tech Stack :pancakes:</h2>
 <div align="center">
 <img src="./z_img/vuejs-logo.jpeg" alt="Simple Additions Logo" height="150px" width="405px">
