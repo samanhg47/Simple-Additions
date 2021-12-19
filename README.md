@@ -3,13 +3,10 @@
 
 ## Founded By: Sam'an Griffiths
 
-We are a simple and easy way to find a new family member. We utilize the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number. Right now, the only thing available to the public is our comprehensive sign in and registration form.
-
-
-
+<p align='justify'>We are a simple and easy way to find a new family member. We utilize the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number. Right now, the only thing available to the public is our comprehensive sign in and registration form.</p>
 
 <h2 align="center">:black_heart: My Favorite Section Of Code :computer:</h2>
-This Was My first venture into Python. Although we did go over the MOST basic functionalities of this language in during the General Assembly Bootcamp, most of the skills I've implemented were self taught through internet research. My favorite section of code is no differentm I tought mhyself regex a couple of weeks ago and decided to implement it in my route security section. I'm sure that I've, by no standard,created the most secure API. That being said, I'm still proud of what I've done here as it's my first attempt, self-taught, it protects against some simple attacks I launched against it, and I use multiple methods of security (namely, cors and simple if else statements).
+<p align='justify'>This Was My first venture into Python. Although we did go over the MOST basic functionalities of this language in during the General Assembly Bootcamp, most of the skills I've implemented were self taught through internet research. My favorite section of code is no differentm I tought mhyself regex a couple of weeks ago and decided to implement it in my route security section. I'm sure that I've, by no standard,created the most secure API. That being said, I'm still proud of what I've done here as it's my first attempt, self-taught, it protects against some simple attacks I launched against it, and I use multiple methods of security (namely, cors and simple if else statements).</p>
 
 <div align="center">
 <img src="./z_img/Code_Screenshot.png" alt="Before and after request sections">
@@ -33,7 +30,7 @@ This Was My first venture into Python. Although we did go over the MOST basic fu
 
 ### :bust_in_silhouette:Personal Links:
 - [LinkedIn](https://www.linkedin.com/in/saman-griffiths/)
-- [Company Website](https://simple-additions.netlify.app/)
+- [Deployed Website](https://simple-additions.netlify.app/)
 - [Portfolio]()
 
 
