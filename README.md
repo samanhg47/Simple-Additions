@@ -38,8 +38,8 @@ This Was My first venture into Python. Although we did go over the MOST basic fu
 ### 	:bricks:Future Additions:
 
 - [x] Dark Mode
-- [x] Animal Listings From Shelters
 - [x] User Profiles
+- [ ] Animal Listings From Shelters
 - [ ] Map Shelters By Proximity
 - [ ] Email Verification
 - [ ] Route Mapping
