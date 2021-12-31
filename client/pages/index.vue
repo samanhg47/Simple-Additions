@@ -801,7 +801,7 @@ input{
 }
 .hidePassword{
   width: calc(var(--formWidth) * .0296);
-  height: calc(var(--formWidth) * .0222)w;
+  height: calc(var(--formWidth) * .0222);
   margin: calc(var(--formWidth) * .00333)
     calc(var(--formWidth) * .002775)
     calc(var(--formWidth) * .004625)
