@@ -356,13 +356,13 @@ export const mutations = {
     const eLen = event.target.value.length
     let minLen = state.form[eTarget].minLen
     const visited = state.form[eTarget].visited
-    const userNameCheck = /^(?![^_]*_)\w+$/m
-    const addressCheck = /^(?![^_]*_)[\w \.]+$/m
-    const passwordCheck = /^(?![^_]*_)[@#\$%!&\w]+$/m
-    const shelterNameCheck = /^(?![^_]*_)[\w \.-]+$/m
+    const userNameCheck = /^(?!.*_.*)\w+$/m
+    const addressCheck = /^(?!.*_.*)[\w \.]+$/m
+    const passwordCheck = /^(?!.*_.*)[@#\$%!&\w]+$/m
+    const shelterNameCheck = /^(?!.*_.*)[\w \.-]+$/m
     const phoneNumberCheck = /^[(]\d{3}[)]-\d{3}-\d{4}$/m
     const specialCasesTest = /(?=address|email)/.test(eTarget)
-    const emailCheck = /^[\w-]+@(?![^\d_]*[\d_])\w+\.(com|org|net|co)$/m
+    const emailCheck = /^[\w-]+@(?![^\d_]*[\d_][^\d_]*)\w+\.(com|org|net|co)$/m
     eTarget === 'confirm' && (minLen = state.form.password.value.length)
 
     const makeInvalid = (msg) => {
