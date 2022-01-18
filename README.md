@@ -3,6 +3,7 @@
 
 ### Created By: Sam'an Khaliq :triangular_ruler: :memo: :computer: :hourglass_flowing_sand:
 
+##### - [Deployed Website](https://simple-additions.netlify.app/)
 ##### - [Inspiration :thinking::thought_balloon:](#inspiration)
 ##### - [Getting Started 🚦](#start)
 ##### - [My Favorite Code Block :computer::black_heart:](#fav)
@@ -60,7 +61,7 @@
 <div align=center>
 <h2 align="center" id="stack">:pancakes: Tech Stack :pancakes:</h2>
 
-![Nuxt.js Badge](https://img.shields.io/badge/-Nuxt.js-00DC82?style=plastic&labelColor=black&logo=nuxtdotjs)
+![Nuxt.js Badge](https://img.shields.io/badge/-Nuxt.js-00DC82?logoWidth=40&style=plastic&labelColor=black&logo=nuxtdotjs)
 ![Flask Badge](https://img.shields.io/badge/-Flask-lightgrey?style=plastic&labelColor=black&logo=flask)
 ![SQLA Badge](https://img.shields.io/badge/-SQLAlchemy-CF3B2E?style=plastic&labelColor=black&logo=data:image/png;base64,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)
 ![PSQL Badge](https://img.shields.io/badge/-Postgresql-3959BB?style=plastic&labelColor=black&logo=postgresql)
@@ -86,7 +87,6 @@
 <h3 id='links'>:bust_in_silhouette:Personal Links:</h3>
 
 - [LinkedIn](https://www.linkedin.com/in/saman-khaliq/)
-- [Deployed Website](https://simple-additions.netlify.app/)
 - [Portfolio](https://www.samanhg.com/)
 
 <h3 id='future'>:bricks:Future Additions:</h3>
