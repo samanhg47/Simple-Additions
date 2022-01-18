@@ -3,7 +3,7 @@
 
 ### Created By: Sam'an Khaliq :triangular_ruler: :memo: :computer: :hourglass_flowing_sand:
 
-##### - [Deployed Website](https://simple-additions.netlify.app/)
+##### - [Deployed Website 🤯](https://simple-additions.netlify.app/)
 ##### - [Inspiration :thinking::thought_balloon:](#inspiration)
 ##### - [Getting Started 🚦](#start)
 ##### - [My Favorite Code Block :computer::black_heart:](#fav)
