@@ -4,6 +4,7 @@
 ### Created By: Sam'an Khaliq :triangular_ruler: :memo: :computer: :hourglass_flowing_sand:
 
 ##### - [Inspiration :thinking::thought_balloon:](#inspiration)
+##### - [Getting Started 🚦](#start)
 ##### - [My Favorite Code Block :computer::black_heart:](#fav)
 ##### - [Tech Stack :pancakes:](#stack)
 ##### - [Sources 🥳](#sources)
@@ -15,6 +16,34 @@
 <h2 align="center" id="inspiration">:thinking::thought_balloon: The Inspiration :thinking::thought_balloon:</h2>
 
 <p align='justify'>I wanted to create a simple and easy way to find a new family member. I utilized the kaggle animal shelter database to give you a list of animal shelters near you where you might find the newest addition to your family! Each year, approximately 920,000 shelter animals are euthanized. With your help, we can put a dent in that number. Right now, the only thing available to the public is our comprehensive sign in and registration form that showcases my design and string search algorithm writing prowess. I've also listed instructions that will let you test the database I've written, seed it, and query it for information.</p>
+
+&ensp;
+
+<h2 align="center" id="start">🚦 Getting Started 🚦</h2>
+
+1. `fork` and `clone` this repository
+2. run `virtualenv venv` to create my virtual environment
+3. activate the virtual environment with `source venv/bin/activate`
+4. run `pip3 install -r requirements.txt` to install my dependencies
+5. create or sign into google cloud account
+6. use service account to ask for permission to view [google sheets file](https://docs.google.com/spreadsheets/d/1EEiJVJ_wc1WWy4D0bRMQ8xgewsYukOcfp24tKOnFDBk/edit?usp=sharing), which contains seed data
+7. download OAuth json file, rename `google-credentials.json`, place in root directory, add file to `.gitignore`
+8. run `touch .env`
+9. create google cloud api key and add to `.env` file as `GOOGLE_KEY`
+10. add a bcrypt secret key to root `.env` file as `SECRET_KEY`
+11. create an `APP_SECRET` and add to `.env` file
+12. create or sign into amazon web service account
+13. add `S3_BUCKET`(the name of the bucket), `S3_ADMIN_ID`, `S3_REGION`, `S3_USER_ID`, and `S3_USER_SECRET` to `.env` file
+14. create generic password to assign to shelter accounts and add to `.env` file as `SHELTER_PASSWORD`
+15. run `flask seed states`, `flask seed cities`, `flask seed shelters`, `flask seed users`, `flask seed posts`, & `flask seed comments` ⚠️WARNING: EACH OF THESE SEED ACTIONS WILL TAKE A WHILE, IT'S A LOT OF DATA!⚠️
+16. run `python3 app.py` to run the server in debug mode
+17. open split terminal and cd into `client` folder
+18. run `touch .env`
+19. add `SECRET_KEY` from root directory into `.env` under the same name
+20. add `API_ADDRESS` into `.env` (make sure it ends with "/api")
+21. run `npm i`
+22. run `npm run dev`
+23. Have fun! 🎊🥳
 
 &ensp;
 
