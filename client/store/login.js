@@ -356,10 +356,10 @@ export const mutations = {
     const eLen = event.target.value.length
     let minLen = state.form[eTarget].minLen
     const visited = state.form[eTarget].visited
-    const userNameCheck = /^(?!.*_.*)\w+$/m
-    const addressCheck = /^(?!.*_.*)[\w \.]+$/m
-    const passwordCheck = /^(?!.*_.*)[@#\$%!&\w]+$/m
-    const shelterNameCheck = /^(?!.*_.*)[\w \.-]+$/m
+    const userNameCheck = /^(?![^_]*_[^_]*)\w+$/m
+    const addressCheck = /^(?![^_]*_[^_]*)[\w \.]+$/m
+    const passwordCheck = /^(?![^_]*_[^_]*)[@#\$%!&\w]+$/m
+    const shelterNameCheck = /^(?![^_]*_[^_]*)[\w \.-]+$/m
     const phoneNumberCheck = /^[(]\d{3}[)]-\d{3}-\d{4}$/m
     const specialCasesTest = /(?=address|email)/.test(eTarget)
     const emailCheck = /^[\w-]+@(?![^\d_]*[\d_][^\d_]*)\w+\.(com|org|net|co)$/m

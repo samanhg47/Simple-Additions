@@ -449,7 +449,7 @@ def acceptable_origins():
                                  # matches requests to reverse geocodeing resource
                                  r'google/(-{0,1}\d{1,3}\.\d{7}/-{0,1}\d{1,3}\.\d{7}|'
                                  # matches requests to geocoding resource
-                                 r'(?!.*_.*)[\w \.-]+/[\w \.-]+/[A-Z]{2})'
+                                 r'(?![^_]*_[^_]*)[\w \.-]+/[\w \.-]+/[A-Z]{2})'
                                  # ends match, leaving no room for other characters
                                  r')$',
                                  request.path, flags=re.A | re.M):
