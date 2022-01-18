@@ -32,7 +32,7 @@
 ### :bust_in_silhouette:Personal Links:
 - [LinkedIn](https://www.linkedin.com/in/saman-khaliq/)
 - [Deployed Website](https://simple-additions.netlify.app/)
-- [Portfolio](https://www.samankhaliq.com/)
+- [Portfolio](https://www.samanhg.com/)
 
 
 ### 	:bricks:Future Additions:
