@@ -43,6 +43,7 @@
 &ensp;
 
 <h3 id='sources'>A Huge Thank You To all Of My Sources! :partying_face::tada:</h3>
+
 - [Kaggle Shelter Database](https://www.kaggle.com/aaronschlegel/petfinder-animal-shelters-database/version/4)
 - [Google Sheets API](https://developers.google.com/sheets/api/quickstart/python)
 - [Pallets Projects](https://flask.palletsprojects.com/en/)
@@ -51,11 +52,13 @@
 - [Far In Space](https://www.farinspace.com/tag/sql-dump/)
 
 <h3 id='links'>:bust_in_silhouette:Personal Links:</h3>
+
 - [LinkedIn](https://www.linkedin.com/in/saman-khaliq/)
 - [Deployed Website](https://simple-additions.netlify.app/)
 - [Portfolio](https://www.samanhg.com/)
 
 <h3 id='future'>:bricks:Future Additions:</h3>
+
 - [x] Dark Mode
 - [x] User Profiles
 - [ ] Animal Listings From Shelters
