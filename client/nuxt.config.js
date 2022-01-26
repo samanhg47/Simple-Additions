@@ -2,7 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 const env = require('dotenv').config()
 
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
+  // Global page header: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s',
     title: 'Simple Additions (Find Animal Shelters Near You)',
